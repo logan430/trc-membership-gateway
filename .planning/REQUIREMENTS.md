@@ -119,13 +119,59 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (To be filled by roadmapper) | | |
+| AUTH-01 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| PAY-01 | Phase 3 | Pending |
+| PAY-02 | Phase 5 | Pending |
+| PAY-03 | Phase 1 | Pending |
+| PAY-04 | Phase 1 | Pending |
+| PAY-05 | Phase 1 | Pending |
+| PAY-06 | Phase 5 | Pending |
+| PAY-07 | Phase 5 | Pending |
+| ROLE-01 | Phase 3 | Pending |
+| ROLE-02 | Phase 4 | Pending |
+| ROLE-03 | Phase 4 | Pending |
+| ROLE-04 | Phase 6 | Pending |
+| ROLE-05 | Phase 6 | Pending |
+| ROLE-06 | Phase 4 | Pending |
+| ONB-01 | Phase 3 | Pending |
+| ONB-02 | Phase 3 | Pending |
+| ONB-03 | Phase 3 | Pending |
+| ONB-04 | Phase 4 | Pending |
+| ONB-05 | Phase 3 | Pending |
+| ONB-06 | Phase 4 | Pending |
+| ONB-07 | Phase 4 | Pending |
+| TEAM-01 | Phase 5 | Pending |
+| TEAM-02 | Phase 5 | Pending |
+| TEAM-03 | Phase 5 | Pending |
+| TEAM-04 | Phase 5 | Pending |
+| TEAM-05 | Phase 5 | Pending |
+| TEAM-06 | Phase 5 | Pending |
+| TEAM-07 | Phase 5 | Pending |
+| TEAM-08 | Phase 5 | Pending |
+| BILL-01 | Phase 6 | Pending |
+| BILL-02 | Phase 6 | Pending |
+| BILL-03 | Phase 6 | Pending |
+| BILL-04 | Phase 6 | Pending |
+| BILL-05 | Phase 6 | Pending |
+| EMAIL-01 | Phase 7 | Pending |
+| EMAIL-02 | Phase 7 | Pending |
+| EMAIL-03 | Phase 7 | Pending |
+| EMAIL-04 | Phase 7 | Pending |
+| EMAIL-05 | Phase 7 | Pending |
+| EMAIL-06 | Phase 7 | Pending |
+| OPS-01 | Phase 1 | Pending |
+| OPS-02 | Phase 8 | Pending |
+| OPS-03 | Phase 8 | Pending |
+| OPS-04 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 41 total
-- Mapped to phases: 0
-- Unmapped: 41 (pending roadmap)
+- Mapped to phases: 41
+- Unmapped: 0
 
 ---
 *Requirements defined: 2025-01-18*
-*Last updated: 2025-01-18 after initial definition*
+*Last updated: 2025-01-18 after roadmap creation*

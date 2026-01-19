@@ -431,6 +431,46 @@
       margin-top: 0.5rem;
     }
 
+    /* Billing Banner */
+    .billing-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: rgba(231, 76, 60, 0.1);
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .banner-icon {
+      font-size: 1.5rem;
+      color: #e74c3c;
+      font-weight: bold;
+      line-height: 1;
+      padding: 0.25rem 0.75rem;
+      background: rgba(231, 76, 60, 0.2);
+      border-radius: 50%;
+    }
+
+    .banner-content {
+      flex: 1;
+    }
+
+    .banner-content strong {
+      color: #e74c3c;
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .banner-content p {
+      color: var(--cream);
+      margin: 0;
+      line-height: 1.5;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-header h1 {
@@ -471,6 +511,15 @@
     </div>
 
     <div id="dashboard-content" style="display: none;">
+      <!-- Billing Status Banner (hidden by default) -->
+      <div id="billing-banner" class="billing-banner" style="display: none;">
+        <div class="banner-icon">!</div>
+        <div class="banner-content">
+          <strong>Billing Issue</strong>
+          <p>There is an issue with your subscription payment. Please update your payment method in the Stripe billing portal to restore full access for your team.</p>
+        </div>
+      </div>
+
       <!-- Seat Summary -->
       <div class="seat-summary">
         <div class="seat-type">
@@ -792,6 +841,14 @@
       // Hide loading, show content
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dashboard-content').style.display = 'block';
+
+      // Show billing banner if in failure state
+      const billingBanner = document.getElementById('billing-banner');
+      if (data.team.paymentFailedAt || data.team.subscriptionStatus === 'PAST_DUE') {
+        billingBanner.style.display = 'flex';
+      } else {
+        billingBanner.style.display = 'none';
+      }
 
       // Team info
       document.getElementById('team-name').textContent = data.team.name;

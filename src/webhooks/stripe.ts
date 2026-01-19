@@ -5,6 +5,7 @@ import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
 import { removeAndKickAsync } from '../lib/role-assignment.js';
 import { handlePaymentFailure } from '../billing/failure-handler.js';
+import { handlePaymentRecovery } from '../billing/recovery-handler.js';
 import { logger } from '../index.js';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -358,9 +359,11 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
       break;
     }
 
-    case 'invoice.payment_succeeded':
-      logger.info({ eventId: event.id }, 'Payment succeeded - handler TBD');
+    case 'invoice.paid': {
+      const invoice = event.data.object as Stripe.Invoice;
+      await handlePaymentRecovery(invoice);
       break;
+    }
 
     default:
       logger.debug({ eventId: event.id, type: event.type }, 'Unhandled event type');

@@ -94,6 +94,7 @@ teamDashboardRouter.get('/dashboard', requireAuth, async (req: AuthenticatedRequ
       id: team.id,
       name: team.name,
       subscriptionStatus: team.subscriptionStatus,
+      paymentFailedAt: team.paymentFailedAt,
     },
     seats: seatSummary,
     members: {

@@ -271,6 +271,78 @@
       cursor: not-allowed;
     }
 
+    /* Revoke Button */
+    .btn-revoke {
+      background: #8b0000;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      margin-top: 0.75rem;
+      transition: background 0.3s ease;
+    }
+
+    .btn-revoke:hover {
+      background: #a00000;
+    }
+
+    .btn-revoke:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Member card layout for revoke button */
+    .member-card-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .member-info {
+      flex: 1;
+    }
+
+    .member-actions {
+      margin-left: 1rem;
+    }
+
+    /* You label for current user */
+    .badge.you {
+      background: rgba(139, 92, 246, 0.2);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    /* Notification toast */
+    .notification {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a472a;
+      color: #4ade80;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      font-family: 'Cinzel', serif;
+      z-index: 1000;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-header h1 {
@@ -366,14 +438,59 @@
   </footer>
 
   <script>
+    // Current user ID (set after dashboard loads)
+    let currentUserId = null;
+
     // Get access token from storage
     function getAccessToken() {
       return localStorage.getItem('accessToken');
     }
 
+    // Show notification toast
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => notification.remove(), 3000);
+    }
+
+    // Revoke a member's seat
+    async function revokeMember(memberId, memberName) {
+      const confirmed = confirm(
+        `Are you sure you want to revoke ${memberName}'s seat?\n\n` +
+        `They will be immediately removed from the Discord server.`
+      );
+
+      if (!confirmed) return;
+
+      try {
+        const response = await fetch(`/team/members/${memberId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getAccessToken()}`,
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(`Failed to revoke: ${error.error}`);
+          return;
+        }
+
+        // Refresh dashboard data
+        loadDashboard();
+        showNotification('Seat revoked successfully');
+      } catch (error) {
+        alert('Failed to revoke seat. Please try again.');
+      }
+    }
+
     // Render a member card
     function renderMemberCard(member, isOwnerSection) {
       const isPrimary = isOwnerSection && member.isPrimaryOwner;
+      const isSelf = member.id === currentUserId;
       const statusBadge = member.status === 'claimed'
         ? '<span class="badge claimed">Claimed</span>'
         : '<span class="badge pending">Pending</span>';
@@ -383,7 +500,16 @@
       const primaryBadge = isPrimary
         ? '<span class="badge primary">Primary</span>'
         : '';
+      const youBadge = isSelf
+        ? '<span class="badge you">You</span>'
+        : '';
       const crownIcon = isPrimary ? '<span class="crown-icon">&#9813;</span>' : '';
+
+      // Show revoke button only if not self and not primary owner
+      const showRevokeButton = !isSelf && !isPrimary;
+      const revokeButton = showRevokeButton
+        ? `<button class="btn-revoke" onclick="revokeMember('${member.id}', '${escapeHtml(member.name).replace(/'/g, "\\'")}')">Revoke</button>`
+        : '';
 
       return `
         <div class="member-card${isPrimary ? ' primary-owner' : ''}">
@@ -396,7 +522,9 @@
             ${statusBadge}
             ${introBadge}
             ${primaryBadge}
+            ${youBadge}
           </div>
+          ${revokeButton}
         </div>
       `;
     }
@@ -466,6 +594,9 @@
 
     // Render dashboard with data
     function renderDashboard(data) {
+      // Store current user ID for revoke button logic
+      currentUserId = data.currentUser.id;
+
       // Hide loading, show content
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dashboard-content').style.display = 'block';

@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 5 of 8 (Team Management)
-Plan: 4 of 6 in current phase
+Plan: 5 of 6 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 05-04-PLAN.md
+Last activity: 2026-01-19 - Completed 05-05-PLAN.md
 
-Progress: [████████░░] 77%
+Progress: [████████░░] 81%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
-- Average duration: 5.2 min
-- Total execution time: 92 min
+- Total plans completed: 18
+- Average duration: 5.1 min
+- Total execution time: 95 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [████████░░] 77%
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
-| 5-Team | 4/6 | 19 min | 4.75 min |
+| 5-Team | 5/6 | 22 min | 4.4 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (3 min), 05-01 (4 min), 05-02 (3 min), 05-03 (5 min), 05-04 (7 min)
+- Last 5 plans: 05-01 (4 min), 05-02 (3 min), 05-03 (5 min), 05-04 (7 min), 05-05 (3 min)
 - Trend: Consistent execution, averaging 3-7 min per plan
 
 *Updated after each plan completion*
@@ -100,6 +100,10 @@ Recent decisions affecting current work:
 | 05-04 | Prisma $transaction for seat claim | Atomic operation prevents race conditions |
 | 05-04 | Individual subscriber blocking | Clear message, prevents duplicate membership |
 | 05-04 | INDIVIDUAL seatTier maps to Lord | Per CONTEXT.md hierarchy: Individual = Owner |
+| 05-05 | Generic farewell DM on revocation | No blame assigned per CONTEXT.md |
+| 05-05 | Revoked member record preserved | Unlinked from team but record kept |
+| 05-05 | Primary owner cannot be revoked | isPrimaryOwner check enforced |
+| 05-05 | Cannot revoke your own seat | Self-revocation blocked |
 
 ### Pending Todos
 
@@ -124,7 +128,7 @@ Team management progress:
 - [x] 05-02: Team dashboard with seat view
 - [x] 05-03: Invite token generation and management
 - [x] 05-04: Invite claim flow with Discord OAuth
-- [ ] 05-05: Seat revocation with immediate kick
+- [x] 05-05: Seat revocation with immediate kick
 - [ ] 05-06: Mid-subscription seat additions
 
 Delivered (05-01):
@@ -158,8 +162,16 @@ Delivered (05-04):
 - INDIVIDUAL seatTier correctly maps to Lord role
 - public/team-claim.html landing page with medieval theme
 
+Delivered (05-05):
+- revokeAndKickAsync: generic farewell DM, remove roles, kick from server
+- DELETE /team/members/:memberId: owner-only revocation endpoint
+- Primary owner protection (cannot be revoked by other team members)
+- Self-revocation blocked (cannot revoke own seat)
+- Dashboard revoke buttons with confirmation dialog
+- Success notification toast after revocation
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 05-04-PLAN.md
+Stopped at: Completed 05-05-PLAN.md
 Resume file: None

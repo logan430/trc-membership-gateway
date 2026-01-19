@@ -77,9 +77,54 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
   // Actual processing logic will be added in Phase 3+
 
   switch (event.type) {
-    case 'checkout.session.completed':
-      logger.info({ eventId: event.id }, 'Checkout completed - handler TBD');
+    case 'checkout.session.completed': {
+      const session = event.data.object as Stripe.Checkout.Session;
+
+      // Only handle subscription mode (not one-time payments)
+      if (session.mode !== 'subscription') {
+        logger.debug({ sessionId: session.id }, 'Ignoring non-subscription checkout');
+        break;
+      }
+
+      // Retrieve session with expanded subscription data
+      const expandedSession = await stripe.checkout.sessions.retrieve(
+        session.id,
+        { expand: ['subscription'] }
+      );
+
+      const memberId = expandedSession.client_reference_id;
+      if (!memberId) {
+        logger.error({ sessionId: session.id }, 'Missing client_reference_id on checkout session');
+        break;
+      }
+
+      const subscription = expandedSession.subscription;
+      if (!subscription || typeof subscription === 'string') {
+        logger.error({ sessionId: session.id }, 'No subscription on checkout session');
+        break;
+      }
+
+      // Get current_period_end from first subscription item (Stripe SDK v20+ moved it from Subscription to SubscriptionItem)
+      const firstItem = subscription.items?.data?.[0];
+      const currentPeriodEnd = firstItem?.current_period_end
+        ? new Date(firstItem.current_period_end * 1000)
+        : null;
+
+      // Update member subscription status
+      await prisma.member.update({
+        where: { id: memberId },
+        data: {
+          subscriptionStatus: 'ACTIVE',
+          currentPeriodEnd,
+        },
+      });
+
+      logger.info(
+        { memberId, subscriptionId: subscription.id, currentPeriodEnd: firstItem?.current_period_end },
+        'Checkout completed, subscription activated'
+      );
       break;
+    }
 
     case 'customer.subscription.created':
       logger.info({ eventId: event.id }, 'Subscription created - handler TBD');

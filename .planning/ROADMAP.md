@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Discord Integration** - OAuth linking, bot setup, role management core
 - [x] **Phase 3: Individual Subscription** - Stripe Checkout, claim flow, basic role assignment
 - [x] **Phase 4: Introduction Requirement** - Introduction monitoring, role promotion to Member/Owner
-- [ ] **Phase 5: Team Management** - Company plans, seat dashboard, invite system
+- [x] **Phase 5: Team Management** - Company plans, seat dashboard, invite system
 - [ ] **Phase 6: Billing Failure** - Billing Issue role, access restriction, recovery
 - [ ] **Phase 7: Email Notifications** - Transactional emails for all lifecycle events
 - [ ] **Phase 8: Operations** - Reconciliation, audit logging, CRM-ready schema
@@ -108,12 +108,12 @@ Plans:
 **Plans**: 6 plans in 4 waves
 
 Plans:
-- [ ] 05-01-PLAN.md - Schema updates, env config, and company checkout flow (Wave 1)
-- [ ] 05-02-PLAN.md - Team dashboard with seat view (Wave 2)
-- [ ] 05-03-PLAN.md - Invite token generation and management (Wave 2)
-- [ ] 05-04-PLAN.md - Invite claim flow with Discord OAuth (Wave 3)
-- [ ] 05-05-PLAN.md - Seat revocation with immediate kick (Wave 4)
-- [ ] 05-06-PLAN.md - Mid-subscription seat additions (Wave 4)
+- [x] 05-01-PLAN.md - Schema updates, env config, and company checkout flow (Wave 1)
+- [x] 05-02-PLAN.md - Team dashboard with seat view (Wave 2)
+- [x] 05-03-PLAN.md - Invite token generation and management (Wave 2)
+- [x] 05-04-PLAN.md - Invite claim flow with Discord OAuth (Wave 3)
+- [x] 05-05-PLAN.md - Seat revocation with immediate kick (Wave 4)
+- [x] 05-06-PLAN.md - Mid-subscription seat additions (Wave 4)
 
 ### Phase 6: Billing Failure
 **Goal**: Payment failures restrict access gracefully; recovery restores access
@@ -176,7 +176,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Discord Integration | 4/4 | Complete | 2026-01-18 |
 | 3. Individual Subscription | 3/3 | Complete | 2026-01-18 |
 | 4. Introduction Requirement | 3/3 | Complete | 2026-01-18 |
-| 5. Team Management | 0/6 | Not started | - |
+| 5. Team Management | 6/6 | Complete | 2026-01-19 |
 | 6. Billing Failure | 0/3 | Not started | - |
 | 7. Email Notifications | 0/4 | Not started | - |
 | 8. Operations | 0/2 | Not started | - |
@@ -189,4 +189,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 4 planned: 2026-01-18*
 *Phase 4 complete: 2026-01-18*
 *Phase 5 planned: 2026-01-19*
+*Phase 5 complete: 2026-01-19*
 *Total requirements: 41 | Total phases: 8 | Total plans: 28*

@@ -17,12 +17,12 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Payments
 
 - [x] **PAY-01**: User can purchase Individual Monthly subscription via Stripe Checkout
-- [ ] **PAY-02**: User can purchase Company plan with owner seat via Stripe Checkout
+- [x] **PAY-02**: User can purchase Company plan with owner seat via Stripe Checkout
 - [x] **PAY-03**: System receives and processes Stripe webhook events
 - [x] **PAY-04**: Webhook processing is idempotent (duplicate events are safely ignored)
 - [x] **PAY-05**: Webhook signature is verified before processing
-- [ ] **PAY-06**: Company admin can add more owner seats mid-subscription
-- [ ] **PAY-07**: Company admin can add more team seats mid-subscription
+- [x] **PAY-06**: Company admin can add more owner seats mid-subscription
+- [x] **PAY-07**: Company admin can add more team seats mid-subscription
 
 ### Discord Roles
 
@@ -45,14 +45,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Company/Team Management
 
-- [ ] **TEAM-01**: Company admin can view all claimed seats in dashboard
-- [ ] **TEAM-02**: Company admin can generate invite tokens for teammates
-- [ ] **TEAM-03**: Company admin can specify owner or team tier when generating invite
-- [ ] **TEAM-04**: Teammate can claim seat via invite token link
-- [ ] **TEAM-05**: Teammate claiming owner seat gets Owner role after introduction
-- [ ] **TEAM-06**: Teammate claiming team seat gets Member role after introduction
-- [ ] **TEAM-07**: Company admin can revoke a seat (removes user's access)
-- [ ] **TEAM-08**: Revoked seat becomes available for reallocation
+- [x] **TEAM-01**: Company admin can view all claimed seats in dashboard
+- [x] **TEAM-02**: Company admin can generate invite tokens for teammates
+- [x] **TEAM-03**: Company admin can specify owner or team tier when generating invite
+- [x] **TEAM-04**: Teammate can claim seat via invite token link
+- [x] **TEAM-05**: Teammate claiming owner seat gets Owner role after introduction
+- [x] **TEAM-06**: Teammate claiming team seat gets Member role after introduction
+- [x] **TEAM-07**: Company admin can revoke a seat (removes user's access)
+- [x] **TEAM-08**: Revoked seat becomes available for reallocation
 
 ### Billing Failure
 
@@ -124,12 +124,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 2 | Complete |
 | PAY-01 | Phase 3 | Pending |
-| PAY-02 | Phase 5 | Pending |
+| PAY-02 | Phase 5 | Complete |
 | PAY-03 | Phase 1 | Complete |
 | PAY-04 | Phase 1 | Complete |
 | PAY-05 | Phase 1 | Complete |
-| PAY-06 | Phase 5 | Pending |
-| PAY-07 | Phase 5 | Pending |
+| PAY-06 | Phase 5 | Complete |
+| PAY-07 | Phase 5 | Complete |
 | ROLE-01 | Phase 3 | Pending |
 | ROLE-02 | Phase 4 | Complete |
 | ROLE-03 | Phase 4 | Complete |
@@ -143,14 +143,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ONB-05 | Phase 3 | Pending |
 | ONB-06 | Phase 4 | Complete |
 | ONB-07 | Phase 4 | Complete |
-| TEAM-01 | Phase 5 | Pending |
-| TEAM-02 | Phase 5 | Pending |
-| TEAM-03 | Phase 5 | Pending |
-| TEAM-04 | Phase 5 | Pending |
-| TEAM-05 | Phase 5 | Pending |
-| TEAM-06 | Phase 5 | Pending |
-| TEAM-07 | Phase 5 | Pending |
-| TEAM-08 | Phase 5 | Pending |
+| TEAM-01 | Phase 5 | Complete |
+| TEAM-02 | Phase 5 | Complete |
+| TEAM-03 | Phase 5 | Complete |
+| TEAM-04 | Phase 5 | Complete |
+| TEAM-05 | Phase 5 | Complete |
+| TEAM-06 | Phase 5 | Complete |
+| TEAM-07 | Phase 5 | Complete |
+| TEAM-08 | Phase 5 | Complete |
 | BILL-01 | Phase 6 | Pending |
 | BILL-02 | Phase 6 | Pending |
 | BILL-03 | Phase 6 | Pending |
@@ -174,4 +174,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2025-01-18*
-*Last updated: 2025-01-18 after roadmap creation*
+*Last updated: 2026-01-19 after Phase 5 completion*

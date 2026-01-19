@@ -158,11 +158,19 @@ async function promoteAfterIntro(
   messageId: string
 ): Promise<void> {
   // Determine target role based on seatTier
-  // OWNER -> Lord, INDIVIDUAL/TEAM_MEMBER -> Knight
+  // Per CONTEXT.md: Individual = Owner > Team (hierarchy)
+  // INDIVIDUAL -> Lord (owner-level access)
+  // OWNER -> Lord (full access)
+  // TEAM_MEMBER -> Knight (member access)
   const targetRole =
-    member.seatTier === 'OWNER'
+    member.seatTier === 'OWNER' || member.seatTier === 'INDIVIDUAL'
       ? ROLE_CONFIG.LORD.name
       : ROLE_CONFIG.KNIGHT.name;
+
+  logger.debug(
+    { memberId: member.id, seatTier: member.seatTier, targetRole },
+    'Determining promotion role based on seatTier'
+  );
 
   // Swap roles (fire-and-forget with retry)
   swapRoleAsync(guildMember.id, ROLE_CONFIG.SQUIRE.name, targetRole);

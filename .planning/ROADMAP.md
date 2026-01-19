@@ -49,13 +49,13 @@ Plans:
   2. User session persists across browser refresh
   3. User can request and complete magic link login via email
   4. Bot is online and can assign/remove roles from members
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 02-01: Discord OAuth flow implementation
-- [ ] 02-02: Session management (JWT tokens)
-- [ ] 02-03: Magic link authentication
-- [ ] 02-04: Discord bot setup with role management capability
+- [ ] 02-01-PLAN.md - Session infrastructure with JWT tokens (Wave 1)
+- [ ] 02-02-PLAN.md - Discord bot with role management (Wave 1)
+- [ ] 02-03-PLAN.md - Discord OAuth flow implementation (Wave 2)
+- [ ] 02-04-PLAN.md - Magic link authentication (Wave 2)
 
 ### Phase 3: Individual Subscription
 **Goal**: Individual users can pay, claim access, and receive their initial Discord role
@@ -172,7 +172,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
-| 2. Discord Integration | 0/4 | Not started | - |
+| 2. Discord Integration | 0/4 | Planned | - |
 | 3. Individual Subscription | 0/3 | Not started | - |
 | 4. Introduction Requirement | 0/3 | Not started | - |
 | 5. Team Management | 0/5 | Not started | - |
@@ -183,4 +183,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 ---
 *Roadmap created: 2025-01-18*
 *Phase 1 planned: 2025-01-18*
+*Phase 2 planned: 2026-01-18*
 *Total requirements: 41 | Total phases: 8 | Total plans: 27*

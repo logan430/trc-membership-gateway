@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 7 of 8 (Email Notifications)
-Plan: 3 of 3 in current phase
+Plan: 4 of 4 in current phase
 Status: Phase complete
-Last activity: 2026-01-19 - Completed 07-03-PLAN.md (Email Sending Integration)
+Last activity: 2026-01-19 - Completed 07-04-PLAN.md (Seat Invite Emails)
 
-Progress: [████████░░] 83% (25/30 plans complete)
+Progress: [████████░░] 87% (27/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 25
-- Average duration: 4.9 min
-- Total execution time: 122 min
+- Total plans completed: 27
+- Average duration: 4.7 min
+- Total execution time: 127 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [████████░░] 83% (25/30 plans complete)
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
-| 7-Email Notifications | 3/3 | 12 min | 4 min |
+| 7-Email Notifications | 4/4 | 17 min | 4.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-03 (3 min), 06-04 (5 min), 07-01 (4 min), 07-02 (4 min), 07-03 (4 min)
+- Last 5 plans: 07-01 (4 min), 07-02 (4 min), 07-03 (4 min), 07-04 (5 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -129,6 +129,9 @@ Recent decisions affecting current work:
 | 07-03 | Fire-and-forget billing emails | Use .catch() pattern for billing emails, don't block webhooks |
 | 07-03 | Owners only for team emails | isPrimaryOwner or isTeamAdmin get billing emails |
 | 07-03 | Fresh portal URL per email | Generate Stripe billing portal session for each failure email |
+| 07-04 | Optional email field on invites | Admin can still share link manually per CONTEXT.md |
+| 07-04 | Fire-and-forget invite email | Don't fail invite creation if email fails |
+| 07-04 | Full TRC context in invite | Recipients may not know The Revenue Council |
 
 ### Pending Todos
 
@@ -151,6 +154,7 @@ Email notifications progress:
 - [x] 07-01: Email provider infrastructure
 - [x] 07-02: Email templates
 - [x] 07-03: Email sending integration
+- [x] 07-04: Seat invite emails
 
 **Phase 7 COMPLETE**
 
@@ -179,9 +183,16 @@ Delivered (07-03):
 - Recovery email wired to handlePaymentRecovery and handleTeamPaymentRecovery
 - Billing portal URL generation for failure emails
 
+Delivered (07-04):
+- inviteeEmail field on PendingInvite model
+- seatInviteEmailTemplate with full TRC context
+- sendSeatInviteEmail function
+- Optional email field on POST /team/invites
+- Fire-and-forget email sending on invite creation
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 07-03-PLAN.md (Phase 7 Complete)
+Stopped at: Completed 07-04-PLAN.md (Phase 7 Complete)
 Resume file: None
 Next: Phase 8 - Polish & Launch

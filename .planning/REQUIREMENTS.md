@@ -18,9 +18,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **PAY-01**: User can purchase Individual Monthly subscription via Stripe Checkout
 - [ ] **PAY-02**: User can purchase Company plan with owner seat via Stripe Checkout
-- [ ] **PAY-03**: System receives and processes Stripe webhook events
-- [ ] **PAY-04**: Webhook processing is idempotent (duplicate events are safely ignored)
-- [ ] **PAY-05**: Webhook signature is verified before processing
+- [x] **PAY-03**: System receives and processes Stripe webhook events
+- [x] **PAY-04**: Webhook processing is idempotent (duplicate events are safely ignored)
+- [x] **PAY-05**: Webhook signature is verified before processing
 - [ ] **PAY-06**: Company admin can add more owner seats mid-subscription
 - [ ] **PAY-07**: Company admin can add more team seats mid-subscription
 
@@ -73,10 +73,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Operations
 
-- [ ] **OPS-01**: All Stripe events are logged with event ID for deduplication
+- [x] **OPS-01**: All Stripe events are logged with event ID for deduplication
 - [ ] **OPS-02**: Reconciliation job runs daily to detect drift between Stripe and Discord
 - [ ] **OPS-03**: Reconciliation job fixes role mismatches automatically
-- [ ] **OPS-04**: Database schema supports future CRM export (all relevant fields captured)
+- [x] **OPS-04**: Database schema supports future CRM export (all relevant fields captured)
 
 ## v2 Requirements
 
@@ -125,9 +125,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-04 | Phase 2 | Pending |
 | PAY-01 | Phase 3 | Pending |
 | PAY-02 | Phase 5 | Pending |
-| PAY-03 | Phase 1 | Pending |
-| PAY-04 | Phase 1 | Pending |
-| PAY-05 | Phase 1 | Pending |
+| PAY-03 | Phase 1 | Complete |
+| PAY-04 | Phase 1 | Complete |
+| PAY-05 | Phase 1 | Complete |
 | PAY-06 | Phase 5 | Pending |
 | PAY-07 | Phase 5 | Pending |
 | ROLE-01 | Phase 3 | Pending |
@@ -162,10 +162,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMAIL-04 | Phase 7 | Pending |
 | EMAIL-05 | Phase 7 | Pending |
 | EMAIL-06 | Phase 7 | Pending |
-| OPS-01 | Phase 1 | Pending |
+| OPS-01 | Phase 1 | Complete |
 | OPS-02 | Phase 8 | Pending |
 | OPS-03 | Phase 8 | Pending |
-| OPS-04 | Phase 1 | Pending |
+| OPS-04 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 41 total

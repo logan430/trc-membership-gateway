@@ -12,7 +12,7 @@ This roadmap delivers a Stripe-backed membership gateway for The Revenue Council
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Database schema, Stripe webhook infrastructure, project skeleton
+- [x] **Phase 1: Foundation** - Database schema, Stripe webhook infrastructure, project skeleton
 - [ ] **Phase 2: Discord Integration** - OAuth linking, bot setup, role management core
 - [ ] **Phase 3: Individual Subscription** - Stripe Checkout, claim flow, basic role assignment
 - [ ] **Phase 4: Introduction Requirement** - Introduction monitoring, role promotion to Member/Owner
@@ -37,8 +37,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md - Project skeleton and environment configuration (Wave 1)
-- [ ] 01-02-PLAN.md - Database schema and Prisma setup (Wave 1)
-- [ ] 01-03-PLAN.md - Stripe webhook handler with signature verification and idempotency (Wave 2)
+- [x] 01-02-PLAN.md - Database schema and Prisma setup (Wave 1)
+- [x] 01-03-PLAN.md - Stripe webhook handler with signature verification and idempotency (Wave 2)
 
 ### Phase 2: Discord Integration
 **Goal**: Users can link their Discord account and the bot can manage roles
@@ -171,7 +171,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/3 | In progress | - |
+| 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Discord Integration | 0/4 | Not started | - |
 | 3. Individual Subscription | 0/3 | Not started | - |
 | 4. Introduction Requirement | 0/3 | Not started | - |

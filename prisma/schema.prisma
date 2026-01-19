@@ -64,6 +64,7 @@ model Member {
   introCompleted      Boolean            @default(false)
   introCompletedAt    DateTime?
   introMessageId      String?            // Discord message ID of introduction
+  lastGuidanceDmAt    DateTime?          // Rate-limiting for too-short intro guidance DMs
 
   // Team membership (for company seats)
   team                Team?              @relation(fields: [teamId], references: [id])

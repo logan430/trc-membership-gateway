@@ -1,0 +1,361 @@
+/* The Gatekeeper - Medieval/Guild Theme Styles */
+
+:root {
+  --bg-dark: #1a1a2e;
+  --bg-card: #16213e;
+  --bg-section: #0f0f1a;
+  --gold: #d4af37;
+  --gold-light: #f1c40f;
+  --gold-dark: #b8960c;
+  --cream: #f5f0e1;
+  --text: #e8e8e8;
+  --text-muted: #a0a0a0;
+  --border-subtle: rgba(212, 175, 55, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Crimson Text', Georgia, serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+h1, h2, h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* Header - The Gatekeeper */
+.gatekeeper-header {
+  text-align: center;
+  padding: 5rem 2rem 4rem;
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.shield-icon {
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.gatekeeper-header h1 {
+  font-size: 3rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.tagline {
+  font-size: 1.25rem;
+  color: var(--cream);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+/* Main content */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* About Section */
+.about {
+  text-align: center;
+  padding: 4rem 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.about p {
+  font-size: 1.15rem;
+  color: var(--cream);
+  margin-bottom: 1rem;
+}
+
+.about p:last-child {
+  margin-bottom: 0;
+}
+
+/* Pricing Section */
+.pricing {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.pricing h2 {
+  font-size: 2rem;
+  margin-bottom: 3rem;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2);
+}
+
+.card-ribbon {
+  position: absolute;
+  top: 1rem;
+  right: -0.5rem;
+  background: var(--gold);
+  color: var(--bg-dark);
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card-ribbon::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  right: 0;
+  border-left: 0.5rem solid transparent;
+  border-top: 0.5rem solid var(--gold-dark);
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+}
+
+.card h3 {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.card-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.price {
+  font-family: 'Cinzel', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.price span {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.features li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--cream);
+}
+
+.features li::before {
+  content: '\2726';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+}
+
+/* CTA Buttons */
+.cta-button {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--bg-dark);
+  padding: 1rem 2rem;
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cta-button:hover {
+  background: var(--gold-light);
+  transform: scale(1.02);
+}
+
+.cta-button:active {
+  transform: scale(0.98);
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-section);
+  border-radius: 12px;
+  margin: 2rem 0 4rem;
+  border: 1px solid var(--border-subtle);
+}
+
+.cta-section h2 {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.cta-section p {
+  color: var(--cream);
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.cta-large {
+  padding: 1.25rem 3rem;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+footer {
+  background: var(--bg-section);
+  border-top: 1px solid var(--border-subtle);
+  padding: 2rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.copyright {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--gold);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gatekeeper-header h1 {
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .tagline {
+    font-size: 1rem;
+  }
+
+  .about h2,
+  .pricing h2,
+  .cta-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .pricing-cards {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .card {
+    padding: 2rem 1.5rem;
+  }
+
+  .price {
+    font-size: 2.5rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
+
+  .gatekeeper-header {
+    padding: 3rem 1rem 2.5rem;
+  }
+
+  .gatekeeper-header h1 {
+    font-size: 1.75rem;
+  }
+
+  main {
+    padding: 0 1rem;
+  }
+
+  .about,
+  .pricing {
+    padding: 3rem 0;
+  }
+
+  .cta-section {
+    padding: 2.5rem 1rem;
+    margin: 1rem 0 2rem;
+  }
+}

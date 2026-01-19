@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 8 - Operations (Next)
+**Current focus:** Phase 8 - Operations
 
 ## Current Position
 
-Phase: 7 of 8 (Email Notifications)
-Plan: 4 of 4 in current phase
-Status: Phase complete, verified ✓
-Last activity: 2026-01-19 - Completed Phase 7 execution and verification
+Phase: 8 of 8 (Operations)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-19 - Completed 08-01-PLAN.md
 
-Progress: [████████░░] 87% (27/31 plans complete)
+Progress: [█████████░] 90% (28/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
-- Average duration: 4.7 min
-- Total execution time: 127 min
+- Total plans completed: 28
+- Average duration: 4.6 min
+- Total execution time: 130 min
 
 **By Phase:**
 
@@ -34,9 +34,10 @@ Progress: [████████░░] 87% (27/31 plans complete)
 | 5-Team | 6/6 | 26 min | 4.3 min |
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
 | 7-Email Notifications | 4/4 | 17 min | 4.3 min |
+| 8-Operations | 1/2 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-01 (4 min), 07-02 (4 min), 07-03 (4 min), 07-04 (5 min)
+- Last 5 plans: 07-02 (4 min), 07-03 (4 min), 07-04 (5 min), 08-01 (3 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -132,6 +133,7 @@ Recent decisions affecting current work:
 | 07-04 | Optional email field on invites | Admin can still share link manually per CONTEXT.md |
 | 07-04 | Fire-and-forget invite email | Don't fail invite creation if email fails |
 | 07-04 | Full TRC context in invite | Recipients may not know The Revenue Council |
+| 08-01 | node-cron for reconciliation | Lightweight, timezone-aware, consistent with billing scheduler pattern |
 
 ### Pending Todos
 
@@ -148,51 +150,25 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
 
-## Phase 7 Progress
+## Phase 8 Progress
 
-Email notifications progress:
-- [x] 07-01: Email provider infrastructure
-- [x] 07-02: Email templates
-- [x] 07-03: Email sending integration
-- [x] 07-04: Seat invite emails
+Operations reconciliation progress:
+- [x] 08-01: Reconciliation infrastructure
+- [ ] 08-02: Drift detection logic (Next)
 
-**Phase 7 COMPLETE**
-
-Delivered (07-01):
-- EMAIL_PROVIDER env var with 'console' and 'resend' options
-- RESEND_API_KEY, EMAIL_FROM_ADDRESS, EMAIL_REPLY_TO env vars
-- EmailProvider interface, EmailMessage, EmailResult types
-- ConsoleProvider for development logging
-- ResendProvider for production delivery via Resend API
-- createEmailProvider factory function
-- emailProvider singleton in send.ts
-
-Delivered (07-02):
-- welcomeEmailTemplate with medieval greeting and claim CTA
-- claimReminderEmailTemplate with tone variation (standard/cheeky)
-- sendWelcomeEmail and sendClaimReminderEmail functions
-- Welcome email on individual and company checkout.session.completed
-- CLAIM_REMINDER_SCHEDULE (48h, 7d, 30d, monthly x6)
-- processClaimReminders() integrated into billing scheduler
-
-Delivered (07-03):
-- paymentFailureEmailTemplate with portal URL and timeline
-- paymentRecoveredEmailTemplate with debtor state variation
-- sendPaymentFailureEmail and sendPaymentRecoveredEmail functions
-- Failure email wired to handlePaymentFailure and handleTeamPaymentFailure
-- Recovery email wired to handlePaymentRecovery and handleTeamPaymentRecovery
-- Billing portal URL generation for failure emails
-
-Delivered (07-04):
-- inviteeEmail field on PendingInvite model
-- seatInviteEmailTemplate with full TRC context
-- sendSeatInviteEmail function
-- Optional email field on POST /team/invites
-- Fire-and-forget email sending on invite creation
+Delivered (08-01):
+- ReconciliationRun model in prisma schema
+- RECONCILIATION_AUTO_FIX, RECONCILIATION_PAUSED, RECONCILIATION_TIMEZONE, RECONCILIATION_HOUR env vars
+- ADMIN_EMAIL env var for reports
+- node-cron@4.2.1 for scheduling
+- DriftType, DriftSeverity, DriftIssue types
+- ReconciliationResult, ReconciliationOptions interfaces
+- startReconciliationScheduler() function
+- Re-exported types from src/reconciliation/index.ts
 
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Phase 7 complete and verified
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
-Next: Phase 8 - Operations
+Next: 08-02-PLAN.md (Drift detection logic)

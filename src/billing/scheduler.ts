@@ -1,5 +1,6 @@
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
+import { env } from '../config/env.js';
 import {
   moveToDebtorState,
   moveTeamToDebtorState,
@@ -11,6 +12,7 @@ import {
   sendBillingReminderDm,
   sendFinalWarningDm,
 } from './notifications.js';
+import { sendClaimReminderEmail } from '../email/send.js';
 
 // Polling interval: 5 minutes
 const POLL_INTERVAL_MS = 5 * 60 * 1000;
@@ -34,6 +36,19 @@ const NOTIFICATION_SCHEDULE = [
   { offsetHours: 48 + 29.5 * 24, key: '12h_before_kick', hoursRemaining: 12 },
 ] as const;
 
+// Claim reminder schedule: for members who paid but haven't claimed Discord
+// Per CONTEXT.md: 48h, 7d, 30d, then monthly up to 6 months
+const CLAIM_REMINDER_SCHEDULE = [
+  { offsetHours: 48, key: 'claim_48h' },
+  { offsetHours: 7 * 24, key: 'claim_7d' },
+  { offsetHours: 30 * 24, key: 'claim_30d' },
+  { offsetHours: 60 * 24, key: 'claim_60d' },
+  { offsetHours: 90 * 24, key: 'claim_90d' },
+  { offsetHours: 120 * 24, key: 'claim_120d' },
+  { offsetHours: 150 * 24, key: 'claim_150d' },
+  { offsetHours: 180 * 24, key: 'claim_180d' },
+] as const;
+
 /**
  * Process a single poll cycle for billing state management
  */
@@ -41,6 +56,7 @@ async function processBillingPoll(): Promise<{
   graceExpired: number;
   debtorExpired: number;
   notificationsSent: number;
+  claimRemindersSent: number;
 }> {
   const now = new Date();
   let graceExpired = 0;
@@ -196,7 +212,84 @@ async function processBillingPoll(): Promise<{
     }
   }
 
-  return { graceExpired, debtorExpired, notificationsSent };
+  // 6. Process claim reminders for unclaimed Discord members
+  const claimRemindersSent = await processClaimReminders();
+
+  return { graceExpired, debtorExpired, notificationsSent, claimRemindersSent };
+}
+
+/**
+ * Process claim reminders for members who paid but haven't claimed Discord
+ * Sends email reminders at scheduled intervals (48h, 7d, 30d, monthly)
+ * Returns count of reminders sent
+ */
+async function processClaimReminders(): Promise<number> {
+  const now = new Date();
+  let remindersSent = 0;
+
+  // Find members who:
+  // - Have active subscription (paid)
+  // - Have email address
+  // - Do NOT have discordId (haven't claimed)
+  const unclaimedMembers = await prisma.member.findMany({
+    where: {
+      subscriptionStatus: 'ACTIVE',
+      email: { not: null },
+      discordId: null,
+    },
+  });
+
+  for (const member of unclaimedMembers) {
+    if (!member.email || !member.createdAt) continue;
+
+    const purchaseTime = member.createdAt.getTime();
+    const elapsedHours = (now.getTime() - purchaseTime) / (1000 * 60 * 60);
+
+    // Check which reminders should be sent
+    for (const reminder of CLAIM_REMINDER_SCHEDULE) {
+      if (elapsedHours >= reminder.offsetHours) {
+        // Check if already sent
+        if (!member.sentBillingNotifications.includes(reminder.key)) {
+          // Re-check discordId right before sending (prevent race with claim)
+          const currentMember = await prisma.member.findUnique({
+            where: { id: member.id },
+            select: { discordId: true },
+          });
+
+          if (currentMember?.discordId) {
+            // Member claimed since query - skip this member entirely
+            break;
+          }
+
+          const daysSince = Math.floor(reminder.offsetHours / 24);
+          const claimUrl = `${env.APP_URL}/claim`;
+
+          try {
+            const result = await sendClaimReminderEmail(member.email, claimUrl, daysSince);
+
+            // Mark as sent regardless of success (prevent spam on retry if email fails)
+            await prisma.member.update({
+              where: { id: member.id },
+              data: {
+                sentBillingNotifications: { push: reminder.key },
+              },
+            });
+
+            if (result.success) {
+              remindersSent++;
+            }
+          } catch (error) {
+            logger.error(
+              { memberId: member.id, reminderKey: reminder.key, error },
+              'Failed to send claim reminder email'
+            );
+          }
+        }
+      }
+    }
+  }
+
+  return remindersSent;
 }
 
 /**
@@ -205,15 +298,16 @@ async function processBillingPoll(): Promise<{
  * - Grace period expirations (move to Debtor state)
  * - Debtor state expirations (kick from server)
  * - Notification cadence (send DMs at scheduled intervals)
+ * - Claim reminders (email reminders for unclaimed Discord)
  */
 export function startBillingScheduler(): void {
   logger.info('Starting billing scheduler (5-minute poll interval)');
 
   // Run initial poll immediately
   processBillingPoll()
-    .then(({ graceExpired, debtorExpired, notificationsSent }) => {
+    .then(({ graceExpired, debtorExpired, notificationsSent, claimRemindersSent }) => {
       logger.info(
-        { graceExpired, debtorExpired, notificationsSent },
+        { graceExpired, debtorExpired, notificationsSent, claimRemindersSent },
         'Initial billing poll complete'
       );
     })
@@ -224,12 +318,12 @@ export function startBillingScheduler(): void {
   // Set up recurring poll
   setInterval(async () => {
     try {
-      const { graceExpired, debtorExpired, notificationsSent } = await processBillingPoll();
+      const { graceExpired, debtorExpired, notificationsSent, claimRemindersSent } = await processBillingPoll();
 
       // Only log if something happened
-      if (graceExpired > 0 || debtorExpired > 0 || notificationsSent > 0) {
+      if (graceExpired > 0 || debtorExpired > 0 || notificationsSent > 0 || claimRemindersSent > 0) {
         logger.info(
-          { graceExpired, debtorExpired, notificationsSent },
+          { graceExpired, debtorExpired, notificationsSent, claimRemindersSent },
           'Billing poll processed state transitions'
         );
       } else {

@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { randomUUID } from 'crypto';
 import { parse as parseCookie, serialize as serializeCookie } from 'cookie';
+import { z } from 'zod';
+import Stripe from 'stripe';
 import {
   verifyToken,
   createAccessToken,
@@ -18,11 +20,156 @@ import {
   exchangeCode,
   fetchDiscordUser,
 } from '../auth/discord-oauth.js';
+import { hashPassword, verifyPassword } from '../lib/password.js';
 import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
 
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
 export const authRouter = Router();
+
+// Validation schemas
+const signupSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8, 'Password must be at least 8 characters').max(128, 'Password too long'),
+});
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+/**
+ * POST /auth/signup
+ * Create a new account with email and password
+ * Returns same success response whether email exists or not (anti-enumeration)
+ */
+authRouter.post('/signup', async (req: Request, res: Response): Promise<void> => {
+  // Validate input
+  const parsed = signupSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0].message });
+    return;
+  }
+
+  const { email, password } = parsed.data;
+
+  // Check if email already exists
+  const existingMember = await prisma.member.findUnique({
+    where: { email },
+  });
+
+  if (existingMember) {
+    // Anti-enumeration: return success but don't create duplicate
+    // In production, you might want to send "account exists" email instead
+    logger.debug({ email }, 'Signup attempt for existing email');
+
+    // Create tokens for existing user (acts like login)
+    const accessToken = await createAccessToken(existingMember.id);
+    const refreshToken = await createRefreshToken(existingMember.id, true);
+
+    res.setHeader(
+      'Set-Cookie',
+      serializeCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS)
+    );
+
+    res.json({
+      accessToken,
+      expiresIn: 900,
+    });
+    return;
+  }
+
+  // Hash password
+  const passwordHash = await hashPassword(password);
+
+  // Create Stripe customer
+  const stripeCustomer = await stripe.customers.create({
+    email,
+    metadata: {
+      source: 'signup',
+    },
+  });
+
+  // Create member
+  const member = await prisma.member.create({
+    data: {
+      email,
+      passwordHash,
+      stripeCustomerId: stripeCustomer.id,
+      seatTier: 'INDIVIDUAL',
+    },
+  });
+
+  // Create tokens
+  const accessToken = await createAccessToken(member.id);
+  const refreshToken = await createRefreshToken(member.id, true);
+
+  // Set refresh cookie
+  res.setHeader(
+    'Set-Cookie',
+    serializeCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS)
+  );
+
+  logger.info({ memberId: member.id, email }, 'New user signup successful');
+
+  res.json({
+    accessToken,
+    expiresIn: 900,
+  });
+});
+
+/**
+ * POST /auth/login
+ * Authenticate with email and password
+ * Uses timing-safe verification to prevent timing attacks
+ */
+authRouter.post('/login', async (req: Request, res: Response): Promise<void> => {
+  // Validate input
+  const parsed = loginSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0].message });
+    return;
+  }
+
+  const { email, password } = parsed.data;
+
+  // Find member by email
+  const member = await prisma.member.findUnique({
+    where: { email },
+  });
+
+  // Always verify password to prevent timing attacks
+  // Use a dummy hash if member not found to maintain constant time
+  const dummyHash = '$argon2id$v=19$m=19456,t=2,p=1$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+  const hashToVerify = member?.passwordHash ?? dummyHash;
+
+  const isValid = await verifyPassword(hashToVerify, password);
+
+  // Return generic error for both invalid email and password
+  if (!member || !member.passwordHash || !isValid) {
+    res.status(401).json({ error: 'Invalid credentials' });
+    return;
+  }
+
+  // Create tokens
+  const accessToken = await createAccessToken(member.id);
+  const refreshToken = await createRefreshToken(member.id, true);
+
+  // Set refresh cookie
+  res.setHeader(
+    'Set-Cookie',
+    serializeCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS)
+  );
+
+  logger.info({ memberId: member.id, email }, 'User login successful');
+
+  res.json({
+    accessToken,
+    expiresIn: 900,
+  });
+});
 
 /**
  * POST /auth/refresh

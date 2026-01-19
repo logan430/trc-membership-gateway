@@ -87,17 +87,11 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
         break;
       }
 
-      // Retrieve session with expanded subscription data
+      // Retrieve session with expanded subscription data (includes items for seat info)
       const expandedSession = await stripe.checkout.sessions.retrieve(
         session.id,
-        { expand: ['subscription'] }
+        { expand: ['subscription', 'subscription.items'] }
       );
-
-      const memberId = expandedSession.client_reference_id;
-      if (!memberId) {
-        logger.error({ sessionId: session.id }, 'Missing client_reference_id on checkout session');
-        break;
-      }
 
       const subscription = expandedSession.subscription;
       if (!subscription || typeof subscription === 'string') {
@@ -111,19 +105,87 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
         ? new Date(firstItem.current_period_end * 1000)
         : null;
 
-      // Update member subscription status
-      await prisma.member.update({
-        where: { id: memberId },
-        data: {
-          subscriptionStatus: 'ACTIVE',
-          currentPeriodEnd,
-        },
-      });
+      // Check if this is a company checkout (has planType in subscription metadata)
+      const planType = subscription.metadata?.planType;
 
-      logger.info(
-        { memberId, subscriptionId: subscription.id, currentPeriodEnd: firstItem?.current_period_end },
-        'Checkout completed, subscription activated'
-      );
+      if (planType === 'company') {
+        // COMPANY CHECKOUT: Team subscription
+        const teamId = subscription.metadata?.teamId;
+        const memberId = subscription.metadata?.memberId;
+
+        if (!teamId || !memberId) {
+          logger.error(
+            { sessionId: session.id, teamId, memberId },
+            'Missing teamId or memberId in company checkout metadata'
+          );
+          break;
+        }
+
+        // Find owner and team seat subscription items by price ID
+        const ownerSeatItem = subscription.items?.data?.find(
+          item => item.price.id === env.STRIPE_OWNER_SEAT_PRICE_ID
+        );
+        const teamSeatItem = subscription.items?.data?.find(
+          item => item.price.id === env.STRIPE_TEAM_SEAT_PRICE_ID
+        );
+
+        // Update Team record with subscription details
+        await prisma.team.update({
+          where: { id: teamId },
+          data: {
+            stripeSubscriptionId: subscription.id,
+            subscriptionStatus: 'ACTIVE',
+            // Sync seat counts from Stripe (source of truth)
+            ownerSeatCount: ownerSeatItem?.quantity ?? 0,
+            teamSeatCount: teamSeatItem?.quantity ?? 0,
+          },
+        });
+
+        // Update purchaser Member record (becomes primary owner)
+        await prisma.member.update({
+          where: { id: memberId },
+          data: {
+            teamId,
+            isPrimaryOwner: true,
+            isTeamAdmin: true,
+            seatTier: 'OWNER',
+            subscriptionStatus: 'ACTIVE',
+            currentPeriodEnd,
+          },
+        });
+
+        logger.info(
+          {
+            teamId,
+            memberId,
+            subscriptionId: subscription.id,
+            ownerSeats: ownerSeatItem?.quantity,
+            teamSeats: teamSeatItem?.quantity,
+          },
+          'Company checkout completed, team subscription activated'
+        );
+      } else {
+        // INDIVIDUAL CHECKOUT: Single member subscription
+        const memberId = expandedSession.client_reference_id;
+        if (!memberId) {
+          logger.error({ sessionId: session.id }, 'Missing client_reference_id on checkout session');
+          break;
+        }
+
+        // Update member subscription status
+        await prisma.member.update({
+          where: { id: memberId },
+          data: {
+            subscriptionStatus: 'ACTIVE',
+            currentPeriodEnd,
+          },
+        });
+
+        logger.info(
+          { memberId, subscriptionId: subscription.id, currentPeriodEnd: firstItem?.current_period_end },
+          'Individual checkout completed, subscription activated'
+        );
+      }
       break;
     }
 

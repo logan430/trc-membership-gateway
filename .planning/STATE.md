@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 2 - Discord Integration (Complete)
+**Current focus:** Phase 3 - Individual Subscription (In Progress)
 
 ## Current Position
 
-Phase: 2 of 8 (Discord Integration)
-Plan: 4 of 4 in current phase
-Status: Phase complete
-Last activity: 2026-01-18 - Completed 02-04-PLAN.md
+Phase: 3 of 8 (Individual Subscription)
+Plan: 3 of 5 in current phase
+Status: In progress
+Last activity: 2026-01-19 - Completed 03-03-PLAN.md
 
-Progress: [███████░░░] 37%
+Progress: [████████░░] 42%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 6 min
-- Total execution time: 42 min
+- Total execution time: 46 min
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [███████░░░] 37%
 |-------|-------|-------|----------|
 | 1-Foundation | 3/3 | 24 min | 8 min |
 | 2-Discord | 4/4 | 18 min | 4.5 min |
+| 3-Individual | 1/5 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (12 min), 02-01 (8 min), 02-02 (5 min), 02-03 (6 min), 02-04 (5 min)
-- Trend: Fast execution, averaging under 5 min per plan in Phase 2
+- Last 5 plans: 02-01 (8 min), 02-02 (5 min), 02-03 (6 min), 02-04 (5 min), 03-03 (4 min)
+- Trend: Fast execution, consistently under 5 min per plan
 
 *Updated after each plan completion*
 
@@ -63,6 +64,9 @@ Recent decisions affecting current work:
 | 02-04 | 5-minute magic link expiry | Short-lived for security |
 | 02-04 | Same response for email exists/not | Anti-enumeration protection |
 | 02-04 | Token in URL fragment | Client-only access, not sent to server |
+| 03-03 | Medieval theme: Cinzel + Crimson Text | Consistent with "Revenue Council" branding |
+| 03-03 | Dark (#1a1a2e) + gold (#d4af37) palette | Medieval guild aesthetic |
+| 03-03 | Static files before routes | Named routes take precedence |
 
 ### Pending Todos
 
@@ -73,33 +77,24 @@ None.
 - Stripe CLI not installed - webhook signature testing pending user setup
 - Discord bot requires user setup (Developer Portal, bot token, guild invite)
 
-## Phase 2 Progress
+## Phase 3 Progress
 
-Discord integration progress:
-- [x] 02-01: Session Infrastructure (JWT tokens, auth middleware)
-- [x] 02-02: Discord bot with role management
-- [x] 02-03: Discord OAuth routes (/auth/discord, /auth/callback, /auth/error)
-- [x] 02-04: Magic link authentication
+Individual subscription progress:
+- [ ] 03-01: Account creation and checkout endpoints
+- [ ] 03-02: User dashboard with subscription status
+- [x] 03-03: The Gatekeeper landing page
+- [ ] 03-04: Claim Discord flow
+- [ ] 03-05: Post-claim redirect to Discord
 
-Delivered:
-- JWT session utilities (jose library)
-- Auth middleware for protected routes
-- Token refresh endpoint with rotation
-- discord.js v14.25.1 bot with privileged intents
-- Medieval-themed roles (Squire, Knight, Lord, Debtor)
-- Role sync on startup (auto-create missing roles)
-- addRoleToMember / removeRoleFromMember functions
-- Admin alerting on role operation failures
-- Discord OAuth helpers (generateAuthUrl, exchangeCode, fetchDiscordUser)
-- GET /auth/discord (initiates OAuth with CSRF state)
-- GET /auth/callback (validates state, exchanges code, links Discord)
-- GET /auth/error (displays OAuth error info)
-- Magic link token generation and verification
-- POST /auth/magic-link/request endpoint
-- GET /auth/magic-link/verify endpoint
+Delivered (03-03):
+- GET / serves The Gatekeeper landing page
+- Medieval/guild visual theme with Cinzel/Crimson fonts
+- Side-by-side pricing cards ($99 Individual, $299 Company)
+- Static file serving via express.static()
+- Responsive design (cards stack on mobile)
 
 ## Session Continuity
 
-Last session: 2026-01-18
-Stopped at: Phase 2 execution complete, verification passed
+Last session: 2026-01-19
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None

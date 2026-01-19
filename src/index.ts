@@ -9,6 +9,7 @@ import { stripeWebhookRouter } from './webhooks/stripe.js';
 import { authRouter } from './routes/auth.js';
 import { checkoutRouter } from './routes/checkout.js';
 import { dashboardRouter } from './routes/dashboard.js';
+import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
 import { startBot } from './bot/client.js';
 
@@ -48,6 +49,9 @@ app.use('/checkout', checkoutRouter);
 
 // Dashboard routes (subscription status, claim availability)
 app.use('/dashboard', dashboardRouter);
+
+// Claim routes (Discord OAuth claim flow for paid users)
+app.use('/claim', claimRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

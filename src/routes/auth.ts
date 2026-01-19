@@ -7,6 +7,11 @@ import {
   REFRESH_COOKIE_NAME,
   REFRESH_COOKIE_OPTIONS,
 } from '../auth/session.js';
+import {
+  createMagicLinkToken,
+  verifyMagicLink,
+  buildMagicLinkUrl,
+} from '../auth/magic-link.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
 
@@ -79,4 +84,91 @@ authRouter.post('/logout', (_req: Request, res: Response): void => {
   );
 
   res.json({ success: true });
+});
+
+/**
+ * POST /auth/magic-link/request
+ * Request a magic link for passwordless login
+ * Returns same response whether email exists or not (security best practice)
+ */
+authRouter.post('/magic-link/request', async (req: Request, res: Response): Promise<void> => {
+  const { email } = req.body;
+
+  if (!email || typeof email !== 'string') {
+    res.status(400).json({ error: 'Email is required' });
+    return;
+  }
+
+  // Always return success message to prevent email enumeration
+  const successResponse = {
+    success: true,
+    message: 'If an account exists, a magic link has been sent',
+  };
+
+  // Look up member by email
+  const member = await prisma.member.findFirst({
+    where: { email },
+  });
+
+  if (!member) {
+    // Don't reveal that email doesn't exist
+    res.json(successResponse);
+    return;
+  }
+
+  // Create magic link token
+  const token = await createMagicLinkToken(email);
+  const magicLinkUrl = buildMagicLinkUrl(token);
+
+  // Log the magic link (Phase 7 will add email sending)
+  logger.info({ email, url: magicLinkUrl }, 'Magic link generated');
+
+  res.json(successResponse);
+});
+
+/**
+ * GET /auth/magic-link/verify
+ * Verify magic link token and create session
+ * Redirects to dashboard with access token on success
+ */
+authRouter.get('/magic-link/verify', async (req: Request, res: Response): Promise<void> => {
+  const token = req.query.token as string | undefined;
+
+  if (!token) {
+    res.status(400).json({ error: 'Token is required' });
+    return;
+  }
+
+  // Verify the magic link token
+  const payload = await verifyMagicLink(token);
+
+  if (!payload) {
+    res.status(401).json({ error: 'Invalid or expired magic link' });
+    return;
+  }
+
+  // Look up member by email
+  const member = await prisma.member.findFirst({
+    where: { email: payload.email },
+  });
+
+  if (!member) {
+    res.status(401).json({ error: 'Member not found' });
+    return;
+  }
+
+  // Create session tokens (rememberMe = true for magic link users)
+  const accessToken = await createAccessToken(member.id);
+  const refreshToken = await createRefreshToken(member.id, true);
+
+  // Set refresh cookie
+  res.setHeader(
+    'Set-Cookie',
+    serializeCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS)
+  );
+
+  logger.info({ memberId: member.id, email: payload.email }, 'Magic link login successful');
+
+  // Redirect to dashboard with token in fragment (client-side only)
+  res.redirect(`/dashboard#token=${accessToken}`);
 });

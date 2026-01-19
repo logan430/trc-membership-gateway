@@ -72,6 +72,14 @@ model Member {
   isTeamAdmin         Boolean            @default(false)
   isPrimaryOwner      Boolean            @default(false)  // Cannot be revoked by other org members
 
+  // Billing failure tracking
+  paymentFailedAt           DateTime?  // When first payment failure detected
+  gracePeriodEndsAt         DateTime?  // 48 hours after paymentFailedAt
+  debtorStateEndsAt         DateTime?  // 30 days after entering debtor state
+  previousRole              String?    // 'Knight' or 'Lord' for restoration
+  isInDebtorState           Boolean    @default(false)
+  sentBillingNotifications  String[]   @default([])  // Track which notifications sent
+
   // Audit timestamps
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
@@ -96,6 +104,11 @@ model Team {
   // Relationships
   members               Member[]
   pendingInvites        PendingInvite[]
+
+  // Billing failure tracking
+  paymentFailedAt       DateTime?  // When first payment failure detected
+  gracePeriodEndsAt     DateTime?  // 48 hours after paymentFailedAt
+  debtorStateEndsAt     DateTime?  // 30 days after entering debtor state
 
   // Audit timestamps
   createdAt             DateTime           @default(now())

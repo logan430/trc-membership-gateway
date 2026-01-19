@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 6 of 8 (Billing Failure)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-01-19 - Completed 06-03-PLAN.md
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 - Completed 06-04-PLAN.md
 
-Progress: [███████░░░] 71% (22/31 plans complete)
+Progress: [███████░░░] 74% (23/31 plans complete)
 
 ## Performance Metrics
 
@@ -32,11 +32,11 @@ Progress: [███████░░░] 71% (22/31 plans complete)
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
-| 6-Billing Failure | 3/4 | 11 min | 3.7 min |
+| 6-Billing Failure | 4/4 | 16 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-05 (3 min), 05-06 (4 min), 06-01 (4 min), 06-02 (4 min), 06-03 (3 min)
-- Trend: Consistent execution, averaging 3-4 min per plan
+- Last 5 plans: 05-06 (4 min), 06-01 (4 min), 06-02 (4 min), 06-03 (3 min), 06-04 (5 min)
+- Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
 
@@ -115,6 +115,9 @@ Recent decisions affecting current work:
 | 06-03 | Previous role stored BEFORE role changes | Per RESEARCH.md pitfall - cannot restore if not captured first |
 | 06-03 | 5-minute polling interval | Database-backed, survives restarts, no external dependencies |
 | 06-03 | Notification marked sent even if DM fails | User may have DMs disabled; prevents spam on retry |
+| 06-04 | invoice.paid for recovery detection | More common than invoice.payment_succeeded, equivalent |
+| 06-04 | Default to Knight if previousRole is null | Safety fallback if role wasn't captured |
+| 06-04 | Billing banner on paymentFailedAt OR PAST_DUE | Both conditions indicate billing issue |
 
 ### Pending Todos
 
@@ -137,7 +140,9 @@ Billing failure handling progress:
 - [x] 06-01: Schema and channel foundation
 - [x] 06-02: Payment failure webhook handlers
 - [x] 06-03: Notification system and scheduling
-- [ ] 06-04: Payment recovery and restoration
+- [x] 06-04: Payment recovery and restoration
+
+**Phase 6 Complete**
 
 Delivered (06-01):
 - Billing failure tracking fields on Member model (paymentFailedAt, gracePeriodEndsAt, debtorStateEndsAt, previousRole, isInDebtorState, sentBillingNotifications)
@@ -161,9 +166,16 @@ Delivered (06-03):
 - startBillingScheduler with 5-minute polling interval
 - Full notification cadence per CONTEXT.md (reminders + final warnings)
 
+Delivered (06-04):
+- handlePaymentRecovery and handleTeamPaymentRecovery functions
+- sendGracePeriodRecoveryDm, sendDebtorRecoveryDm, sendTeamRecoveryDm functions
+- invoice.paid webhook case wired to recovery handler
+- Team dashboard billing status banner when in failure state
+- Full billing failure state cleared on successful payment
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 06-03-PLAN.md
+Stopped at: Completed 06-04-PLAN.md (Phase 6 complete)
 Resume file: None
-Next: 06-04 - Payment recovery and restoration
+Next: Phase 7 - Dashboard enhancements

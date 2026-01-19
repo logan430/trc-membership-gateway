@@ -144,13 +144,13 @@ Plans:
   4. Payment failure email is sent when subscription payment fails
   5. Payment recovered email is sent when payment succeeds after failure
   6. Seat invite email is sent to teammate with claim link
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 07-01: Email infrastructure setup
-- [ ] 07-02: Payment and onboarding emails (welcome, claim reminder)
-- [ ] 07-03: Billing failure and recovery emails
-- [ ] 07-04: Team invite emails
+- [ ] 07-01-PLAN.md - Email infrastructure with provider abstraction (Wave 1)
+- [ ] 07-02-PLAN.md - Welcome and claim reminder emails (Wave 2)
+- [ ] 07-03-PLAN.md - Billing failure and recovery emails (Wave 2)
+- [ ] 07-04-PLAN.md - Team seat invite emails (Wave 2)
 
 ### Phase 8: Operations
 **Goal**: System detects and corrects drift between Stripe and Discord state
@@ -193,4 +193,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 5 complete: 2026-01-19*
 *Phase 6 planned: 2026-01-19*
 *Phase 6 complete: 2026-01-19*
+*Phase 7 planned: 2026-01-19*
 *Total requirements: 41 | Total phases: 8 | Total plans: 28*

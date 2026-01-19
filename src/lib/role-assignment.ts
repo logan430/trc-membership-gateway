@@ -142,3 +142,85 @@ export function removeAndKickAsync(discordId: string, memberId: string): void {
     }
   })();
 }
+
+/**
+ * Helper function to update database for revoked member
+ * Unlinks from team but preserves Member record for potential future use
+ */
+async function updateRevokedMember(memberId: string): Promise<void> {
+  await prisma.member.update({
+    where: { id: memberId },
+    data: {
+      teamId: null,
+      seatTier: null,
+      subscriptionStatus: 'NONE',
+      introCompleted: false,
+      introCompletedAt: null,
+      introMessageId: null,
+    },
+  });
+}
+
+/**
+ * Revoke seat and kick member from server asynchronously
+ * Fire-and-forget: returns immediately, removal happens in background
+ * Similar to removeAndKickAsync but with generic farewell message
+ */
+export function revokeAndKickAsync(discordId: string, memberId: string): void {
+  (async () => {
+    try {
+      const guild = discordClient.guilds.cache.get(env.DISCORD_GUILD_ID);
+      if (!guild) {
+        logger.error('Guild not found in cache');
+        return;
+      }
+
+      // Try to fetch the member (may have already left)
+      let member;
+      try {
+        member = await guild.members.fetch(discordId);
+      } catch {
+        // Member not in server - just update database
+        logger.debug({ discordId }, 'Member not in server, updating database only');
+        await updateRevokedMember(memberId);
+        return;
+      }
+
+      // Send generic farewell DM (best effort, before kick)
+      // Per CONTEXT.md: "Generic DM notification before kick: access ended, no blame assigned"
+      try {
+        await member.user.send({
+          content: `Hail, former member of The Revenue Council!\n\n` +
+            `Your access to our guild has ended.\n\n` +
+            `We wish you well on your future endeavors.\n\n` +
+            `Should circumstances change, The Gatekeeper awaits: ${env.APP_URL}`,
+        });
+      } catch {
+        logger.debug({ discordId }, 'Could not send revocation DM');
+      }
+
+      // Remove all managed roles
+      await removeAllManagedRoles(discordId);
+
+      // Kick from server with retry
+      await pRetry(
+        () => member.kick('Seat revoked'),
+        {
+          retries: 3,
+          minTimeout: 1000,
+          onFailedAttempt: (error) => {
+            logger.warn({ discordId, attempt: error.attemptNumber }, 'Revocation kick retry');
+          },
+        }
+      );
+
+      // Update database
+      await updateRevokedMember(memberId);
+
+      logger.info({ discordId, memberId }, 'Member revoked and removed from server');
+    } catch (error) {
+      logger.error({ discordId, memberId, error }, 'Failed to revoke and kick member');
+      // Don't throw from fire-and-forget
+    }
+  })();
+}

@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { Prisma } from '@prisma/client';
 import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
+import { removeAndKickAsync } from '../lib/role-assignment.js';
 import { logger } from '../index.js';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -134,9 +135,44 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
       logger.info({ eventId: event.id }, 'Subscription updated - handler TBD');
       break;
 
-    case 'customer.subscription.deleted':
-      logger.info({ eventId: event.id }, 'Subscription deleted - handler TBD');
+    case 'customer.subscription.deleted': {
+      const subscription = event.data.object as Stripe.Subscription;
+
+      // Find member by Stripe customer ID
+      const member = await prisma.member.findFirst({
+        where: { stripeCustomerId: subscription.customer as string },
+      });
+
+      if (!member) {
+        logger.warn(
+          { customerId: subscription.customer },
+          'No member found for deleted subscription'
+        );
+        break;
+      }
+
+      if (!member.discordId) {
+        // Member never linked Discord - just update status
+        await prisma.member.update({
+          where: { id: member.id },
+          data: { subscriptionStatus: 'CANCELLED' },
+        });
+        logger.info(
+          { memberId: member.id },
+          'Subscription cancelled (no Discord linked)'
+        );
+        break;
+      }
+
+      // Remove roles and kick (async with retry)
+      removeAndKickAsync(member.discordId, member.id);
+
+      logger.info(
+        { memberId: member.id, discordId: member.discordId },
+        'Subscription ended, member will be removed from server'
+      );
       break;
+    }
 
     case 'invoice.payment_failed':
       logger.info({ eventId: event.id }, 'Payment failed - handler TBD');

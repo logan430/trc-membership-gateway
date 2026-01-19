@@ -1,7 +1,9 @@
 import Stripe from 'stripe';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
+import { env } from '../config/env.js';
 import { sendPaymentFailedDm, sendTeamPaymentFailedDm } from './notifications.js';
+import { sendPaymentFailureEmail } from '../email/send.js';
 
 const GRACE_PERIOD_MS = 48 * 60 * 60 * 1000; // 48 hours in milliseconds
 
@@ -25,7 +27,17 @@ export async function handlePaymentFailure(invoice: Stripe.Invoice): Promise<voi
   // Check if this is a team subscription by looking up the team first
   const team = await prisma.team.findUnique({
     where: { stripeCustomerId: customerId },
-    include: { members: true },
+    include: {
+      members: {
+        select: {
+          id: true,
+          email: true,
+          discordId: true,
+          isPrimaryOwner: true,
+          isTeamAdmin: true,
+        },
+      },
+    },
   });
 
   if (team) {
@@ -79,6 +91,24 @@ export async function handlePaymentFailure(invoice: Stripe.Invoice): Promise<voi
   // Send immediate DM notification
   await sendPaymentFailedDm(member.id, 'immediate');
 
+  // Send payment failure email (fire and forget)
+  if (member.email && member.stripeCustomerId) {
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+    stripe.billingPortal.sessions
+      .create({
+        customer: member.stripeCustomerId,
+        return_url: `${env.APP_URL}/dashboard`,
+      })
+      .then((portalSession) => {
+        sendPaymentFailureEmail(member.email!, portalSession.url, 48).catch((err) => {
+          logger.error({ memberId: member.id, err }, 'Failed to send payment failure email');
+        });
+      })
+      .catch((err) => {
+        logger.error({ memberId: member.id, err }, 'Failed to create billing portal session for email');
+      });
+  }
+
   logger.info(
     { memberId: member.id, gracePeriodEndsAt },
     'Payment failure recorded, grace period started'
@@ -92,7 +122,7 @@ export async function handlePaymentFailure(invoice: Stripe.Invoice): Promise<voi
  * @param invoice - Stripe invoice object from webhook
  */
 export async function handleTeamPaymentFailure(
-  team: Awaited<ReturnType<typeof prisma.team.findUnique>> & { members: Array<{ id: string; discordId: string | null; isPrimaryOwner: boolean; isTeamAdmin: boolean }> },
+  team: Awaited<ReturnType<typeof prisma.team.findUnique>> & { members: Array<{ id: string; email: string | null; discordId: string | null; isPrimaryOwner: boolean; isTeamAdmin: boolean }> },
   invoice: Stripe.Invoice
 ): Promise<void> {
   // Check if grace period already started
@@ -141,6 +171,30 @@ export async function handleTeamPaymentFailure(
       const isOwner = member.isPrimaryOwner || member.isTeamAdmin;
       await sendTeamPaymentFailedDm(member.id, isOwner);
     }
+  }
+
+  // Send payment failure email to team owners only (fire and forget)
+  if (team.stripeCustomerId) {
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+    stripe.billingPortal.sessions
+      .create({
+        customer: team.stripeCustomerId,
+        return_url: `${env.APP_URL}/dashboard`,
+      })
+      .then((portalSession) => {
+        // Email owners only
+        for (const member of team.members) {
+          const isOwner = member.isPrimaryOwner || member.isTeamAdmin;
+          if (isOwner && member.email) {
+            sendPaymentFailureEmail(member.email, portalSession.url, 48).catch((err) => {
+              logger.error({ memberId: member.id, err }, 'Failed to send team payment failure email');
+            });
+          }
+        }
+      })
+      .catch((err) => {
+        logger.error({ teamId: team.id, err }, 'Failed to create billing portal session for team email');
+      });
   }
 
   logger.info(

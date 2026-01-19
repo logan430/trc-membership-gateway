@@ -7,6 +7,7 @@ import {
   sendDebtorRecoveryDm,
   sendTeamRecoveryDm,
 } from './notifications.js';
+import { sendPaymentRecoveredEmail } from '../email/send.js';
 
 /**
  * Restore a member from Debtor state to their previous role
@@ -61,6 +62,7 @@ export async function handlePaymentRecovery(invoice: Stripe.Invoice): Promise<vo
       members: {
         select: {
           id: true,
+          email: true,
           discordId: true,
           isInDebtorState: true,
           previousRole: true,
@@ -121,7 +123,9 @@ export async function handlePaymentRecovery(invoice: Stripe.Invoice): Promise<vo
     'Processing individual payment recovery'
   );
 
-  if (member.isInDebtorState && member.discordId) {
+  const wasInDebtorState = member.isInDebtorState;
+
+  if (wasInDebtorState && member.discordId) {
     // Restore from Debtor state
     const restoredRole = await restoreFromDebtorState(
       member.id,
@@ -134,6 +138,13 @@ export async function handlePaymentRecovery(invoice: Stripe.Invoice): Promise<vo
   } else if (member.discordId) {
     // Grace period recovery - no role changes needed
     await sendGracePeriodRecoveryDm(member.id);
+  }
+
+  // Send payment recovered email (fire and forget)
+  if (member.email) {
+    sendPaymentRecoveredEmail(member.email, wasInDebtorState).catch((err) => {
+      logger.error({ memberId: member.id, err }, 'Failed to send payment recovered email');
+    });
   }
 
   // Clear all billing failure state
@@ -165,6 +176,7 @@ export async function handleTeamPaymentRecovery(
     paymentFailedAt: Date | null;
     members: Array<{
       id: string;
+      email: string | null;
       discordId: string | null;
       isInDebtorState: boolean;
       previousRole: string | null;
@@ -217,6 +229,13 @@ export async function handleTeamPaymentRecovery(
     } else {
       // Grace period recovery
       await sendTeamRecoveryDm(member.id, isOwner);
+    }
+
+    // Send payment recovered email to owners only (fire and forget)
+    if (isOwner && member.email) {
+      sendPaymentRecoveredEmail(member.email, member.isInDebtorState).catch((err) => {
+        logger.error({ memberId: member.id, err }, 'Failed to send team payment recovered email');
+      });
     }
 
     // Clear member billing failure state

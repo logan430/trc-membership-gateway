@@ -29,8 +29,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **ROLE-01**: Bot assigns "Paid (Unintroduced)" role when user claims access
 - [x] **ROLE-02**: Bot promotes user to "Member" role after introduction post
 - [x] **ROLE-03**: Bot promotes company owner to "Owner" role after introduction post
-- [ ] **ROLE-04**: Bot assigns "Billing Issue" role when payment fails
-- [ ] **ROLE-05**: Bot removes "Billing Issue" and restores correct role when payment recovers
+- [x] **ROLE-04**: Bot assigns "Billing Issue" role when payment fails
+- [x] **ROLE-05**: Bot removes "Billing Issue" and restores correct role when payment recovers
 - [x] **ROLE-06**: Bot removes all managed roles when subscription is canceled/expired
 
 ### Onboarding
@@ -56,11 +56,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Billing Failure
 
-- [ ] **BILL-01**: System detects payment failure via webhook
-- [ ] **BILL-02**: Affected users are moved to Billing Issue role
-- [ ] **BILL-03**: Billing Issue users can only access #billing-issue channel
-- [ ] **BILL-04**: System detects payment recovery via webhook
-- [ ] **BILL-05**: On recovery, user is restored to Member or Owner based on intro status
+- [x] **BILL-01**: System detects payment failure via webhook
+- [x] **BILL-02**: Affected users are moved to Billing Issue role
+- [x] **BILL-03**: Billing Issue users can only access #billing-issue channel
+- [x] **BILL-04**: System detects payment recovery via webhook
+- [x] **BILL-05**: On recovery, user is restored to Member or Owner based on intro status
 
 ### Email Notifications
 
@@ -133,8 +133,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ROLE-01 | Phase 3 | Pending |
 | ROLE-02 | Phase 4 | Complete |
 | ROLE-03 | Phase 4 | Complete |
-| ROLE-04 | Phase 6 | Pending |
-| ROLE-05 | Phase 6 | Pending |
+| ROLE-04 | Phase 6 | Complete |
+| ROLE-05 | Phase 6 | Complete |
 | ROLE-06 | Phase 4 | Complete |
 | ONB-01 | Phase 3 | Pending |
 | ONB-02 | Phase 3 | Pending |
@@ -151,11 +151,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEAM-06 | Phase 5 | Complete |
 | TEAM-07 | Phase 5 | Complete |
 | TEAM-08 | Phase 5 | Complete |
-| BILL-01 | Phase 6 | Pending |
-| BILL-02 | Phase 6 | Pending |
-| BILL-03 | Phase 6 | Pending |
-| BILL-04 | Phase 6 | Pending |
-| BILL-05 | Phase 6 | Pending |
+| BILL-01 | Phase 6 | Complete |
+| BILL-02 | Phase 6 | Complete |
+| BILL-03 | Phase 6 | Complete |
+| BILL-04 | Phase 6 | Complete |
+| BILL-05 | Phase 6 | Complete |
 | EMAIL-01 | Phase 7 | Pending |
 | EMAIL-02 | Phase 7 | Pending |
 | EMAIL-03 | Phase 7 | Pending |
@@ -174,4 +174,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2025-01-18*
-*Last updated: 2026-01-19 after Phase 5 completion*
+*Last updated: 2026-01-19 after Phase 6 completion*

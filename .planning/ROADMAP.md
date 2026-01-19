@@ -67,12 +67,12 @@ Plans:
   3. Paid user can access Claim page to link subscription to Discord
   4. After claiming, user receives Discord invite and is assigned "Paid (Unintroduced)" role
   5. Paid (Unintroduced) user can only access #introductions and onboarding channels
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01: Stripe Checkout for Individual Monthly
-- [ ] 03-02: Claim page and Discord linking flow
-- [ ] 03-03: Initial role assignment and channel restrictions
+- [ ] 03-01-PLAN.md - User registration (email+password) and Stripe Checkout flow (Wave 1)
+- [ ] 03-02-PLAN.md - Dashboard and Discord claim flow with Squire role assignment (Wave 2)
+- [ ] 03-03-PLAN.md - The Gatekeeper landing page with medieval theme (Wave 1)
 
 ### Phase 4: Introduction Requirement
 **Goal**: Users must introduce themselves before gaining full community access
@@ -173,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Discord Integration | 4/4 | Complete | 2026-01-18 |
-| 3. Individual Subscription | 0/3 | Not started | - |
+| 3. Individual Subscription | 0/3 | Planned | - |
 | 4. Introduction Requirement | 0/3 | Not started | - |
 | 5. Team Management | 0/5 | Not started | - |
 | 6. Billing Failure | 0/3 | Not started | - |
@@ -184,4 +184,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Roadmap created: 2025-01-18*
 *Phase 1 planned: 2025-01-18*
 *Phase 2 planned: 2026-01-18*
+*Phase 3 planned: 2026-01-18*
 *Total requirements: 41 | Total phases: 8 | Total plans: 27*

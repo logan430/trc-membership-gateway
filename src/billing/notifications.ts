@@ -1,6 +1,7 @@
 import { discordClient } from '../bot/client.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
+import { env } from '../config/env.js';
 
 /**
  * Send a payment failure DM to an individual member
@@ -86,6 +87,112 @@ export async function sendTeamPaymentFailedDm(
   } catch (error) {
     // DMs can fail if user has DMs disabled - log but don't throw
     logger.warn({ memberId, isOwner, error }, 'Failed to send team payment failure DM');
+    return false;
+  }
+}
+
+/**
+ * Send a billing reminder DM during Debtor state
+ * @param memberId - Database member ID
+ * @param daysRemaining - Days until kick (7, 10, 15, 20, 25)
+ */
+export async function sendBillingReminderDm(
+  memberId: string,
+  daysRemaining: number
+): Promise<boolean> {
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+
+  if (!member?.discordId) {
+    logger.warn({ memberId }, 'Cannot send billing reminder DM - no discordId');
+    return false;
+  }
+
+  try {
+    const discordUser = await discordClient.users.fetch(member.discordId);
+
+    const message =
+      `A reminder from The Treasury.\n\n` +
+      `Thy payment matter remaineth unresolved. Thou hast ${daysRemaining} days remaining ` +
+      `before thy access to the guild shall end entirely.\n\n` +
+      `Visit thy Stripe billing portal to resolve this matter.\n\n` +
+      `The Council values thy membership.`;
+
+    await discordUser.send({ content: message });
+    logger.info({ memberId, daysRemaining }, 'Billing reminder DM sent');
+    return true;
+  } catch (error) {
+    logger.warn({ memberId, daysRemaining, error }, 'Failed to send billing reminder DM');
+    return false;
+  }
+}
+
+/**
+ * Send a final warning DM before kick
+ * @param memberId - Database member ID
+ * @param hoursRemaining - Hours until kick (48, 24, 12)
+ */
+export async function sendFinalWarningDm(
+  memberId: string,
+  hoursRemaining: number
+): Promise<boolean> {
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+
+  if (!member?.discordId) {
+    logger.warn({ memberId }, 'Cannot send final warning DM - no discordId');
+    return false;
+  }
+
+  try {
+    const discordUser = await discordClient.users.fetch(member.discordId);
+
+    const message =
+      `URGENT: Final Warning from The Treasury.\n\n` +
+      `Thy payment matter must be resolved within ${hoursRemaining} hours, ` +
+      `or thy access to The Revenue Council shall end.\n\n` +
+      `Visit thy Stripe billing portal immediately to update thy payment details.\n\n` +
+      `This is thy final notice.`;
+
+    await discordUser.send({ content: message });
+    logger.info({ memberId, hoursRemaining }, 'Final warning DM sent');
+    return true;
+  } catch (error) {
+    logger.warn({ memberId, hoursRemaining, error }, 'Failed to send final warning DM');
+    return false;
+  }
+}
+
+/**
+ * Send a kick notification DM when access ends
+ * @param memberId - Database member ID
+ */
+export async function sendKickNotificationDm(memberId: string): Promise<boolean> {
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+
+  if (!member?.discordId) {
+    logger.warn({ memberId }, 'Cannot send kick notification DM - no discordId');
+    return false;
+  }
+
+  try {
+    const discordUser = await discordClient.users.fetch(member.discordId);
+
+    const message =
+      `Thy time with The Revenue Council hath come to an end.\n\n` +
+      `Due to unresolved billing matters, thy access hath been revoked.\n\n` +
+      `Should thy circumstances change, The Gatekeeper awaits: ${env.APP_URL}\n\n` +
+      `Fare thee well.`;
+
+    await discordUser.send({ content: message });
+    logger.info({ memberId }, 'Kick notification DM sent');
+    return true;
+  } catch (error) {
+    logger.warn({ memberId, error }, 'Failed to send kick notification DM');
     return false;
   }
 }

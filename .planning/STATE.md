@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 8 - Operations
+**Current focus:** Phase 8 - Operations (COMPLETE)
 
 ## Current Position
 
 Phase: 8 of 8 (Operations)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-19 - Completed 08-01-PLAN.md
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 - Completed 08-02-PLAN.md
 
-Progress: [█████████░] 90% (28/31 plans complete)
+Progress: [██████████] 100% (29/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: 4.6 min
-- Total execution time: 130 min
+- Total execution time: 134 min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: [█████████░] 90% (28/31 plans complete)
 | 5-Team | 6/6 | 26 min | 4.3 min |
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
 | 7-Email Notifications | 4/4 | 17 min | 4.3 min |
-| 8-Operations | 1/2 | 3 min | 3 min |
+| 8-Operations | 2/2 | 7 min | 3.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-02 (4 min), 07-03 (4 min), 07-04 (5 min), 08-01 (3 min)
+- Last 5 plans: 07-03 (4 min), 07-04 (5 min), 08-01 (3 min), 08-02 (4 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -134,6 +134,9 @@ Recent decisions affecting current work:
 | 07-04 | Fire-and-forget invite email | Don't fail invite creation if email fails |
 | 07-04 | Full TRC context in invite | Recipients may not know The Revenue Council |
 | 08-01 | node-cron for reconciliation | Lightweight, timezone-aware, consistent with billing scheduler pattern |
+| 08-02 | Three-way comparison | Stripe vs Database vs Discord for complete drift detection |
+| 08-02 | Batch 5 fixes with 2s delays | Discord rate limits 10 role ops per 10s |
+| 08-02 | Verification re-run after fixes | One-shot cron 1 hour later confirms fixes applied |
 
 ### Pending Todos
 
@@ -154,7 +157,7 @@ None.
 
 Operations reconciliation progress:
 - [x] 08-01: Reconciliation infrastructure
-- [ ] 08-02: Drift detection logic (Next)
+- [x] 08-02: Drift detection logic (COMPLETE)
 
 Delivered (08-01):
 - ReconciliationRun model in prisma schema
@@ -166,9 +169,21 @@ Delivered (08-01):
 - startReconciliationScheduler() function
 - Re-exported types from src/reconciliation/index.ts
 
+Delivered (08-02):
+- detectMemberDrift() and detectTeamDrift() functions
+- applyFixes() with rate limiting (batch 5, delay 2s)
+- notifyAdmins() for Discord channel + email alerts
+- runReconciliation() orchestration function
+- Stripe subscription map builder (auto-pagination)
+- Discord member map builder (fresh fetch)
+- Verification re-run scheduling (1 hour after fixes)
+- reconciliationReportEmailTemplate for admin emails
+- sendReconciliationReportEmail function
+- Scheduler wired to app startup
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 08-01-PLAN.md
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
-Next: 08-02-PLAN.md (Drift detection logic)
+Next: Phase 8 complete - all plans executed

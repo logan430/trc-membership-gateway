@@ -122,10 +122,11 @@ model PendingInvite {
   team        Team      @relation(fields: [teamId], references: [id])
   teamId      String
 
-  // Invite details (no email/expiresAt per CONTEXT.md: multi-use tokens never expire)
+  // Invite details
   seatTier    SeatTier  // OWNER or TEAM_MEMBER
   token       String    @unique
   createdBy   String    // Member ID who created the invite
+  inviteeEmail String?  // Optional: email to send invite to (admin can still share link manually)
 
   // Tracking
   acceptedAt  DateTime?

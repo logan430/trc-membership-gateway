@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 5 of 8 (Team Management)
-Plan: 2 of 6 in current phase
+Plan: 3 of 6 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 05-02-PLAN.md
+Last activity: 2026-01-19 - Completed 05-03-PLAN.md
 
-Progress: [████████░░] 71%
+Progress: [████████░░] 74%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
+- Total plans completed: 16
 - Average duration: 5.1 min
-- Total execution time: 80 min
+- Total execution time: 85 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [████████░░] 71%
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
-| 5-Team | 2/6 | 7 min | 3.5 min |
+| 5-Team | 3/6 | 12 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3 min), 04-03 (5 min), 04-02 (3 min), 05-01 (4 min), 05-02 (3 min)
+- Last 5 plans: 04-03 (5 min), 04-02 (3 min), 05-01 (4 min), 05-02 (3 min), 05-03 (5 min)
 - Trend: Consistent execution, averaging 3-5 min per plan
 
 *Updated after each plan completion*
@@ -92,6 +92,10 @@ Recent decisions affecting current work:
 | 05-02 | Owner-only dashboard access | Per CONTEXT.md - team members cannot view |
 | 05-02 | Status derived from discordId | If discordId exists, claim is complete |
 | 05-02 | Member sort: primary, tier, date | Logical grouping for dashboard display |
+| 05-03 | crypto.randomBytes for tokens | Built-in CSPRNG, 256 bits entropy |
+| 05-03 | base64url encoding | URL-safe without escaping |
+| 05-03 | timingSafeEqual for validation | Prevents timing attacks |
+| 05-03 | Seat check before invite creation | Fail fast with clear error |
 
 ### Pending Todos
 
@@ -106,14 +110,15 @@ None.
 - STRIPE_TEAM_SEAT_PRICE_ID must be set before testing company checkout
 - DISCORD_INTRODUCTIONS_CHANNEL_ID must be set before testing introduction detection
 - Message Content Intent must be enabled in Discord Developer Portal
-- Pre-existing TypeScript errors in discord-oauth.ts, claim.ts, team-invites.ts need attention
+- Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
+- public/team-dashboard.html from 05-02 is untracked (leftover)
 
 ## Phase 5 Progress
 
 Team management progress:
 - [x] 05-01: Schema updates and company checkout flow
 - [x] 05-02: Team dashboard with seat view
-- [ ] 05-03: Invite token generation and management
+- [x] 05-03: Invite token generation and management
 - [ ] 05-04: Invite claim flow with Discord OAuth
 - [ ] 05-05: Seat revocation with immediate kick
 - [ ] 05-06: Mid-subscription seat additions
@@ -134,8 +139,15 @@ Delivered (05-02):
 - /team-dashboard.html with medieval theme
 - Responsive design, error handling for 401/403/404
 
+Delivered (05-03):
+- generateInviteToken(): 32-byte crypto token, base64url encoded
+- validateToken(): timing-safe comparison for claim flow
+- POST /team/invites: create invite with seat check
+- GET /team/invites: list all team invites
+- DELETE /team/invites/:id: revoke invite
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 05-02-PLAN.md
+Stopped at: Completed 05-03-PLAN.md
 Resume file: None

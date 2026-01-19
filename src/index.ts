@@ -8,6 +8,7 @@ import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
 import { authRouter } from './routes/auth.js';
 import { checkoutRouter } from './routes/checkout.js';
+import { companyCheckoutRouter } from './routes/company-checkout.js';
 import { dashboardRouter } from './routes/dashboard.js';
 import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
@@ -46,6 +47,9 @@ app.use('/auth', authRouter);
 
 // Checkout routes (Stripe Checkout session creation)
 app.use('/checkout', checkoutRouter);
+
+// Company checkout routes (team subscription purchase)
+app.use('/company', companyCheckoutRouter);
 
 // Dashboard routes (subscription status, claim availability)
 app.use('/dashboard', dashboardRouter);

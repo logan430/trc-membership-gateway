@@ -105,14 +105,15 @@ Plans:
   6. Teammate claiming team seat gets Member role after introduction
   7. Company admin can revoke a seat and that seat becomes available for reallocation
   8. Company admin can add more owner or team seats mid-subscription
-**Plans**: TBD
+**Plans**: 6 plans in 4 waves
 
 Plans:
-- [ ] 05-01: Company subscription and seat model
-- [ ] 05-02: Seat management dashboard
-- [ ] 05-03: Invite token generation and claiming
-- [ ] 05-04: Seat revocation and reallocation
-- [ ] 05-05: Mid-subscription seat additions
+- [ ] 05-01-PLAN.md - Schema updates, env config, and company checkout flow (Wave 1)
+- [ ] 05-02-PLAN.md - Team dashboard with seat view (Wave 2)
+- [ ] 05-03-PLAN.md - Invite token generation and management (Wave 2)
+- [ ] 05-04-PLAN.md - Invite claim flow with Discord OAuth (Wave 3)
+- [ ] 05-05-PLAN.md - Seat revocation with immediate kick (Wave 4)
+- [ ] 05-06-PLAN.md - Mid-subscription seat additions (Wave 4)
 
 ### Phase 6: Billing Failure
 **Goal**: Payment failures restrict access gracefully; recovery restores access
@@ -175,7 +176,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Discord Integration | 4/4 | Complete | 2026-01-18 |
 | 3. Individual Subscription | 3/3 | Complete | 2026-01-18 |
 | 4. Introduction Requirement | 3/3 | Complete | 2026-01-18 |
-| 5. Team Management | 0/5 | Not started | - |
+| 5. Team Management | 0/6 | Not started | - |
 | 6. Billing Failure | 0/3 | Not started | - |
 | 7. Email Notifications | 0/4 | Not started | - |
 | 8. Operations | 0/2 | Not started | - |
@@ -187,4 +188,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 3 planned: 2026-01-18*
 *Phase 4 planned: 2026-01-18*
 *Phase 4 complete: 2026-01-18*
-*Total requirements: 41 | Total phases: 8 | Total plans: 27*
+*Phase 5 planned: 2026-01-19*
+*Total requirements: 41 | Total phases: 8 | Total plans: 28*

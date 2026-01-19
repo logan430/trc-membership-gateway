@@ -74,8 +74,8 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Operations
 
 - [x] **OPS-01**: All Stripe events are logged with event ID for deduplication
-- [ ] **OPS-02**: Reconciliation job runs daily to detect drift between Stripe and Discord
-- [ ] **OPS-03**: Reconciliation job fixes role mismatches automatically
+- [x] **OPS-02**: Reconciliation job runs daily to detect drift between Stripe and Discord
+- [x] **OPS-03**: Reconciliation job fixes role mismatches automatically
 - [x] **OPS-04**: Database schema supports future CRM export (all relevant fields captured)
 
 ## v2 Requirements
@@ -163,8 +163,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMAIL-05 | Phase 7 | Complete |
 | EMAIL-06 | Phase 7 | Complete |
 | OPS-01 | Phase 1 | Complete |
-| OPS-02 | Phase 8 | Pending |
-| OPS-03 | Phase 8 | Pending |
+| OPS-02 | Phase 8 | Complete |
+| OPS-03 | Phase 8 | Complete |
 | OPS-04 | Phase 1 | Complete |
 
 **Coverage:**
@@ -174,4 +174,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2025-01-18*
-*Last updated: 2026-01-19 after Phase 7 completion*
+*Last updated: 2026-01-19 after Phase 8 completion*

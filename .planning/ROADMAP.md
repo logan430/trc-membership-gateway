@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Team Management** - Company plans, seat dashboard, invite system
 - [x] **Phase 6: Billing Failure** - Billing Issue role, access restriction, recovery
 - [x] **Phase 7: Email Notifications** - Transactional emails for all lifecycle events
-- [ ] **Phase 8: Operations** - Reconciliation, audit logging, CRM-ready schema
+- [x] **Phase 8: Operations** - Reconciliation, audit logging, CRM-ready schema
 
 ## Phase Details
 
@@ -163,8 +163,8 @@ Plans:
 **Plans**: 2 plans in 2 waves
 
 Plans:
-- [ ] 08-01-PLAN.md - Reconciliation infrastructure (schema, env vars, module scaffold) (Wave 1)
-- [ ] 08-02-PLAN.md - Drift detection and auto-fix logic (Wave 2)
+- [x] 08-01-PLAN.md - Reconciliation infrastructure (schema, env vars, module scaffold) (Wave 1)
+- [x] 08-02-PLAN.md - Drift detection and auto-fix logic (Wave 2)
 
 ## Progress
 
@@ -180,7 +180,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Team Management | 6/6 | Complete | 2026-01-19 |
 | 6. Billing Failure | 4/4 | Complete | 2026-01-19 |
 | 7. Email Notifications | 4/4 | Complete | 2026-01-19 |
-| 8. Operations | 0/2 | Planned | - |
+| 8. Operations | 2/2 | Complete | 2026-01-19 |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -196,4 +196,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 7 planned: 2026-01-19*
 *Phase 7 complete: 2026-01-19*
 *Phase 8 planned: 2026-01-19*
+*Phase 8 complete: 2026-01-19*
 *Total requirements: 41 | Total phases: 8 | Total plans: 29*

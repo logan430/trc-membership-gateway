@@ -2,10 +2,16 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import pino from 'pino';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
 import { authRouter } from './routes/auth.js';
+import { publicRouter } from './routes/public.js';
 import { startBot } from './bot/client.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Initialize logger (exported for use in other modules)
 export const logger = pino({
@@ -21,6 +27,9 @@ const app = express();
 // Security middleware
 app.use(helmet());
 app.use(cors());
+
+// Static file serving (CSS, images, etc.)
+app.use(express.static(join(__dirname, '../public')));
 
 // CRITICAL: Mount webhook route BEFORE express.json()
 // Webhook needs raw body for signature verification
@@ -40,6 +49,9 @@ app.get('/health', (req, res) => {
     environment: env.NODE_ENV,
   });
 });
+
+// Public routes (landing page - mounted last so named routes take precedence)
+app.use(publicRouter);
 
 // Start server
 app.listen(env.PORT, () => {

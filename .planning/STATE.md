@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 6 of 8 (Billing Failure)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 06-02-PLAN.md
+Last activity: 2026-01-19 - Completed 06-03-PLAN.md
 
-Progress: [██████░░░░] 68% (21/31 plans complete)
+Progress: [███████░░░] 71% (22/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
-- Average duration: 5.1 min
-- Total execution time: 107 min
+- Total plans completed: 22
+- Average duration: 5.0 min
+- Total execution time: 110 min
 
 **By Phase:**
 
@@ -32,11 +32,11 @@ Progress: [██████░░░░] 68% (21/31 plans complete)
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
-| 6-Billing Failure | 2/4 | 8 min | 4 min |
+| 6-Billing Failure | 3/4 | 11 min | 3.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-04 (7 min), 05-05 (3 min), 05-06 (4 min), 06-01 (4 min), 06-02 (4 min)
-- Trend: Consistent execution, averaging 3-7 min per plan
+- Last 5 plans: 05-05 (3 min), 05-06 (4 min), 06-01 (4 min), 06-02 (4 min), 06-03 (3 min)
+- Trend: Consistent execution, averaging 3-4 min per plan
 
 *Updated after each plan completion*
 
@@ -112,6 +112,9 @@ Recent decisions affecting current work:
 | 06-02 | Check billing_reason === 'subscription_cycle' | Only renewal failures trigger grace period, not checkout failures |
 | 06-02 | Grace period not reset on retry failures | Only set paymentFailedAt if null |
 | 06-02 | Owner detection via isPrimaryOwner OR isTeamAdmin | Both roles get full billing details |
+| 06-03 | Previous role stored BEFORE role changes | Per RESEARCH.md pitfall - cannot restore if not captured first |
+| 06-03 | 5-minute polling interval | Database-backed, survives restarts, no external dependencies |
+| 06-03 | Notification marked sent even if DM fails | User may have DMs disabled; prevents spam on retry |
 
 ### Pending Todos
 
@@ -133,7 +136,7 @@ None.
 Billing failure handling progress:
 - [x] 06-01: Schema and channel foundation
 - [x] 06-02: Payment failure webhook handlers
-- [ ] 06-03: Notification system and scheduling
+- [x] 06-03: Notification system and scheduling
 - [ ] 06-04: Payment recovery and restoration
 
 Delivered (06-01):
@@ -151,9 +154,16 @@ Delivered (06-02):
 - Grace period tracking (48 hours) on first payment failure
 - Medieval-themed DM messages for immediate notification
 
+Delivered (06-03):
+- moveToDebtorState and moveTeamToDebtorState functions
+- kickAfterDebtorExpiry and kickTeamAfterDebtorExpiry functions
+- sendBillingReminderDm, sendFinalWarningDm, sendKickNotificationDm functions
+- startBillingScheduler with 5-minute polling interval
+- Full notification cadence per CONTEXT.md (reminders + final warnings)
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 06-02-PLAN.md
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None
-Next: 06-03 - Notification system and scheduling
+Next: 06-04 - Payment recovery and restoration

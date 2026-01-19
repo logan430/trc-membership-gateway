@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 2 - Discord Integration (In Progress)
+**Current focus:** Phase 2 - Discord Integration (Complete)
 
 ## Current Position
 
 Phase: 2 of 8 (Discord Integration)
-Plan: 2 of 4 in current phase
-Status: In progress
-Last activity: 2026-01-18 - Completed 02-01-PLAN.md
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-01-18 - Completed 02-04-PLAN.md
 
-Progress: [█████░░░░░] 26%
+Progress: [███████░░░] 37%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 7 min
-- Total execution time: 29 min
+- Total plans completed: 7
+- Average duration: 6 min
+- Total execution time: 42 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1-Foundation | 3/3 | 24 min | 8 min |
-| 2-Discord | 2/4 | 13 min | 6.5 min |
+| 2-Discord | 4/4 | 18 min | 4.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (8 min), 01-03 (12 min), 02-01 (8 min), 02-02 (5 min)
-- Trend: Stable execution time
+- Last 5 plans: 01-03 (12 min), 02-01 (8 min), 02-02 (5 min), 02-03 (0 min), 02-04 (5 min)
+- Trend: Fast execution, averaging under 5 min per plan in Phase 2
 
 *Updated after each plan completion*
 
@@ -57,6 +57,9 @@ Recent decisions affecting current work:
 | 02-01 | 15min access / 7d or 30d refresh tokens | Balance security with UX |
 | 02-01 | httpOnly cookie for refresh token | Prevent XSS token theft |
 | 02-01 | Token rotation on every refresh | Security best practice |
+| 02-04 | 5-minute magic link expiry | Short-lived for security |
+| 02-04 | Same response for email exists/not | Anti-enumeration protection |
+| 02-04 | Token in URL fragment | Client-only access, not sent to server |
 
 ### Pending Todos
 
@@ -72,10 +75,10 @@ None.
 Discord integration progress:
 - [x] 02-01: Session Infrastructure (JWT tokens, auth middleware)
 - [x] 02-02: Discord bot with role management
-- [ ] 02-03: Discord OAuth routes
-- [ ] 02-04: Magic link authentication
+- [x] 02-03: Discord OAuth helpers
+- [x] 02-04: Magic link authentication
 
-Delivered so far:
+Delivered:
 - JWT session utilities (jose library)
 - Auth middleware for protected routes
 - Token refresh endpoint with rotation
@@ -84,9 +87,13 @@ Delivered so far:
 - Role sync on startup (auto-create missing roles)
 - addRoleToMember / removeRoleFromMember functions
 - Admin alerting on role operation failures
+- Discord OAuth helpers (generateAuthUrl, exchangeCode, fetchDiscordUser)
+- Magic link token generation and verification
+- POST /auth/magic-link/request endpoint
+- GET /auth/magic-link/verify endpoint
 
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 02-01-PLAN.md (Session Infrastructure)
+Stopped at: Completed 02-04-PLAN.md (Magic Link Authentication)
 Resume file: None

@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 6 of 8 (Billing Failure)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 06-01-PLAN.md
+Last activity: 2026-01-19 - Completed 06-02-PLAN.md
 
-Progress: [██████░░░░] 65% (20/31 plans complete)
+Progress: [██████░░░░] 68% (21/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
-- Average duration: 5.2 min
-- Total execution time: 103 min
+- Total plans completed: 21
+- Average duration: 5.1 min
+- Total execution time: 107 min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: [██████░░░░] 65% (20/31 plans complete)
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
-| 6-Billing Failure | 1/4 | 4 min | 4 min |
+| 6-Billing Failure | 2/4 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (5 min), 05-04 (7 min), 05-05 (3 min), 05-06 (4 min), 06-01 (4 min)
+- Last 5 plans: 05-04 (7 min), 05-05 (3 min), 05-06 (4 min), 06-01 (4 min), 06-02 (4 min)
 - Trend: Consistent execution, averaging 3-7 min per plan
 
 *Updated after each plan completion*
@@ -109,6 +109,9 @@ Recent decisions affecting current work:
 | 05-06 | Webhook-driven database sync | Stripe is source of truth for seat counts |
 | 05-06 | mapStripeStatus helper | Consistent status mapping across handlers |
 | 06-01 | String array for notification tracking | sentBillingNotifications tracks notification keys to prevent duplicates |
+| 06-02 | Check billing_reason === 'subscription_cycle' | Only renewal failures trigger grace period, not checkout failures |
+| 06-02 | Grace period not reset on retry failures | Only set paymentFailedAt if null |
+| 06-02 | Owner detection via isPrimaryOwner OR isTeamAdmin | Both roles get full billing details |
 
 ### Pending Todos
 
@@ -129,7 +132,7 @@ None.
 
 Billing failure handling progress:
 - [x] 06-01: Schema and channel foundation
-- [ ] 06-02: Payment failure webhook handlers
+- [x] 06-02: Payment failure webhook handlers
 - [ ] 06-03: Notification system and scheduling
 - [ ] 06-04: Payment recovery and restoration
 
@@ -141,9 +144,16 @@ Delivered (06-01):
 - #billing-support channel created on bot startup with correct permissions
 - Pinned instructions message for Debtors
 
+Delivered (06-02):
+- handlePaymentFailure webhook handler for invoice.payment_failed
+- handleTeamPaymentFailure for team subscription failures
+- sendPaymentFailedDm and sendTeamPaymentFailedDm notification functions
+- Grace period tracking (48 hours) on first payment failure
+- Medieval-themed DM messages for immediate notification
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 06-01-PLAN.md
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None
-Next: 06-02 - Payment failure webhook handlers
+Next: 06-03 - Notification system and scheduling

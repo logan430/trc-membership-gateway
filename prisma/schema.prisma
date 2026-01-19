@@ -8,3 +8,146 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum SubscriptionStatus {
+  NONE
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+}
+
+enum SeatTier {
+  INDIVIDUAL    // Individual subscription (no team)
+  OWNER         // Company owner seat (access to owners-only channels)
+  TEAM_MEMBER   // Company team seat (standard member access)
+}
+
+// ============================================
+// CORE MODELS
+// ============================================
+
+model Member {
+  id                  String             @id @default(cuid())
+
+  // Discord identity (linked via OAuth)
+  discordId           String?            @unique
+  discordUsername     String?
+  discordAvatar       String?
+
+  // Stripe identity
+  stripeCustomerId    String?            @unique
+  email               String?
+
+  // CRM-ready fields (captured during intro or checkout)
+  firstName           String?
+  lastName            String?
+  company             String?
+  jobTitle            String?
+  linkedInUrl         String?
+  referralSource      String?
+
+  // Subscription state (cached from Stripe webhooks)
+  subscriptionStatus  SubscriptionStatus @default(NONE)
+  seatTier            SeatTier?
+  currentPeriodEnd    DateTime?
+
+  // Onboarding state
+  introCompleted      Boolean            @default(false)
+  introCompletedAt    DateTime?
+  introMessageId      String?            // Discord message ID of introduction
+
+  // Team membership (for company seats)
+  team                Team?              @relation(fields: [teamId], references: [id])
+  teamId              String?
+  isTeamAdmin         Boolean            @default(false)
+
+  // Audit timestamps
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@index([teamId])
+  @@index([subscriptionStatus])
+  @@index([email])
+}
+
+model Team {
+  id                    String             @id @default(cuid())
+  name                  String
+
+  // Stripe billing (team subscription)
+  stripeCustomerId      String             @unique
+  stripeSubscriptionId  String?            @unique
+  subscriptionStatus    SubscriptionStatus @default(NONE)
+
+  // Seat allocation
+  ownerSeatCount        Int                @default(0)  // Paid owner seats
+  teamSeatCount         Int                @default(0)  // Paid team seats
+
+  // Relationships
+  members               Member[]
+  pendingInvites        PendingInvite[]
+
+  // Audit timestamps
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+}
+
+model PendingInvite {
+  id          String    @id @default(cuid())
+
+  // Team relationship
+  team        Team      @relation(fields: [teamId], references: [id])
+  teamId      String
+
+  // Invite details
+  email       String
+  seatTier    SeatTier  // OWNER or TEAM_MEMBER
+  token       String    @unique
+  expiresAt   DateTime
+
+  // Tracking
+  acceptedAt  DateTime?
+  acceptedBy  String?   // Member ID who accepted
+
+  // Audit timestamps
+  createdAt   DateTime  @default(now())
+
+  @@index([teamId])
+  @@index([token])
+  @@index([email])
+}
+
+// ============================================
+// OPERATIONAL MODELS
+// ============================================
+
+model StripeEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique  // Stripe event ID for idempotency
+  type        String             // e.g., "checkout.session.completed"
+  processedAt DateTime @default(now())
+  payload     Json?              // Optional: store full event for debugging
+
+  @@index([eventId])
+  @@index([type])
+  @@index([processedAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String             // e.g., "ROLE_ASSIGNED", "SUBSCRIPTION_CREATED"
+  entityType  String             // e.g., "Member", "Team"
+  entityId    String
+  details     Json?
+  performedBy String?            // Member ID or "system"
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+}

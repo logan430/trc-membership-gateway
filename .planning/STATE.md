@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 7 - Email Notifications (Next)
+**Current focus:** Phase 7 - Email Notifications (In Progress)
 
 ## Current Position
 
-Phase: 6 of 8 (Billing Failure)
-Plan: 4 of 4 in current phase
-Status: Phase complete, verified ✓
-Last activity: 2026-01-19 - Completed Phase 6 execution and verification
+Phase: 7 of 8 (Email Notifications)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-19 - Completed 07-01-PLAN.md (Email Provider Infrastructure)
 
-Progress: [███████░░░] 75% (6/8 phases complete)
+Progress: [███████░░░] 77% (23/30 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 23
 - Average duration: 5.0 min
-- Total execution time: 110 min
+- Total execution time: 114 min
 
 **By Phase:**
 
@@ -33,9 +33,10 @@ Progress: [███████░░░] 75% (6/8 phases complete)
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
+| 7-Email Notifications | 1/3 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-06 (4 min), 06-01 (4 min), 06-02 (4 min), 06-03 (3 min), 06-04 (5 min)
+- Last 5 plans: 06-01 (4 min), 06-02 (4 min), 06-03 (3 min), 06-04 (5 min), 07-01 (4 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -118,6 +119,9 @@ Recent decisions affecting current work:
 | 06-04 | invoice.paid for recovery detection | More common than invoice.payment_succeeded, equivalent |
 | 06-04 | Default to Knight if previousRole is null | Safety fallback if role wasn't captured |
 | 06-04 | Billing banner on paymentFailedAt OR PAST_DUE | Both conditions indicate billing issue |
+| 07-01 | EMAIL_PROVIDER env var switch | Development without API keys, production with Resend |
+| 07-01 | Provider pattern for email | Clean abstraction for testing and swappable delivery |
+| 07-01 | Zod .refine() for conditional API key | App can start with console provider without Resend credentials |
 
 ### Pending Todos
 
@@ -134,48 +138,25 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
 
-## Phase 6 Progress
+## Phase 7 Progress
 
-Billing failure handling progress:
-- [x] 06-01: Schema and channel foundation
-- [x] 06-02: Payment failure webhook handlers
-- [x] 06-03: Notification system and scheduling
-- [x] 06-04: Payment recovery and restoration
+Email notifications progress:
+- [x] 07-01: Email provider infrastructure
+- [ ] 07-02: Email templates
+- [ ] 07-03: Email sending integration
 
-**Phase 6 Complete**
-
-Delivered (06-01):
-- Billing failure tracking fields on Member model (paymentFailedAt, gracePeriodEndsAt, debtorStateEndsAt, previousRole, isInDebtorState, sentBillingNotifications)
-- Billing failure tracking fields on Team model (paymentFailedAt, gracePeriodEndsAt, debtorStateEndsAt)
-- DISCORD_BILLING_SUPPORT_CHANNEL_ID env var (optional)
-- ensureBillingSupportChannel utility function
-- #billing-support channel created on bot startup with correct permissions
-- Pinned instructions message for Debtors
-
-Delivered (06-02):
-- handlePaymentFailure webhook handler for invoice.payment_failed
-- handleTeamPaymentFailure for team subscription failures
-- sendPaymentFailedDm and sendTeamPaymentFailedDm notification functions
-- Grace period tracking (48 hours) on first payment failure
-- Medieval-themed DM messages for immediate notification
-
-Delivered (06-03):
-- moveToDebtorState and moveTeamToDebtorState functions
-- kickAfterDebtorExpiry and kickTeamAfterDebtorExpiry functions
-- sendBillingReminderDm, sendFinalWarningDm, sendKickNotificationDm functions
-- startBillingScheduler with 5-minute polling interval
-- Full notification cadence per CONTEXT.md (reminders + final warnings)
-
-Delivered (06-04):
-- handlePaymentRecovery and handleTeamPaymentRecovery functions
-- sendGracePeriodRecoveryDm, sendDebtorRecoveryDm, sendTeamRecoveryDm functions
-- invoice.paid webhook case wired to recovery handler
-- Team dashboard billing status banner when in failure state
-- Full billing failure state cleared on successful payment
+Delivered (07-01):
+- EMAIL_PROVIDER env var with 'console' and 'resend' options
+- RESEND_API_KEY, EMAIL_FROM_ADDRESS, EMAIL_REPLY_TO env vars
+- EmailProvider interface, EmailMessage, EmailResult types
+- ConsoleProvider for development logging
+- ResendProvider for production delivery via Resend API
+- createEmailProvider factory function
+- emailProvider singleton in send.ts
 
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Phase 6 complete and verified
+Stopped at: Completed 07-01-PLAN.md
 Resume file: None
-Next: Phase 7 - Email Notifications
+Next: 07-02 Email Templates

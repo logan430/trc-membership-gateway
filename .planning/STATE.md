@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 3 of 8 (Individual Subscription)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-01-18 - Completed 03-01-PLAN.md
+Last activity: 2026-01-18 - Completed 03-02-PLAN.md
 
-Progress: [████████░░] 42%
+Progress: [████████░░] 48%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 6 min
-- Total execution time: 54 min
+- Total plans completed: 10
+- Average duration: 6.2 min
+- Total execution time: 62 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [████████░░] 42%
 |-------|-------|-------|----------|
 | 1-Foundation | 3/3 | 24 min | 8 min |
 | 2-Discord | 4/4 | 18 min | 4.5 min |
-| 3-Individual | 2/5 | 12 min | 6 min |
+| 3-Individual | 3/5 | 20 min | 6.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (5 min), 02-03 (6 min), 02-04 (5 min), 03-03 (4 min), 03-01 (8 min)
+- Last 5 plans: 02-03 (6 min), 02-04 (5 min), 03-03 (4 min), 03-01 (8 min), 03-02 (8 min)
 - Trend: Consistent execution, averaging 5-8 min per plan
 
 *Updated after each plan completion*
@@ -72,6 +72,9 @@ Recent decisions affecting current work:
 | 03-01 | Timing-safe password verification | Prevent timing attacks on login |
 | 03-01 | Anti-enumeration on signup | Same response for existing/new emails |
 | 03-01 | currentPeriodEnd from SubscriptionItem | Stripe SDK v20 API change |
+| 03-02 | Async role assignment with p-retry | Fire-and-forget with exponential backoff |
+| 03-02 | Separate claim cookies | Avoid conflicts with auth cookies |
+| 03-02 | Channel-by-channel Discord permissions | Fine-grained control over Squire access |
 
 ### Pending Todos
 
@@ -87,7 +90,7 @@ None.
 
 Individual subscription progress:
 - [x] 03-01: Account creation and checkout endpoints
-- [ ] 03-02: Claim Discord flow
+- [x] 03-02: Claim Discord flow
 - [x] 03-03: The Gatekeeper landing page
 - [ ] 03-04: User dashboard
 - [ ] 03-05: Post-claim redirect
@@ -101,6 +104,13 @@ Delivered (03-01):
 - passwordHash field added to Member model
 - Email unique constraint on Member model
 
+Delivered (03-02):
+- GET /dashboard endpoint (subscription status and claim availability)
+- GET /claim/discord endpoint (initiate Discord OAuth for claim)
+- GET /claim/callback endpoint (complete claim, assign Squire role)
+- Async role assignment with p-retry (fire-and-forget pattern)
+- Discord server configured (Squire role restricted to #introductions)
+
 Delivered (03-03):
 - GET / serves The Gatekeeper landing page
 - Medieval/guild visual theme with Cinzel/Crimson fonts
@@ -111,5 +121,5 @@ Delivered (03-03):
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 03-01-PLAN.md
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

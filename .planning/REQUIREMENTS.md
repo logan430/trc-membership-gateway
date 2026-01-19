@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can initiate Discord OAuth to link their Discord account
-- [ ] **AUTH-02**: User session persists across browser refresh (secure token storage)
-- [ ] **AUTH-03**: User can request magic link login via email
-- [ ] **AUTH-04**: User can complete login via magic link click
+- [x] **AUTH-01**: User can initiate Discord OAuth to link their Discord account
+- [x] **AUTH-02**: User session persists across browser refresh (secure token storage)
+- [x] **AUTH-03**: User can request magic link login via email
+- [x] **AUTH-04**: User can complete login via magic link click
 
 ### Payments
 
@@ -119,10 +119,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Complete |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
+| AUTH-04 | Phase 2 | Complete |
 | PAY-01 | Phase 3 | Pending |
 | PAY-02 | Phase 5 | Pending |
 | PAY-03 | Phase 1 | Complete |

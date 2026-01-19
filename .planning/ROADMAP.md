@@ -13,7 +13,7 @@ This roadmap delivers a Stripe-backed membership gateway for The Revenue Council
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Database schema, Stripe webhook infrastructure, project skeleton
-- [ ] **Phase 2: Discord Integration** - OAuth linking, bot setup, role management core
+- [x] **Phase 2: Discord Integration** - OAuth linking, bot setup, role management core
 - [ ] **Phase 3: Individual Subscription** - Stripe Checkout, claim flow, basic role assignment
 - [ ] **Phase 4: Introduction Requirement** - Introduction monitoring, role promotion to Member/Owner
 - [ ] **Phase 5: Team Management** - Company plans, seat dashboard, invite system
@@ -52,10 +52,10 @@ Plans:
 **Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 02-01-PLAN.md - Session infrastructure with JWT tokens (Wave 1)
-- [ ] 02-02-PLAN.md - Discord bot with role management (Wave 1)
-- [ ] 02-03-PLAN.md - Discord OAuth flow implementation (Wave 2)
-- [ ] 02-04-PLAN.md - Magic link authentication (Wave 2)
+- [x] 02-01-PLAN.md - Session infrastructure with JWT tokens (Wave 1)
+- [x] 02-02-PLAN.md - Discord bot with role management (Wave 1)
+- [x] 02-03-PLAN.md - Discord OAuth flow implementation (Wave 2)
+- [x] 02-04-PLAN.md - Magic link authentication (Wave 2)
 
 ### Phase 3: Individual Subscription
 **Goal**: Individual users can pay, claim access, and receive their initial Discord role
@@ -172,7 +172,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
-| 2. Discord Integration | 0/4 | Planned | - |
+| 2. Discord Integration | 4/4 | Complete | 2026-01-18 |
 | 3. Individual Subscription | 0/3 | Not started | - |
 | 4. Introduction Requirement | 0/3 | Not started | - |
 | 5. Team Management | 0/5 | Not started | - |

@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 4 - Introduction Requirement (In Progress)
+**Current focus:** Phase 4 - Introduction Requirement (Complete)
 
 ## Current Position
 
 Phase: 4 of 8 (Introduction Requirement)
 Plan: 3 of 3 in current phase
-Status: In progress (04-02 pending)
-Last activity: 2026-01-18 - Completed 04-03-PLAN.md
+Status: Phase complete
+Last activity: 2026-01-19 - Completed 04-02-PLAN.md
 
-Progress: [████████░░] 60%
+Progress: [████████░░] 65%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 5.8 min
-- Total execution time: 70 min
+- Total plans completed: 13
+- Average duration: 5.6 min
+- Total execution time: 73 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████░░] 60%
 | 1-Foundation | 3/3 | 24 min | 8 min |
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
-| 4-Introduction | 2/3 | 8 min | 4 min |
+| 4-Introduction | 3/3 | 11 min | 3.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (4 min), 03-01 (8 min), 03-02 (8 min), 04-01 (3 min), 04-03 (5 min)
+- Last 5 plans: 03-01 (8 min), 03-02 (8 min), 04-01 (3 min), 04-03 (5 min), 04-02 (3 min)
 - Trend: Consistent execution, averaging 3-8 min per plan
 
 *Updated after each plan completion*
@@ -82,6 +82,9 @@ Recent decisions affecting current work:
 | 04-03 | customer.subscription.deleted triggers kick | Fires at period end, not on cancel initiation |
 | 04-03 | Farewell DM before kick | Ensures user receives message |
 | 04-03 | introCompleted reset on cancellation | Allows re-introduction on resubscribe |
+| 04-02 | Text-only length validation | Images don't count per CONTEXT.md |
+| 04-02 | 24-hour rate limit for guidance DMs | Prevents DM spam while allowing retry |
+| 04-02 | Fire-and-forget role swap with p-retry | Consistent with assignRoleAsync pattern |
 
 ### Pending Todos
 
@@ -100,7 +103,7 @@ None.
 
 Introduction requirement progress:
 - [x] 04-01: Message event infrastructure
-- [ ] 04-02: Role promotion logic (next)
+- [x] 04-02: Role promotion logic
 - [x] 04-03: Subscription end handling
 
 Delivered (04-01):
@@ -109,6 +112,15 @@ Delivered (04-01):
 - lastGuidanceDmAt field for rate-limiting guidance DMs
 - Introduction message event handlers (messageCreate, messageUpdate)
 - Channel filtering (only #introductions), bot filtering, reply filtering
+
+Delivered (04-02):
+- swapRoleAsync function for atomic role swap with p-retry
+- processIntroduction validates 100+ char text length
+- sendGuidanceDM with 24-hour rate limit
+- promoteAfterIntro swaps Squire to Knight/Lord based on seatTier
+- sendWelcomeDM with medieval-themed welcome
+- Party emoji reaction on valid introduction
+- Database tracks introCompleted, introCompletedAt, introMessageId
 
 Delivered (04-03):
 - customer.subscription.deleted webhook handler
@@ -119,6 +131,6 @@ Delivered (04-03):
 
 ## Session Continuity
 
-Last session: 2026-01-18
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-01-19
+Stopped at: Completed 04-02-PLAN.md (Phase 4 complete)
 Resume file: None

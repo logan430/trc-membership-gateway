@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 5 - Team Management (In Progress)
+**Current focus:** Phase 5 - Team Management (Complete)
 
 ## Current Position
 
 Phase: 5 of 8 (Team Management)
-Plan: 5 of 6 in current phase
-Status: In progress
-Last activity: 2026-01-19 - Completed 05-05-PLAN.md
+Plan: 6 of 6 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 - Completed 05-06-PLAN.md
 
-Progress: [████████░░] 81%
+Progress: [████████░░] 86%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: 5.1 min
-- Total execution time: 95 min
+- Total plans completed: 19
+- Average duration: 5.0 min
+- Total execution time: 99 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [████████░░] 81%
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
-| 5-Team | 5/6 | 22 min | 4.4 min |
+| 5-Team | 6/6 | 26 min | 4.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (4 min), 05-02 (3 min), 05-03 (5 min), 05-04 (7 min), 05-05 (3 min)
+- Last 5 plans: 05-02 (3 min), 05-03 (5 min), 05-04 (7 min), 05-05 (3 min), 05-06 (4 min)
 - Trend: Consistent execution, averaging 3-7 min per plan
 
 *Updated after each plan completion*
@@ -104,6 +104,9 @@ Recent decisions affecting current work:
 | 05-05 | Revoked member record preserved | Unlinked from team but record kept |
 | 05-05 | Primary owner cannot be revoked | isPrimaryOwner check enforced |
 | 05-05 | Cannot revoke your own seat | Self-revocation blocked |
+| 05-06 | always_invoice proration | Immediate charge for new seats |
+| 05-06 | Webhook-driven database sync | Stripe is source of truth for seat counts |
+| 05-06 | mapStripeStatus helper | Consistent status mapping across handlers |
 
 ### Pending Todos
 
@@ -119,7 +122,6 @@ None.
 - DISCORD_INTRODUCTIONS_CHANNEL_ID must be set before testing introduction detection
 - Message Content Intent must be enabled in Discord Developer Portal
 - Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
-- public/team-dashboard.html from 05-02 is untracked (leftover)
 
 ## Phase 5 Progress
 
@@ -129,7 +131,7 @@ Team management progress:
 - [x] 05-03: Invite token generation and management
 - [x] 05-04: Invite claim flow with Discord OAuth
 - [x] 05-05: Seat revocation with immediate kick
-- [ ] 05-06: Mid-subscription seat additions
+- [x] 05-06: Mid-subscription seat additions
 
 Delivered (05-01):
 - isPrimaryOwner field on Member model (purchaser protection)
@@ -170,8 +172,16 @@ Delivered (05-05):
 - Dashboard revoke buttons with confirmation dialog
 - Success notification toast after revocation
 
+Delivered (05-06):
+- POST /team/seats: seat addition endpoint with Stripe quantity update
+- customer.subscription.updated webhook syncs seat counts
+- mapStripeStatus helper for consistent status mapping
+- Team subscription deletion kicks all team members
+- Dashboard Add Seats section with quantity controls
+- Confirmation dialog warns about immediate prorated charge
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 05-05-PLAN.md
+Stopped at: Completed 05-06-PLAN.md (Phase 5 Complete)
 Resume file: None

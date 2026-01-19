@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 3 - Individual Subscription (Complete)
+**Current focus:** Phase 4 - Introduction Requirement (In Progress)
 
 ## Current Position
 
-Phase: 3 of 8 (Individual Subscription)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-01-18 - Phase 3 verified and complete
+Phase: 4 of 8 (Introduction Requirement)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-19 - Completed 04-01-PLAN.md
 
-Progress: [████████░░] 50%
+Progress: [████████░░] 55%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: 6.2 min
-- Total execution time: 62 min
+- Total plans completed: 11
+- Average duration: 5.9 min
+- Total execution time: 65 min
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [████████░░] 50%
 | 1-Foundation | 3/3 | 24 min | 8 min |
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
+| 4-Introduction | 1/3 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (6 min), 02-04 (5 min), 03-03 (4 min), 03-01 (8 min), 03-02 (8 min)
-- Trend: Consistent execution, averaging 5-8 min per plan
+- Last 5 plans: 02-04 (5 min), 03-03 (4 min), 03-01 (8 min), 03-02 (8 min), 04-01 (3 min)
+- Trend: Consistent execution, averaging 3-8 min per plan
 
 *Updated after each plan completion*
 
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 | 03-02 | Async role assignment with p-retry | Fire-and-forget with exponential backoff |
 | 03-02 | Separate claim cookies | Avoid conflicts with auth cookies |
 | 03-02 | Channel-by-channel Discord permissions | Fine-grained control over Squire access |
+| 04-01 | MessageContent privileged intent | Required for reading message content |
+| 04-01 | Top-level messages only | Replies filtered out per CONTEXT.md |
+| 04-01 | MIN_INTRO_LENGTH = 100 | Constant exported for reuse |
 
 ### Pending Todos
 
@@ -85,41 +89,25 @@ None.
 - Stripe CLI not installed - webhook signature testing pending user setup
 - Discord bot requires user setup (Developer Portal, bot token, guild invite)
 - STRIPE_INDIVIDUAL_PRICE_ID must be set before testing checkout
+- DISCORD_INTRODUCTIONS_CHANNEL_ID must be set before testing introduction detection
+- Message Content Intent must be enabled in Discord Developer Portal
 
-## Phase 3 Progress
+## Phase 4 Progress
 
-Individual subscription progress:
-- [x] 03-01: Account creation and checkout endpoints
-- [x] 03-02: Claim Discord flow
-- [x] 03-03: The Gatekeeper landing page
+Introduction requirement progress:
+- [x] 04-01: Message event infrastructure
+- [ ] 04-02: Role promotion logic (next)
+- [ ] 04-03: Subscription end handling
 
-**Phase 3 Complete** ✓
-
-Delivered (03-01):
-- Argon2id password hashing (OWASP 2025 parameters)
-- POST /auth/signup endpoint (email+password registration)
-- POST /auth/login endpoint (timing-safe verification)
-- POST /checkout endpoint (Stripe Checkout session creation)
-- checkout.session.completed webhook handler (subscription activation)
-- passwordHash field added to Member model
-- Email unique constraint on Member model
-
-Delivered (03-02):
-- GET /dashboard endpoint (subscription status and claim availability)
-- GET /claim/discord endpoint (initiate Discord OAuth for claim)
-- GET /claim/callback endpoint (complete claim, assign Squire role)
-- Async role assignment with p-retry (fire-and-forget pattern)
-- Discord server configured (Squire role restricted to #introductions)
-
-Delivered (03-03):
-- GET / serves The Gatekeeper landing page
-- Medieval/guild visual theme with Cinzel/Crimson fonts
-- Side-by-side pricing cards ($99 Individual, $299 Company)
-- Static file serving via express.static()
-- Responsive design (cards stack on mobile)
+Delivered (04-01):
+- Discord client with MessageContent and GuildMessages intents
+- DISCORD_INTRODUCTIONS_CHANNEL_ID env configuration
+- lastGuidanceDmAt field for rate-limiting guidance DMs
+- Introduction message event handlers (messageCreate, messageUpdate)
+- Channel filtering (only #introductions), bot filtering, reply filtering
 
 ## Session Continuity
 
-Last session: 2026-01-18
-Stopped at: Phase 3 execution complete, verification passed
+Last session: 2026-01-19
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None

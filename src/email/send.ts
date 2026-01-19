@@ -1,4 +1,12 @@
 import { createEmailProvider, type EmailResult } from './provider.js';
+import {
+  welcomeEmailTemplate,
+  claimReminderEmailTemplate,
+  paymentFailureEmailTemplate,
+  paymentRecoveredEmailTemplate,
+  seatInviteEmailTemplate,
+} from './templates.js';
+import { logger } from '../index.js';
 
 /**
  * Singleton email provider instance
@@ -16,4 +24,120 @@ export async function testEmailConnection(): Promise<EmailResult> {
     subject: 'Email System Test',
     text: 'If you receive this, the email system is working.',
   });
+}
+
+/**
+ * Send welcome email after successful checkout
+ * Includes claim URL for Discord access
+ */
+export async function sendWelcomeEmail(
+  email: string,
+  claimUrl: string
+): Promise<EmailResult> {
+  const { subject, text } = welcomeEmailTemplate({ claimUrl });
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, success: result.success }, 'Welcome email sent');
+  return result;
+}
+
+/**
+ * Send claim reminder email for members who haven't claimed Discord access
+ * Tone varies based on daysSincePurchase (cheeky at 30+ days)
+ */
+export async function sendClaimReminderEmail(
+  email: string,
+  claimUrl: string,
+  daysSincePurchase: number
+): Promise<EmailResult> {
+  const { subject, text } = claimReminderEmailTemplate({
+    claimUrl,
+    daysSincePurchase,
+  });
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, daysSincePurchase, success: result.success }, 'Claim reminder email sent');
+  return result;
+}
+
+/**
+ * Send payment failure email when invoice.payment_failed fires
+ * Includes portal URL and grace period timeline
+ */
+export async function sendPaymentFailureEmail(
+  email: string,
+  portalUrl: string,
+  gracePeriodHours = 48
+): Promise<EmailResult> {
+  const { subject, text } = paymentFailureEmailTemplate({
+    portalUrl,
+    gracePeriodHours,
+  });
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, success: result.success }, 'Payment failure email sent');
+  return result;
+}
+
+/**
+ * Send payment recovered email when invoice.paid fires after failure
+ * Message varies based on whether member was in Debtor state
+ */
+export async function sendPaymentRecoveredEmail(
+  email: string,
+  wasInDebtorState: boolean
+): Promise<EmailResult> {
+  const { subject, text } = paymentRecoveredEmailTemplate({
+    wasInDebtorState,
+  });
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, wasInDebtorState, success: result.success }, 'Payment recovered email sent');
+  return result;
+}
+
+/**
+ * Send seat invite email to a prospective team member
+ * Provides full context about The Revenue Council for recipients who may not know it
+ */
+export async function sendSeatInviteEmail(
+  email: string,
+  teamName: string,
+  seatTier: 'OWNER' | 'TEAM_MEMBER',
+  claimUrl: string
+): Promise<EmailResult> {
+  const { subject, text } = seatInviteEmailTemplate({ teamName, seatTier, claimUrl });
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info(
+    { email, teamName, seatTier, success: result.success, messageId: result.messageId },
+    'Seat invite email sent'
+  );
+
+  return result;
 }

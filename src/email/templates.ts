@@ -178,3 +178,62 @@ If thou hast questions, reply to this message.
 `,
   };
 }
+
+interface SeatInviteParams {
+  teamName: string;
+  seatTier: 'OWNER' | 'TEAM_MEMBER';
+  claimUrl: string;
+}
+
+/**
+ * Seat invite email template
+ * Sent when a team owner creates an invite and provides an email address
+ * Provides full context about The Revenue Council for recipients who may not know it
+ */
+export function seatInviteEmailTemplate(params: SeatInviteParams): { subject: string; text: string } {
+  const { teamName, seatTier, claimUrl } = params;
+
+  const seatDescription = seatTier === 'OWNER'
+    ? 'an Owner seat (with access to exclusive owner-only channels)'
+    : 'a Team Member seat';
+
+  return {
+    subject: `You're invited to join ${teamName} at The Revenue Council`,
+    text: `Hail!
+
+Someone from ${teamName} hath invited thee to join The Revenue Council.
+
+WHAT IS THE REVENUE COUNCIL?
+
+The Revenue Council is a professional community of entrepreneurs united in purpose. We gather in our Discord halls for:
+- Networking with fellow business owners
+- Referrals and collaboration opportunities
+- Peer support and knowledge sharing
+- Exclusive resources and discussions
+
+THY INVITATION
+
+${teamName} hath granted thee ${seatDescription}. This means thy membership is covered through their company subscription.
+
+TO CLAIM THY SEAT:
+
+1. Visit: ${claimUrl}
+2. Connect thy Discord account
+3. Join our Discord server
+4. Introduce thyself in #introductions
+
+Note: Once introduced, thou shalt have full access to the guild.
+
+Note: This invitation doth not expire. Claim it when thou art ready.
+
+We look forward to welcoming thee to the guild!
+
+The Gatekeeper
+The Revenue Council
+
+---
+Questions about this invitation? Contact thy organization admin at ${teamName}.
+Questions about The Revenue Council? Reply to this email.
+`,
+  };
+}

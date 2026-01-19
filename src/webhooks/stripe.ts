@@ -6,6 +6,7 @@ import { prisma } from '../lib/prisma.js';
 import { removeAndKickAsync } from '../lib/role-assignment.js';
 import { handlePaymentFailure } from '../billing/failure-handler.js';
 import { handlePaymentRecovery } from '../billing/recovery-handler.js';
+import { sendWelcomeEmail } from '../email/send.js';
 import { logger } from '../index.js';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -186,6 +187,15 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
           },
           'Company checkout completed, team subscription activated'
         );
+
+        // Send welcome email to company purchaser (fire and forget)
+        const purchaser = await prisma.member.findUnique({ where: { id: memberId } });
+        if (purchaser?.email) {
+          const claimUrl = `${env.APP_URL}/claim`;
+          sendWelcomeEmail(purchaser.email, claimUrl).catch(err => {
+            logger.error({ memberId, err }, 'Failed to send company welcome email');
+          });
+        }
       } else {
         // INDIVIDUAL CHECKOUT: Single member subscription
         const memberId = expandedSession.client_reference_id;
@@ -207,6 +217,15 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
           { memberId, subscriptionId: subscription.id, currentPeriodEnd: firstItem?.current_period_end },
           'Individual checkout completed, subscription activated'
         );
+
+        // Send welcome email (fire and forget)
+        const member = await prisma.member.findUnique({ where: { id: memberId } });
+        if (member?.email) {
+          const claimUrl = `${env.APP_URL}/claim`;
+          sendWelcomeEmail(member.email, claimUrl).catch(err => {
+            logger.error({ memberId, err }, 'Failed to send welcome email');
+          });
+        }
       }
       break;
     }

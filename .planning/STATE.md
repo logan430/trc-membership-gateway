@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 5 of 8 (Team Management)
-Plan: 3 of 6 in current phase
+Plan: 4 of 6 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 05-03-PLAN.md
+Last activity: 2026-01-19 - Completed 05-04-PLAN.md
 
-Progress: [████████░░] 74%
+Progress: [████████░░] 77%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 5.1 min
-- Total execution time: 85 min
+- Total plans completed: 17
+- Average duration: 5.2 min
+- Total execution time: 92 min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [████████░░] 74%
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
-| 5-Team | 3/6 | 12 min | 4 min |
+| 5-Team | 4/6 | 19 min | 4.75 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-03 (5 min), 04-02 (3 min), 05-01 (4 min), 05-02 (3 min), 05-03 (5 min)
-- Trend: Consistent execution, averaging 3-5 min per plan
+- Last 5 plans: 04-02 (3 min), 05-01 (4 min), 05-02 (3 min), 05-03 (5 min), 05-04 (7 min)
+- Trend: Consistent execution, averaging 3-7 min per plan
 
 *Updated after each plan completion*
 
@@ -96,6 +96,10 @@ Recent decisions affecting current work:
 | 05-03 | base64url encoding | URL-safe without escaping |
 | 05-03 | timingSafeEqual for validation | Prevents timing attacks |
 | 05-03 | Seat check before invite creation | Fail fast with clear error |
+| 05-04 | Discord OAuth only for team claim | Per CONTEXT.md - no email/password required |
+| 05-04 | Prisma $transaction for seat claim | Atomic operation prevents race conditions |
+| 05-04 | Individual subscriber blocking | Clear message, prevents duplicate membership |
+| 05-04 | INDIVIDUAL seatTier maps to Lord | Per CONTEXT.md hierarchy: Individual = Owner |
 
 ### Pending Todos
 
@@ -119,7 +123,7 @@ Team management progress:
 - [x] 05-01: Schema updates and company checkout flow
 - [x] 05-02: Team dashboard with seat view
 - [x] 05-03: Invite token generation and management
-- [ ] 05-04: Invite claim flow with Discord OAuth
+- [x] 05-04: Invite claim flow with Discord OAuth
 - [ ] 05-05: Seat revocation with immediate kick
 - [ ] 05-06: Mid-subscription seat additions
 
@@ -146,8 +150,16 @@ Delivered (05-03):
 - GET /team/invites: list all team invites
 - DELETE /team/invites/:id: revoke invite
 
+Delivered (05-04):
+- GET /team/claim/info: fetch invite details for landing page
+- GET /team/claim: validate token, redirect to Discord OAuth
+- GET /team/claim/callback: atomic seat claim with transaction
+- Individual subscriber blocking with clear error message
+- INDIVIDUAL seatTier correctly maps to Lord role
+- public/team-claim.html landing page with medieval theme
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 05-03-PLAN.md
+Stopped at: Completed 05-04-PLAN.md
 Resume file: None

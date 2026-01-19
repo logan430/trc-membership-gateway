@@ -33,12 +33,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Invalid webhook signatures are rejected with 400
   4. All Stripe events are logged with event ID for deduplication
   5. Database schema captures all fields needed for future CRM export
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 01-01: Project skeleton and environment configuration
-- [ ] 01-02: Database schema and Prisma setup
-- [ ] 01-03: Stripe webhook handler with signature verification and idempotency
+- [x] 01-01-PLAN.md - Project skeleton and environment configuration (Wave 1)
+- [ ] 01-02-PLAN.md - Database schema and Prisma setup (Wave 1)
+- [ ] 01-03-PLAN.md - Stripe webhook handler with signature verification and idempotency (Wave 2)
 
 ### Phase 2: Discord Integration
 **Goal**: Users can link their Discord account and the bot can manage roles
@@ -171,7 +171,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 1/3 | In progress | - |
 | 2. Discord Integration | 0/4 | Not started | - |
 | 3. Individual Subscription | 0/3 | Not started | - |
 | 4. Introduction Requirement | 0/3 | Not started | - |
@@ -182,4 +182,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2025-01-18*
+*Phase 1 planned: 2025-01-18*
 *Total requirements: 41 | Total phases: 8 | Total plans: 27*

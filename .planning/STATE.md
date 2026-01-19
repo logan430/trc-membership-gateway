@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 3 of 8 (Individual Subscription)
-Plan: 3 of 5 in current phase
+Plan: 1 of 5 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 03-03-PLAN.md
+Last activity: 2026-01-18 - Completed 03-01-PLAN.md
 
 Progress: [████████░░] 42%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 6 min
-- Total execution time: 46 min
+- Total execution time: 54 min
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [████████░░] 42%
 |-------|-------|-------|----------|
 | 1-Foundation | 3/3 | 24 min | 8 min |
 | 2-Discord | 4/4 | 18 min | 4.5 min |
-| 3-Individual | 1/5 | 4 min | 4 min |
+| 3-Individual | 2/5 | 12 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (8 min), 02-02 (5 min), 02-03 (6 min), 02-04 (5 min), 03-03 (4 min)
-- Trend: Fast execution, consistently under 5 min per plan
+- Last 5 plans: 02-02 (5 min), 02-03 (6 min), 02-04 (5 min), 03-03 (4 min), 03-01 (8 min)
+- Trend: Consistent execution, averaging 5-8 min per plan
 
 *Updated after each plan completion*
 
@@ -67,6 +67,11 @@ Recent decisions affecting current work:
 | 03-03 | Medieval theme: Cinzel + Crimson Text | Consistent with "Revenue Council" branding |
 | 03-03 | Dark (#1a1a2e) + gold (#d4af37) palette | Medieval guild aesthetic |
 | 03-03 | Static files before routes | Named routes take precedence |
+| 03-01 | Argon2id with OWASP 2025 params | Industry standard for password hashing |
+| 03-01 | Email unique constraint on Member | Proper lookup and prevent duplicates |
+| 03-01 | Timing-safe password verification | Prevent timing attacks on login |
+| 03-01 | Anti-enumeration on signup | Same response for existing/new emails |
+| 03-01 | currentPeriodEnd from SubscriptionItem | Stripe SDK v20 API change |
 
 ### Pending Todos
 
@@ -76,15 +81,25 @@ None.
 
 - Stripe CLI not installed - webhook signature testing pending user setup
 - Discord bot requires user setup (Developer Portal, bot token, guild invite)
+- STRIPE_INDIVIDUAL_PRICE_ID must be set before testing checkout
 
 ## Phase 3 Progress
 
 Individual subscription progress:
-- [ ] 03-01: Account creation and checkout endpoints
-- [ ] 03-02: User dashboard with subscription status
+- [x] 03-01: Account creation and checkout endpoints
+- [ ] 03-02: Claim Discord flow
 - [x] 03-03: The Gatekeeper landing page
-- [ ] 03-04: Claim Discord flow
-- [ ] 03-05: Post-claim redirect to Discord
+- [ ] 03-04: User dashboard
+- [ ] 03-05: Post-claim redirect
+
+Delivered (03-01):
+- Argon2id password hashing (OWASP 2025 parameters)
+- POST /auth/signup endpoint (email+password registration)
+- POST /auth/login endpoint (timing-safe verification)
+- POST /checkout endpoint (Stripe Checkout session creation)
+- checkout.session.completed webhook handler (subscription activation)
+- passwordHash field added to Member model
+- Email unique constraint on Member model
 
 Delivered (03-03):
 - GET / serves The Gatekeeper landing page
@@ -95,6 +110,6 @@ Delivered (03-03):
 
 ## Session Continuity
 
-Last session: 2026-01-19
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-01-18
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None

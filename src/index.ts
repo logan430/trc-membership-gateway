@@ -10,6 +10,8 @@ import { authRouter } from './routes/auth.js';
 import { checkoutRouter } from './routes/checkout.js';
 import { companyCheckoutRouter } from './routes/company-checkout.js';
 import { dashboardRouter } from './routes/dashboard.js';
+import { teamDashboardRouter } from './routes/team-dashboard.js';
+import { teamInvitesRouter } from './routes/team-invites.js';
 import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
 import { startBot } from './bot/client.js';
@@ -53,6 +55,12 @@ app.use('/company', companyCheckoutRouter);
 
 // Dashboard routes (subscription status, claim availability)
 app.use('/dashboard', dashboardRouter);
+
+// Team dashboard routes (seat management for team owners)
+app.use('/team', teamDashboardRouter);
+
+// Team invite routes (invite token management for team owners)
+app.use('/team', teamInvitesRouter);
 
 // Claim routes (Discord OAuth claim flow for paid users)
 app.use('/claim', claimRouter);

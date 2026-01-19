@@ -70,6 +70,7 @@ model Member {
   team                Team?              @relation(fields: [teamId], references: [id])
   teamId              String?
   isTeamAdmin         Boolean            @default(false)
+  isPrimaryOwner      Boolean            @default(false)  // Cannot be revoked by other org members
 
   // Audit timestamps
   createdAt           DateTime           @default(now())
@@ -108,11 +109,10 @@ model PendingInvite {
   team        Team      @relation(fields: [teamId], references: [id])
   teamId      String
 
-  // Invite details
-  email       String
+  // Invite details (no email/expiresAt per CONTEXT.md: multi-use tokens never expire)
   seatTier    SeatTier  // OWNER or TEAM_MEMBER
   token       String    @unique
-  expiresAt   DateTime
+  createdBy   String    // Member ID who created the invite
 
   // Tracking
   acceptedAt  DateTime?
@@ -123,7 +123,6 @@ model PendingInvite {
 
   @@index([teamId])
   @@index([token])
-  @@index([email])
 }
 
 // ============================================

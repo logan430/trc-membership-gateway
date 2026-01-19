@@ -32,6 +32,8 @@ const envSchema = z.object({
 
   // Stripe Products
   STRIPE_INDIVIDUAL_PRICE_ID: z.string().startsWith('price_').optional(), // Individual Monthly price ID
+  STRIPE_OWNER_SEAT_PRICE_ID: z.string().startsWith('price_').optional(), // Company owner seat monthly price
+  STRIPE_TEAM_SEAT_PRICE_ID: z.string().startsWith('price_').optional(), // Company team seat monthly price
 });
 
 export const env = envSchema.parse(process.env);

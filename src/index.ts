@@ -4,6 +4,7 @@ import cors from 'cors';
 import pino from 'pino';
 import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
+import { startBot } from './bot/client.js';
 
 // Initialize logger (exported for use in other modules)
 export const logger = pino({
@@ -39,6 +40,11 @@ app.get('/health', (req, res) => {
 // Start server
 app.listen(env.PORT, () => {
   logger.info({ port: env.PORT, env: env.NODE_ENV }, 'Server started');
+
+  // Start Discord bot after HTTP server is ready
+  startBot().catch((error) => {
+    logger.error({ error }, 'Failed to start Discord bot');
+  });
 });
 
 export { app };

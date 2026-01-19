@@ -343,6 +343,94 @@
       }
     }
 
+    /* Add Seats Section */
+    .add-seats-section {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+    }
+
+    .add-seats-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .add-seats-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .seat-input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity-control button {
+      background: #333;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .quantity-control button:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .quantity-control input {
+      width: 50px;
+      text-align: center;
+      background: var(--bg-dark);
+      color: #fff;
+      border: 1px solid var(--gold);
+      border-left: none;
+      border-right: none;
+      height: 30px;
+      font-family: 'Cinzel', serif;
+    }
+
+    .btn-purchase {
+      background: var(--gold);
+      color: var(--bg-dark);
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Cinzel', serif;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-purchase:hover {
+      background: var(--gold-light);
+    }
+
+    .btn-purchase:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .proration-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-header h1 {
@@ -419,6 +507,33 @@
         </div>
       </section>
 
+      <!-- Add Seats Section -->
+      <div class="add-seats-section" id="add-seats-section" style="display: none;">
+        <h3>Add More Seats</h3>
+        <div class="add-seats-form">
+          <div class="seat-input-group">
+            <label>Owner Seats</label>
+            <div class="quantity-control">
+              <button type="button" onclick="decrementQuantity('owner')">-</button>
+              <input type="number" id="owner-quantity" value="0" min="0" max="50" readonly>
+              <button type="button" onclick="incrementQuantity('owner')">+</button>
+            </div>
+          </div>
+          <div class="seat-input-group">
+            <label>Team Seats</label>
+            <div class="quantity-control">
+              <button type="button" onclick="decrementQuantity('team')">-</button>
+              <input type="number" id="team-quantity" value="0" min="0" max="50" readonly>
+              <button type="button" onclick="incrementQuantity('team')">+</button>
+            </div>
+          </div>
+          <button class="btn-purchase" onclick="purchaseSeats()">
+            Purchase Additional Seats
+          </button>
+          <p class="proration-note">Seats will be prorated and charged immediately.</p>
+        </div>
+      </div>
+
       <!-- Action Buttons Placeholder (for future invite/revoke features) -->
       <div class="action-buttons" id="action-buttons" style="display: none;">
         <button class="action-button" id="invite-button" disabled>Invite Members</button>
@@ -484,6 +599,83 @@
         showNotification('Seat revoked successfully');
       } catch (error) {
         alert('Failed to revoke seat. Please try again.');
+      }
+    }
+
+    // Quantity control functions for adding seats
+    function incrementQuantity(type) {
+      const input = document.getElementById(`${type}-quantity`);
+      input.value = Math.min(50, parseInt(input.value) + 1);
+    }
+
+    function decrementQuantity(type) {
+      const input = document.getElementById(`${type}-quantity`);
+      input.value = Math.max(0, parseInt(input.value) - 1);
+    }
+
+    // Purchase additional seats
+    async function purchaseSeats() {
+      const ownerQty = parseInt(document.getElementById('owner-quantity').value);
+      const teamQty = parseInt(document.getElementById('team-quantity').value);
+
+      if (ownerQty === 0 && teamQty === 0) {
+        alert('Please select at least one seat to add.');
+        return;
+      }
+
+      const confirmed = confirm(
+        `Add ${ownerQty} owner seat(s) and ${teamQty} team seat(s)?\n\n` +
+        `You will be charged the prorated amount immediately.`
+      );
+
+      if (!confirmed) return;
+
+      try {
+        // Add owner seats if any
+        if (ownerQty > 0) {
+          const response = await fetch('/team/seats', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAccessToken()}`,
+            },
+            body: JSON.stringify({ seatType: 'owner', quantity: ownerQty }),
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error);
+          }
+        }
+
+        // Add team seats if any
+        if (teamQty > 0) {
+          const response = await fetch('/team/seats', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAccessToken()}`,
+            },
+            body: JSON.stringify({ seatType: 'team', quantity: teamQty }),
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error);
+          }
+        }
+
+        // Reset inputs
+        document.getElementById('owner-quantity').value = 0;
+        document.getElementById('team-quantity').value = 0;
+
+        // Show notification
+        showNotification('Seats purchased successfully!');
+
+        // Wait a moment for webhook to process, then refresh
+        setTimeout(loadDashboard, 2000);
+      } catch (error) {
+        alert(`Failed to purchase seats: ${error.message}`);
       }
     }
 
@@ -641,8 +833,9 @@
         teamCount.textContent = '0 members';
       }
 
-      // Show action buttons for primary owner (placeholder for future features)
+      // Show add seats section and action buttons for owners
       if (data.currentUser.isPrimaryOwner) {
+        document.getElementById('add-seats-section').style.display = 'block';
         document.getElementById('action-buttons').style.display = 'flex';
       }
     }

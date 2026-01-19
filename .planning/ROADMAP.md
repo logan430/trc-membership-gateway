@@ -85,12 +85,12 @@ Plans:
   4. Member can access full server (except owners-only channels)
   5. Owner can access owners-only channels
   6. Bot removes all managed roles when subscription is canceled/expired
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 04-01: Introduction detection in #introductions
-- [ ] 04-02: Role promotion logic (Member vs Owner)
-- [ ] 04-03: Cancellation/expiration role removal
+- [ ] 04-01-PLAN.md - Message event infrastructure and introduction detection (Wave 1)
+- [ ] 04-02-PLAN.md - Introduction validation and role promotion logic (Wave 2)
+- [ ] 04-03-PLAN.md - Subscription cancellation handler with role removal and kick (Wave 1)
 
 ### Phase 5: Team Management
 **Goal**: Companies can purchase plans and manage team seats
@@ -174,7 +174,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Discord Integration | 4/4 | Complete | 2026-01-18 |
 | 3. Individual Subscription | 3/3 | Complete | 2026-01-18 |
-| 4. Introduction Requirement | 0/3 | Not started | - |
+| 4. Introduction Requirement | 0/3 | Planned | - |
 | 5. Team Management | 0/5 | Not started | - |
 | 6. Billing Failure | 0/3 | Not started | - |
 | 7. Email Notifications | 0/4 | Not started | - |
@@ -185,4 +185,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 1 planned: 2025-01-18*
 *Phase 2 planned: 2026-01-18*
 *Phase 3 planned: 2026-01-18*
+*Phase 4 planned: 2026-01-18*
 *Total requirements: 41 | Total phases: 8 | Total plans: 27*

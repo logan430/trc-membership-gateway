@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 6 - Billing Failure (Next)
+**Current focus:** Phase 6 - Billing Failure
 
 ## Current Position
 
-Phase: 5 of 8 (Team Management)
-Plan: 6 of 6 in current phase
-Status: Phase complete, verified ✓
-Last activity: 2026-01-19 - Completed Phase 5 execution and verification
+Phase: 6 of 8 (Billing Failure)
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-01-19 - Completed 06-01-PLAN.md
 
-Progress: [██████░░░░] 63% (5/8 phases complete)
+Progress: [██████░░░░] 65% (20/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 5.0 min
-- Total execution time: 99 min
+- Total plans completed: 20
+- Average duration: 5.2 min
+- Total execution time: 103 min
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [██████░░░░] 63% (5/8 phases complete)
 | 3-Individual | 3/3 | 20 min | 6.7 min |
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
+| 6-Billing Failure | 1/4 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (3 min), 05-03 (5 min), 05-04 (7 min), 05-05 (3 min), 05-06 (4 min)
+- Last 5 plans: 05-03 (5 min), 05-04 (7 min), 05-05 (3 min), 05-06 (4 min), 06-01 (4 min)
 - Trend: Consistent execution, averaging 3-7 min per plan
 
 *Updated after each plan completion*
@@ -107,6 +108,7 @@ Recent decisions affecting current work:
 | 05-06 | always_invoice proration | Immediate charge for new seats |
 | 05-06 | Webhook-driven database sync | Stripe is source of truth for seat counts |
 | 05-06 | mapStripeStatus helper | Consistent status mapping across handlers |
+| 06-01 | String array for notification tracking | sentBillingNotifications tracks notification keys to prevent duplicates |
 
 ### Pending Todos
 
@@ -123,66 +125,25 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
 
-## Phase 5 Progress
+## Phase 6 Progress
 
-Team management progress:
-- [x] 05-01: Schema updates and company checkout flow
-- [x] 05-02: Team dashboard with seat view
-- [x] 05-03: Invite token generation and management
-- [x] 05-04: Invite claim flow with Discord OAuth
-- [x] 05-05: Seat revocation with immediate kick
-- [x] 05-06: Mid-subscription seat additions
+Billing failure handling progress:
+- [x] 06-01: Schema and channel foundation
+- [ ] 06-02: Payment failure webhook handlers
+- [ ] 06-03: Notification system and scheduling
+- [ ] 06-04: Payment recovery and restoration
 
-Delivered (05-01):
-- isPrimaryOwner field on Member model (purchaser protection)
-- PendingInvite model updated (no email/expiresAt, has createdBy)
-- STRIPE_OWNER_SEAT_PRICE_ID and STRIPE_TEAM_SEAT_PRICE_ID env vars
-- POST /company/checkout creates Team before Stripe session
-- Multi-line_item checkout with owner and team seat prices
-- Webhook detects company checkout via planType metadata
-- Purchaser linked to team as isPrimaryOwner with OWNER seatTier
-
-Delivered (05-02):
-- GET /team/dashboard API endpoint (owner-only access)
-- Seat summary: owner X/Y, team X/Y
-- Member details: name, email, status, intro completion
-- /team-dashboard.html with medieval theme
-- Responsive design, error handling for 401/403/404
-
-Delivered (05-03):
-- generateInviteToken(): 32-byte crypto token, base64url encoded
-- validateToken(): timing-safe comparison for claim flow
-- POST /team/invites: create invite with seat check
-- GET /team/invites: list all team invites
-- DELETE /team/invites/:id: revoke invite
-
-Delivered (05-04):
-- GET /team/claim/info: fetch invite details for landing page
-- GET /team/claim: validate token, redirect to Discord OAuth
-- GET /team/claim/callback: atomic seat claim with transaction
-- Individual subscriber blocking with clear error message
-- INDIVIDUAL seatTier correctly maps to Lord role
-- public/team-claim.html landing page with medieval theme
-
-Delivered (05-05):
-- revokeAndKickAsync: generic farewell DM, remove roles, kick from server
-- DELETE /team/members/:memberId: owner-only revocation endpoint
-- Primary owner protection (cannot be revoked by other team members)
-- Self-revocation blocked (cannot revoke own seat)
-- Dashboard revoke buttons with confirmation dialog
-- Success notification toast after revocation
-
-Delivered (05-06):
-- POST /team/seats: seat addition endpoint with Stripe quantity update
-- customer.subscription.updated webhook syncs seat counts
-- mapStripeStatus helper for consistent status mapping
-- Team subscription deletion kicks all team members
-- Dashboard Add Seats section with quantity controls
-- Confirmation dialog warns about immediate prorated charge
+Delivered (06-01):
+- Billing failure tracking fields on Member model (paymentFailedAt, gracePeriodEndsAt, debtorStateEndsAt, previousRole, isInDebtorState, sentBillingNotifications)
+- Billing failure tracking fields on Team model (paymentFailedAt, gracePeriodEndsAt, debtorStateEndsAt)
+- DISCORD_BILLING_SUPPORT_CHANNEL_ID env var (optional)
+- ensureBillingSupportChannel utility function
+- #billing-support channel created on bot startup with correct permissions
+- Pinned instructions message for Debtors
 
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Phase 5 complete and verified
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None
-Next: Phase 6 - Billing Failure
+Next: 06-02 - Payment failure webhook handlers

@@ -64,12 +64,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Email Notifications
 
-- [ ] **EMAIL-01**: Email infrastructure is configured (transactional email provider)
-- [ ] **EMAIL-02**: Welcome email sent after successful payment
-- [ ] **EMAIL-03**: Claim reminder email sent if user paid but hasn't linked Discord (after 24h)
-- [ ] **EMAIL-04**: Payment failure email sent when subscription payment fails
-- [ ] **EMAIL-05**: Payment recovered email sent when payment succeeds after failure
-- [ ] **EMAIL-06**: Seat invite email sent to teammate with claim link
+- [x] **EMAIL-01**: Email infrastructure is configured (transactional email provider)
+- [x] **EMAIL-02**: Welcome email sent after successful payment
+- [x] **EMAIL-03**: Claim reminder email sent if user paid but hasn't linked Discord (after 24h)
+- [x] **EMAIL-04**: Payment failure email sent when subscription payment fails
+- [x] **EMAIL-05**: Payment recovered email sent when payment succeeds after failure
+- [x] **EMAIL-06**: Seat invite email sent to teammate with claim link
 
 ### Operations
 
@@ -156,12 +156,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BILL-03 | Phase 6 | Complete |
 | BILL-04 | Phase 6 | Complete |
 | BILL-05 | Phase 6 | Complete |
-| EMAIL-01 | Phase 7 | Pending |
-| EMAIL-02 | Phase 7 | Pending |
-| EMAIL-03 | Phase 7 | Pending |
-| EMAIL-04 | Phase 7 | Pending |
-| EMAIL-05 | Phase 7 | Pending |
-| EMAIL-06 | Phase 7 | Pending |
+| EMAIL-01 | Phase 7 | Complete |
+| EMAIL-02 | Phase 7 | Complete |
+| EMAIL-03 | Phase 7 | Complete |
+| EMAIL-04 | Phase 7 | Complete |
+| EMAIL-05 | Phase 7 | Complete |
+| EMAIL-06 | Phase 7 | Complete |
 | OPS-01 | Phase 1 | Complete |
 | OPS-02 | Phase 8 | Pending |
 | OPS-03 | Phase 8 | Pending |
@@ -174,4 +174,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2025-01-18*
-*Last updated: 2026-01-19 after Phase 6 completion*
+*Last updated: 2026-01-19 after Phase 7 completion*

@@ -196,3 +196,115 @@ export async function sendKickNotificationDm(memberId: string): Promise<boolean>
     return false;
   }
 }
+
+/**
+ * Send a grace period recovery DM when payment is recovered during grace period
+ * @param memberId - Database member ID
+ */
+export async function sendGracePeriodRecoveryDm(memberId: string): Promise<boolean> {
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+
+  if (!member?.discordId) {
+    logger.warn({ memberId }, 'Cannot send grace period recovery DM - no discordId');
+    return false;
+  }
+
+  try {
+    const discordUser = await discordClient.users.fetch(member.discordId);
+
+    const message =
+      `Huzzah! The Treasury brings glad tidings!\n\n` +
+      `Thy payment hath been received and thy standing with The Revenue Council remaineth intact.\n\n` +
+      `We thank thee for thy swift attention to this matter.\n\n` +
+      `The Council celebrates thy continued membership!`;
+
+    await discordUser.send({ content: message });
+    logger.info({ memberId }, 'Grace period recovery DM sent');
+    return true;
+  } catch (error) {
+    logger.warn({ memberId, error }, 'Failed to send grace period recovery DM');
+    return false;
+  }
+}
+
+/**
+ * Send a Debtor state recovery DM when payment is recovered and role is restored
+ * @param memberId - Database member ID
+ * @param restoredRole - The role that was restored (Knight or Lord)
+ */
+export async function sendDebtorRecoveryDm(
+  memberId: string,
+  restoredRole: string
+): Promise<boolean> {
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+
+  if (!member?.discordId) {
+    logger.warn({ memberId }, 'Cannot send Debtor recovery DM - no discordId');
+    return false;
+  }
+
+  try {
+    const discordUser = await discordClient.users.fetch(member.discordId);
+
+    const message =
+      `Welcome back to The Revenue Council!\n\n` +
+      `Thy payment hath been received and thy full access is now restored.\n\n` +
+      `Thou hast been restored to the rank of ${restoredRole}.\n\n` +
+      `The Council celebrates thy return! May thy continued membership bring prosperity.`;
+
+    await discordUser.send({ content: message });
+    logger.info({ memberId, restoredRole }, 'Debtor recovery DM sent');
+    return true;
+  } catch (error) {
+    logger.warn({ memberId, restoredRole, error }, 'Failed to send Debtor recovery DM');
+    return false;
+  }
+}
+
+/**
+ * Send a team recovery DM when team payment is recovered
+ * @param memberId - Database member ID
+ * @param isOwner - True if member is team owner (gets full details)
+ * @param restoredRole - The role that was restored (optional, for owners in Debtor state)
+ */
+export async function sendTeamRecoveryDm(
+  memberId: string,
+  isOwner: boolean,
+  restoredRole?: string
+): Promise<boolean> {
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+
+  if (!member?.discordId) {
+    logger.warn({ memberId }, 'Cannot send team recovery DM - no discordId');
+    return false;
+  }
+
+  try {
+    const discordUser = await discordClient.users.fetch(member.discordId);
+
+    const message = isOwner
+      ? // Owner gets full message with role restoration
+        `Welcome back to The Revenue Council!\n\n` +
+        `Thy payment hath been received and thy full access is now restored.\n\n` +
+        (restoredRole ? `Thou hast been restored to the rank of ${restoredRole}.\n\n` : '') +
+        `Thy team hath been restored.\n\n` +
+        `The Council celebrates thy return! May thy continued membership bring prosperity.`
+      : // Team member gets brief notice
+        `Huzzah! Thy organization's payment matter hath been resolved.\n\n` +
+        `Thy access to The Revenue Council is fully restored.\n\n` +
+        `The Council welcomes thee back!`;
+
+    await discordUser.send({ content: message });
+    logger.info({ memberId, isOwner }, 'Team recovery DM sent');
+    return true;
+  } catch (error) {
+    logger.warn({ memberId, isOwner, error }, 'Failed to send team recovery DM');
+    return false;
+  }
+}

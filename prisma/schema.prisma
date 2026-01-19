@@ -168,3 +168,25 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
 }
+
+model ReconciliationRun {
+  id                String   @id @default(cuid())
+  startedAt         DateTime @default(now())
+  completedAt       DateTime?
+
+  // Counts
+  membersChecked    Int      @default(0)
+  teamsChecked      Int      @default(0)
+  issuesFound       Int      @default(0)
+  issuesFixed       Int      @default(0)
+
+  // Mode
+  autoFixEnabled    Boolean  @default(false)
+  isVerificationRun Boolean  @default(false)
+  triggeredBy       String   // 'scheduled' | 'manual' | 'verification'
+
+  // Results stored as JSON
+  issues            Json     @default("[]")
+
+  @@index([startedAt])
+}

@@ -3,9 +3,10 @@ import helmet from 'helmet';
 import cors from 'cors';
 import pino from 'pino';
 import { env } from './config/env.js';
+import { stripeWebhookRouter } from './webhooks/stripe.js';
 
-// Initialize logger
-const logger = pino({
+// Initialize logger (exported for use in other modules)
+export const logger = pino({
   level: env.NODE_ENV === 'production' ? 'info' : 'debug',
   transport: env.NODE_ENV === 'development'
     ? { target: 'pino-pretty', options: { colorize: true } }
@@ -19,8 +20,12 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 
-// NOTE: Do NOT add express.json() globally - webhook needs raw body
-// JSON parsing will be added to specific routes that need it
+// CRITICAL: Mount webhook route BEFORE express.json()
+// Webhook needs raw body for signature verification
+app.use('/webhooks/stripe', stripeWebhookRouter);
+
+// JSON parsing for all other routes
+app.use(express.json());
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -36,4 +41,4 @@ app.listen(env.PORT, () => {
   logger.info({ port: env.PORT, env: env.NODE_ENV }, 'Server started');
 });
 
-export { app, logger };
+export { app };

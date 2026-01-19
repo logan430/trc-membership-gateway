@@ -16,6 +16,7 @@ import { teamClaimRouter } from './routes/team-claim.js';
 import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
 import { startBot } from './bot/client.js';
+import { startBillingScheduler } from './billing/scheduler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -86,9 +87,14 @@ app.listen(env.PORT, () => {
   logger.info({ port: env.PORT, env: env.NODE_ENV }, 'Server started');
 
   // Start Discord bot after HTTP server is ready
-  startBot().catch((error) => {
-    logger.error({ error }, 'Failed to start Discord bot');
-  });
+  startBot()
+    .then(() => {
+      // Start billing scheduler after bot is ready
+      startBillingScheduler();
+    })
+    .catch((error) => {
+      logger.error({ error }, 'Failed to start Discord bot');
+    });
 });
 
 export { app };

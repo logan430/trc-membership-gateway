@@ -160,11 +160,11 @@ Plans:
   1. Reconciliation job runs daily
   2. Reconciliation detects drift between Stripe subscription status and Discord roles
   3. Reconciliation automatically fixes role mismatches
-**Plans**: TBD
+**Plans**: 2 plans in 2 waves
 
 Plans:
-- [ ] 08-01: Reconciliation job implementation
-- [ ] 08-02: Drift detection and auto-fix logic
+- [ ] 08-01-PLAN.md - Reconciliation infrastructure (schema, env vars, module scaffold) (Wave 1)
+- [ ] 08-02-PLAN.md - Drift detection and auto-fix logic (Wave 2)
 
 ## Progress
 
@@ -180,7 +180,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Team Management | 6/6 | Complete | 2026-01-19 |
 | 6. Billing Failure | 4/4 | Complete | 2026-01-19 |
 | 7. Email Notifications | 4/4 | Complete | 2026-01-19 |
-| 8. Operations | 0/2 | Not started | - |
+| 8. Operations | 0/2 | Planned | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -195,4 +195,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 6 complete: 2026-01-19*
 *Phase 7 planned: 2026-01-19*
 *Phase 7 complete: 2026-01-19*
-*Total requirements: 41 | Total phases: 8 | Total plans: 28*
+*Phase 8 planned: 2026-01-19*
+*Total requirements: 41 | Total phases: 8 | Total plans: 29*

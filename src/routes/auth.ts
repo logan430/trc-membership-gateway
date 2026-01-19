@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { randomUUID } from 'crypto';
 import { parse as parseCookie, serialize as serializeCookie } from 'cookie';
 import {
   verifyToken,
@@ -12,6 +13,12 @@ import {
   verifyMagicLink,
   buildMagicLinkUrl,
 } from '../auth/magic-link.js';
+import {
+  generateAuthUrl,
+  exchangeCode,
+  fetchDiscordUser,
+} from '../auth/discord-oauth.js';
+import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
 
@@ -171,4 +178,125 @@ authRouter.get('/magic-link/verify', async (req: Request, res: Response): Promis
 
   // Redirect to dashboard with token in fragment (client-side only)
   res.redirect(`/dashboard#token=${accessToken}`);
+});
+
+// OAuth state cookie config
+const OAUTH_STATE_COOKIE = 'oauth_state';
+const OAUTH_STATE_OPTIONS = {
+  httpOnly: true,
+  secure: env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  maxAge: 10 * 60, // 10 minutes in seconds
+};
+
+/**
+ * GET /auth/discord
+ * Initiate Discord OAuth2 authorization code flow
+ */
+authRouter.get('/discord', (_req: Request, res: Response): void => {
+  // Generate cryptographic state for CSRF protection
+  const state = randomUUID();
+
+  // Set state cookie
+  res.setHeader(
+    'Set-Cookie',
+    serializeCookie(OAUTH_STATE_COOKIE, state, OAUTH_STATE_OPTIONS)
+  );
+
+  // Redirect to Discord authorization
+  const authUrl = generateAuthUrl(state);
+  res.redirect(authUrl);
+});
+
+/**
+ * GET /auth/callback
+ * Handle Discord OAuth2 callback
+ * Validates state, exchanges code, links Discord, creates session
+ */
+authRouter.get('/callback', async (req: Request, res: Response): Promise<void> => {
+  const { code, state } = req.query;
+
+  // Parse stored state from cookie
+  const cookieHeader = req.headers.cookie ?? '';
+  const cookies = parseCookie(cookieHeader);
+  const storedState = cookies[OAUTH_STATE_COOKIE];
+
+  // Validate state parameter (CSRF protection)
+  if (!state || state !== storedState) {
+    res.redirect('/auth/error?reason=invalid_state');
+    return;
+  }
+
+  // Clear state cookie
+  res.setHeader(
+    'Set-Cookie',
+    serializeCookie(OAUTH_STATE_COOKIE, '', { ...OAUTH_STATE_OPTIONS, maxAge: 0 })
+  );
+
+  // Validate code parameter
+  if (!code || typeof code !== 'string') {
+    res.redirect('/auth/error?reason=no_code');
+    return;
+  }
+
+  try {
+    // Exchange code for tokens
+    const tokens = await exchangeCode(code);
+
+    // Fetch Discord user info
+    const discordUser = await fetchDiscordUser(tokens.access_token);
+
+    // Check if Discord ID already linked to another member
+    const existingMember = await prisma.member.findUnique({
+      where: { discordId: discordUser.id },
+    });
+
+    if (existingMember) {
+      // Discord already linked - prevent duplicate linking per CONTEXT.md
+      res.redirect('/auth/error?reason=discord_already_linked');
+      return;
+    }
+
+    // Create or update member with Discord info
+    // Note: In Phase 3, members will be created at payment time
+    // This creates a stub member for users who link Discord first
+    const member = await prisma.member.create({
+      data: {
+        discordId: discordUser.id,
+        discordUsername: discordUser.global_name ?? discordUser.username,
+        discordAvatar: discordUser.avatar,
+      },
+    });
+
+    // Create session tokens (rememberMe = true for OAuth flow)
+    const accessToken = await createAccessToken(member.id);
+    const refreshToken = await createRefreshToken(member.id, true);
+
+    // Set refresh cookie
+    res.setHeader(
+      'Set-Cookie',
+      serializeCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS)
+    );
+
+    logger.info(
+      { memberId: member.id, discordId: discordUser.id, discordUsername: discordUser.username },
+      'Discord OAuth login successful'
+    );
+
+    // Redirect to dashboard with access token in fragment (client-side only)
+    res.redirect(`/dashboard#token=${accessToken}`);
+  } catch (error) {
+    logger.error({ error }, 'Discord OAuth callback failed');
+    res.redirect('/auth/error?reason=oauth_failed');
+  }
+});
+
+/**
+ * GET /auth/error
+ * Display OAuth error information
+ * In production, this would render an error page
+ */
+authRouter.get('/error', (req: Request, res: Response): void => {
+  const reason = req.query.reason as string | undefined;
+  res.status(400).json({ error: reason ?? 'unknown_error' });
 });

@@ -41,6 +41,13 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().startsWith('re_').optional(), // Required when EMAIL_PROVIDER is 'resend'
   EMAIL_FROM_ADDRESS: z.string().default('The Revenue Council <noreply@revenuecouncil.com>'),
   EMAIL_REPLY_TO: z.string().email().optional().default('support@revenuecouncil.com'),
+
+  // Reconciliation
+  RECONCILIATION_AUTO_FIX: z.enum(['true', 'false']).default('false'),
+  RECONCILIATION_PAUSED: z.enum(['true', 'false']).default('false'),
+  RECONCILIATION_TIMEZONE: z.string().default('America/New_York'),
+  RECONCILIATION_HOUR: z.coerce.number().min(0).max(23).default(3), // 3 AM
+  ADMIN_EMAIL: z.string().email().optional(), // For reconciliation reports
 }).refine(
   (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
   { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }

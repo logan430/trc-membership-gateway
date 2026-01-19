@@ -17,12 +17,16 @@ const envSchema = z.object({
   // Session / JWT
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
 
+  // App URL (for magic links, OAuth callbacks)
+  APP_URL: z.string().url().default('http://localhost:3000'),
+
   // Discord (required for bot operations)
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
   DISCORD_BOT_TOKEN: z.string(),
   DISCORD_GUILD_ID: z.string(),
   DISCORD_ADMIN_CHANNEL_ID: z.string().optional(),
+  DISCORD_REDIRECT_URI: z.string().url(), // OAuth callback URL (e.g., http://localhost:3000/auth/callback)
 });
 
 export const env = envSchema.parse(process.env);

@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 4 of 8 (Introduction Requirement)
-Plan: 1 of 3 in current phase
-Status: In progress
-Last activity: 2026-01-19 - Completed 04-01-PLAN.md
+Plan: 3 of 3 in current phase
+Status: In progress (04-02 pending)
+Last activity: 2026-01-18 - Completed 04-03-PLAN.md
 
-Progress: [████████░░] 55%
+Progress: [████████░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 5.9 min
-- Total execution time: 65 min
+- Total plans completed: 12
+- Average duration: 5.8 min
+- Total execution time: 70 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████░░] 55%
 | 1-Foundation | 3/3 | 24 min | 8 min |
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 | 3-Individual | 3/3 | 20 min | 6.7 min |
-| 4-Introduction | 1/3 | 3 min | 3 min |
+| 4-Introduction | 2/3 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-04 (5 min), 03-03 (4 min), 03-01 (8 min), 03-02 (8 min), 04-01 (3 min)
+- Last 5 plans: 03-03 (4 min), 03-01 (8 min), 03-02 (8 min), 04-01 (3 min), 04-03 (5 min)
 - Trend: Consistent execution, averaging 3-8 min per plan
 
 *Updated after each plan completion*
@@ -79,6 +79,9 @@ Recent decisions affecting current work:
 | 04-01 | MessageContent privileged intent | Required for reading message content |
 | 04-01 | Top-level messages only | Replies filtered out per CONTEXT.md |
 | 04-01 | MIN_INTRO_LENGTH = 100 | Constant exported for reuse |
+| 04-03 | customer.subscription.deleted triggers kick | Fires at period end, not on cancel initiation |
+| 04-03 | Farewell DM before kick | Ensures user receives message |
+| 04-03 | introCompleted reset on cancellation | Allows re-introduction on resubscribe |
 
 ### Pending Todos
 
@@ -91,13 +94,14 @@ None.
 - STRIPE_INDIVIDUAL_PRICE_ID must be set before testing checkout
 - DISCORD_INTRODUCTIONS_CHANNEL_ID must be set before testing introduction detection
 - Message Content Intent must be enabled in Discord Developer Portal
+- Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
 
 ## Phase 4 Progress
 
 Introduction requirement progress:
 - [x] 04-01: Message event infrastructure
 - [ ] 04-02: Role promotion logic (next)
-- [ ] 04-03: Subscription end handling
+- [x] 04-03: Subscription end handling
 
 Delivered (04-01):
 - Discord client with MessageContent and GuildMessages intents
@@ -106,8 +110,15 @@ Delivered (04-01):
 - Introduction message event handlers (messageCreate, messageUpdate)
 - Channel filtering (only #introductions), bot filtering, reply filtering
 
+Delivered (04-03):
+- customer.subscription.deleted webhook handler
+- removeAllManagedRoles removes Squire/Knight/Lord/Debtor roles
+- removeAndKickAsync sends farewell DM then kicks with retry
+- Database subscription status set to CANCELLED
+- introCompleted reset to false for potential resubscription
+
 ## Session Continuity
 
-Last session: 2026-01-19
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-01-18
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None

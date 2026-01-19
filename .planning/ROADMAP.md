@@ -117,20 +117,21 @@ Plans:
 
 ### Phase 6: Billing Failure
 **Goal**: Payment failures restrict access gracefully; recovery restores access
-**Depends on**: Phase 4
+**Depends on**: Phase 5
 **Requirements**: BILL-01, BILL-02, BILL-03, BILL-04, BILL-05, ROLE-04, ROLE-05
 **Success Criteria** (what must be TRUE):
   1. System detects payment failure via webhook
-  2. Affected users are moved to "Billing Issue" role
-  3. Billing Issue users can only access #billing-issue channel
+  2. Affected users are moved to "Debtor" role after 48-hour grace period
+  3. Debtor users can only access #billing-support channel
   4. System detects payment recovery via webhook
-  5. On recovery, user is restored to Member or Owner role based on intro status
-**Plans**: TBD
+  5. On recovery, user is restored to previous role (Knight or Lord)
+**Plans**: 4 plans in 4 waves
 
 Plans:
-- [ ] 06-01: Payment failure detection and Billing Issue role assignment
-- [ ] 06-02: Billing Issue channel restrictions
-- [ ] 06-03: Payment recovery detection and role restoration
+- [ ] 06-01-PLAN.md - Schema updates and #billing-support channel creation (Wave 1)
+- [ ] 06-02-PLAN.md - Payment failure detection and grace period start (Wave 2)
+- [ ] 06-03-PLAN.md - Debtor state transition and billing scheduler (Wave 3)
+- [ ] 06-04-PLAN.md - Payment recovery and role restoration (Wave 4)
 
 ### Phase 7: Email Notifications
 **Goal**: Users receive transactional emails for all key lifecycle events
@@ -177,7 +178,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 3. Individual Subscription | 3/3 | Complete | 2026-01-18 |
 | 4. Introduction Requirement | 3/3 | Complete | 2026-01-18 |
 | 5. Team Management | 6/6 | Complete | 2026-01-19 |
-| 6. Billing Failure | 0/3 | Not started | - |
+| 6. Billing Failure | 0/4 | Planned | - |
 | 7. Email Notifications | 0/4 | Not started | - |
 | 8. Operations | 0/2 | Not started | - |
 
@@ -190,4 +191,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 4 complete: 2026-01-18*
 *Phase 5 planned: 2026-01-19*
 *Phase 5 complete: 2026-01-19*
+*Phase 6 planned: 2026-01-19*
 *Total requirements: 41 | Total phases: 8 | Total plans: 28*

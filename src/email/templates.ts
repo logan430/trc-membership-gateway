@@ -80,3 +80,101 @@ The Revenue Council`;
 
   return { subject, text };
 }
+
+interface PaymentFailureParams {
+  portalUrl: string;
+  gracePeriodHours: number;
+}
+
+/**
+ * Payment failure email template
+ * Sent when invoice.payment_failed fires for renewal payments
+ * Complements the Discord DM notification with portal URL and timeline
+ */
+export function paymentFailureEmailTemplate(params: PaymentFailureParams): { subject: string; text: string } {
+  const { portalUrl, gracePeriodHours } = params;
+
+  return {
+    subject: 'Action needed: Payment issue with The Revenue Council',
+    text: `Hark! A message from The Treasury.
+
+A payment for thy membership with The Revenue Council hath encountered difficulties.
+
+WHAT HAPPENS NEXT:
+- Thou hast ${gracePeriodHours} hours to resolve this matter whilst retaining full access
+- After the grace period: Thy access shall be restricted to #billing-support only
+- After 30 days in restricted state: Thy membership shall end entirely
+
+UPDATE THY PAYMENT:
+${portalUrl}
+
+COMMON CAUSES:
+- Expired card on file
+- Insufficient funds
+- Bank declined the transaction
+
+We urge thee to act swiftly. The Council values thy presence and wishes to see this matter resolved.
+
+Faithfully,
+The Treasury
+
+---
+If thou hast questions, reply to this message.
+`,
+  };
+}
+
+interface PaymentRecoveredParams {
+  wasInDebtorState: boolean;
+}
+
+/**
+ * Payment recovered email template
+ * Sent when invoice.paid fires after a prior payment failure
+ * Celebrates restoration if was in Debtor state, or thanks for swift resolution
+ */
+export function paymentRecoveredEmailTemplate(params: PaymentRecoveredParams): { subject: string; text: string } {
+  const { wasInDebtorState } = params;
+
+  if (wasInDebtorState) {
+    // Full access restoration - was in Debtor state
+    return {
+      subject: 'Payment received - Welcome back!',
+      text: `Huzzah! The Treasury brings most excellent tidings!
+
+Thy payment hath been received and thy full access to The Revenue Council is now restored!
+
+Thou art no longer restricted - all chambers of the guild are once again open to thee.
+
+The Council celebrates thy return! May thy continued membership bring prosperity to all.
+
+Welcome back, valued member.
+
+Faithfully,
+The Treasury
+
+---
+If thou hast questions, reply to this message.
+`,
+    };
+  }
+
+  // Swift resolution - recovered during grace period
+  return {
+    subject: 'Payment received - Welcome back!',
+    text: `Huzzah! The Treasury brings glad tidings!
+
+Thy payment hath been received and thy standing with The Revenue Council remaineth intact.
+
+We thank thee for thy swift attention to this matter. Thy membership continues uninterrupted.
+
+The Council celebrates thy continued membership!
+
+Faithfully,
+The Treasury
+
+---
+If thou hast questions, reply to this message.
+`,
+  };
+}

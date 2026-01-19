@@ -162,3 +162,52 @@ export async function removeRoleFromMember(
     return false;
   }
 }
+
+/**
+ * Remove all managed roles from a Discord member
+ * @param discordId - Discord user ID
+ * @returns true if successful, false otherwise
+ */
+export async function removeAllManagedRoles(
+  discordId: string
+): Promise<boolean> {
+  const guild = discordClient.guilds.cache.get(env.DISCORD_GUILD_ID);
+  if (!guild) {
+    logger.error('Guild not found in cache');
+    return false;
+  }
+
+  try {
+    // Fetch member (may not be cached)
+    const member = await guild.members.fetch(discordId);
+
+    // Filter member's roles to find managed roles
+    const managedRoles = member.roles.cache.filter((r) =>
+      (MANAGED_ROLES as readonly string[]).includes(r.name)
+    );
+
+    if (managedRoles.size === 0) {
+      logger.debug({ discordId }, 'No managed roles to remove');
+      return true;
+    }
+
+    // Remove all managed roles at once
+    await member.roles.remove(managedRoles, 'Subscription ended');
+
+    const roleNames = managedRoles.map((r) => r.name);
+    logger.info(
+      { discordId, roleNames },
+      'Removed all managed roles from member'
+    );
+    return true;
+  } catch (error) {
+    logger.error(
+      { error, discordId },
+      'Failed to remove managed roles from member'
+    );
+    await alertAdmin(
+      `Failed to remove managed roles from member ${discordId}: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+    return false;
+  }
+}

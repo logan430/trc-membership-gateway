@@ -17,6 +17,7 @@ import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
 import { startBot } from './bot/client.js';
 import { startBillingScheduler } from './billing/scheduler.js';
+import { startReconciliationScheduler } from './reconciliation/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -91,6 +92,8 @@ app.listen(env.PORT, () => {
     .then(() => {
       // Start billing scheduler after bot is ready
       startBillingScheduler();
+      // Start reconciliation scheduler after bot is ready
+      startReconciliationScheduler();
     })
     .catch((error) => {
       logger.error({ error }, 'Failed to start Discord bot');

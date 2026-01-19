@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import { env } from '../config/env.js';
 import { logger } from '../index.js';
+import { runReconciliation } from './reconcile.js';
 
 /**
  * Start the reconciliation scheduler
@@ -29,8 +30,11 @@ export function startReconciliationScheduler(): void {
       logger.info('Reconciliation job starting (scheduled)');
 
       try {
-        // TODO: runReconciliation() will be implemented in 08-02
-        logger.info('Reconciliation job placeholder - implementation in 08-02');
+        const result = await runReconciliation({ triggeredBy: 'scheduled' });
+        logger.info(
+          { issuesFound: result.issuesFound, issuesFixed: result.issuesFixed },
+          'Reconciliation job completed'
+        );
       } catch (error) {
         logger.error({ error }, 'Reconciliation job failed');
       }
@@ -41,5 +45,6 @@ export function startReconciliationScheduler(): void {
   logger.info('Reconciliation scheduler started');
 }
 
-// Re-export types for consumers
+// Re-export for consumers
+export { runReconciliation } from './reconcile.js';
 export type { DriftIssue, ReconciliationResult, ReconciliationOptions } from './types.js';

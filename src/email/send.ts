@@ -5,7 +5,9 @@ import {
   paymentFailureEmailTemplate,
   paymentRecoveredEmailTemplate,
   seatInviteEmailTemplate,
+  reconciliationReportEmailTemplate,
 } from './templates.js';
+import type { ReconciliationResult } from '../reconciliation/types.js';
 import { logger } from '../index.js';
 
 /**
@@ -140,4 +142,50 @@ export async function sendSeatInviteEmail(
   );
 
   return result;
+}
+
+/**
+ * Send reconciliation report email to admin
+ * Only sent when issues are found
+ */
+export async function sendReconciliationReportEmail(
+  email: string,
+  result: ReconciliationResult
+): Promise<EmailResult> {
+  // Build summary text for email
+  const groupByType = (issues: typeof result.issues) =>
+    issues.reduce((acc, issue) => {
+      if (!acc[issue.type]) acc[issue.type] = [];
+      acc[issue.type].push(issue);
+      return acc;
+    }, {} as Record<string, typeof result.issues>);
+
+  const byType = groupByType(result.issues);
+  const summaryLines: string[] = [];
+  for (const [type, typeIssues] of Object.entries(byType)) {
+    summaryLines.push(`${type}: ${typeIssues.length}`);
+    for (const issue of typeIssues.slice(0, 3)) {
+      summaryLines.push(`  - ${issue.description}`);
+    }
+    if (typeIssues.length > 3) {
+      summaryLines.push(`  - ... and ${typeIssues.length - 3} more`);
+    }
+  }
+
+  const { subject, text } = reconciliationReportEmailTemplate({
+    runId: result.runId,
+    issuesFound: result.issuesFound,
+    issuesFixed: result.issuesFixed,
+    autoFixEnabled: result.autoFixEnabled,
+    summaryText: summaryLines.join('\n'),
+  });
+
+  const sendResult = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, success: sendResult.success }, 'Reconciliation report email sent');
+  return sendResult;
 }

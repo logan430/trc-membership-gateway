@@ -237,3 +237,45 @@ Questions about The Revenue Council? Reply to this email.
 `,
   };
 }
+
+interface ReconciliationReportParams {
+  runId: string;
+  issuesFound: number;
+  issuesFixed: number;
+  autoFixEnabled: boolean;
+  summaryText: string;
+}
+
+/**
+ * Reconciliation report email template
+ * Sent to admin when drift issues are detected
+ */
+export function reconciliationReportEmailTemplate(params: ReconciliationReportParams): { subject: string; text: string } {
+  const { runId, issuesFound, issuesFixed, autoFixEnabled, summaryText } = params;
+
+  const subject = `[TRC Reconciliation] ${issuesFound} drift issue${issuesFound === 1 ? '' : 's'} detected`;
+
+  const fixStatus = autoFixEnabled
+    ? `Auto-fix is ENABLED. ${issuesFixed} issue${issuesFixed === 1 ? '' : 's'} were automatically corrected.`
+    : `Auto-fix is DISABLED. Manual review required.`;
+
+  const text = `
+The Revenue Council - Reconciliation Report
+============================================
+
+${issuesFound} drift issue${issuesFound === 1 ? '' : 's'} detected between Stripe and Discord.
+
+${fixStatus}
+
+Summary:
+${summaryText}
+
+Run ID: ${runId}
+
+---
+This is an automated report from The Revenue Council membership system.
+To enable automatic fixes, set RECONCILIATION_AUTO_FIX=true.
+`.trim();
+
+  return { subject, text };
+}

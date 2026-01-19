@@ -8,6 +8,26 @@ import { logger } from '../index.js';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
+/**
+ * Map Stripe subscription status to our SubscriptionStatus enum
+ */
+function mapStripeStatus(stripeStatus: string): 'NONE' | 'TRIALING' | 'ACTIVE' | 'PAST_DUE' | 'CANCELLED' {
+  switch (stripeStatus) {
+    case 'active':
+      return 'ACTIVE';
+    case 'trialing':
+      return 'TRIALING';
+    case 'past_due':
+      return 'PAST_DUE';
+    case 'canceled':
+    case 'unpaid':
+    case 'incomplete_expired':
+      return 'CANCELLED';
+    default:
+      return 'NONE';
+  }
+}
+
 export const stripeWebhookRouter = Router();
 
 // CRITICAL: Use raw body parser ONLY for this route
@@ -193,14 +213,109 @@ async function processStripeEvent(event: Stripe.Event): Promise<void> {
       logger.info({ eventId: event.id }, 'Subscription created - handler TBD');
       break;
 
-    case 'customer.subscription.updated':
-      logger.info({ eventId: event.id }, 'Subscription updated - handler TBD');
+    case 'customer.subscription.updated': {
+      const subscription = event.data.object as Stripe.Subscription;
+
+      // Find team by subscription ID
+      const team = await prisma.team.findUnique({
+        where: { stripeSubscriptionId: subscription.id },
+      });
+
+      if (!team) {
+        // Might be an individual subscription, check member
+        const member = await prisma.member.findFirst({
+          where: { stripeCustomerId: subscription.customer as string },
+        });
+
+        if (member && !member.teamId) {
+          // Individual subscription update - handle period end sync
+          const firstItem = subscription.items?.data?.[0];
+          const currentPeriodEnd = firstItem?.current_period_end
+            ? new Date(firstItem.current_period_end * 1000)
+            : null;
+
+          await prisma.member.update({
+            where: { id: member.id },
+            data: {
+              subscriptionStatus: mapStripeStatus(subscription.status),
+              currentPeriodEnd,
+            },
+          });
+
+          logger.info({ memberId: member.id }, 'Individual subscription updated');
+        }
+        break;
+      }
+
+      // Team subscription - sync seat counts from Stripe
+      const ownerItem = subscription.items.data.find(
+        i => i.price.id === env.STRIPE_OWNER_SEAT_PRICE_ID
+      );
+      const teamItem = subscription.items.data.find(
+        i => i.price.id === env.STRIPE_TEAM_SEAT_PRICE_ID
+      );
+
+      await prisma.team.update({
+        where: { id: team.id },
+        data: {
+          subscriptionStatus: mapStripeStatus(subscription.status),
+          ownerSeatCount: ownerItem?.quantity ?? team.ownerSeatCount,
+          teamSeatCount: teamItem?.quantity ?? team.teamSeatCount,
+        },
+      });
+
+      logger.info(
+        {
+          teamId: team.id,
+          ownerSeats: ownerItem?.quantity,
+          teamSeats: teamItem?.quantity,
+          status: subscription.status,
+        },
+        'Team subscription updated'
+      );
       break;
+    }
 
     case 'customer.subscription.deleted': {
       const subscription = event.data.object as Stripe.Subscription;
 
-      // Find member by Stripe customer ID
+      // Check if this is a team subscription first
+      const team = await prisma.team.findUnique({
+        where: { stripeSubscriptionId: subscription.id },
+        include: { members: true },
+      });
+
+      if (team) {
+        // Team subscription ended - remove all team members from Discord
+        for (const teamMember of team.members) {
+          if (teamMember.discordId) {
+            removeAndKickAsync(teamMember.discordId, teamMember.id);
+          } else {
+            // Member without Discord - just update status
+            await prisma.member.update({
+              where: { id: teamMember.id },
+              data: {
+                subscriptionStatus: 'CANCELLED',
+                introCompleted: false,
+              },
+            });
+          }
+        }
+
+        // Update team status
+        await prisma.team.update({
+          where: { id: team.id },
+          data: { subscriptionStatus: 'CANCELLED' },
+        });
+
+        logger.info(
+          { teamId: team.id, memberCount: team.members.length },
+          'Team subscription ended, all members removed'
+        );
+        break;
+      }
+
+      // Individual subscription handling
       const member = await prisma.member.findFirst({
         where: { stripeCustomerId: subscription.customer as string },
       });

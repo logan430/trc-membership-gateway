@@ -5,6 +5,7 @@ import { requireAuth, AuthenticatedRequest } from '../middleware/session.js';
 import { prisma } from '../lib/prisma.js';
 import { env } from '../config/env.js';
 import { logger } from '../index.js';
+import { revokeAndKickAsync } from '../lib/role-assignment.js';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -117,6 +118,80 @@ teamDashboardRouter.get('/dashboard', requireAuth, async (req: AuthenticatedRequ
       isPrimaryOwner: member.isPrimaryOwner,
     },
   });
+});
+
+/**
+ * DELETE /team/members/:memberId
+ * Revoke a seat from a team member.
+ * Only accessible by team owners, cannot revoke primary owner or self.
+ */
+teamDashboardRouter.delete('/members/:memberId', requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const { memberId: targetMemberId } = req.params;
+
+  // Get requester
+  const requester = await prisma.member.findUnique({
+    where: { id: req.memberId },
+  });
+
+  if (!requester?.teamId) {
+    res.status(404).json({ error: 'Not part of a team' });
+    return;
+  }
+
+  if (requester.seatTier !== 'OWNER') {
+    res.status(403).json({ error: 'Only team owners can revoke seats' });
+    return;
+  }
+
+  // Get target member
+  const targetMember = await prisma.member.findUnique({
+    where: { id: targetMemberId },
+  });
+
+  if (!targetMember) {
+    res.status(404).json({ error: 'Member not found' });
+    return;
+  }
+
+  // Verify target is in same team
+  if (targetMember.teamId !== requester.teamId) {
+    res.status(403).json({ error: 'Cannot revoke member from another team' });
+    return;
+  }
+
+  // Cannot revoke yourself
+  if (targetMemberId === req.memberId) {
+    res.status(400).json({ error: 'Cannot revoke your own seat' });
+    return;
+  }
+
+  // Primary owner protection per CONTEXT.md
+  if (targetMember.isPrimaryOwner) {
+    res.status(403).json({ error: 'Primary owner cannot be revoked by other team members' });
+    return;
+  }
+
+  // Perform revocation
+  if (targetMember.discordId) {
+    revokeAndKickAsync(targetMember.discordId, targetMemberId);
+  } else {
+    // Member never linked Discord, just update database
+    await prisma.member.update({
+      where: { id: targetMemberId },
+      data: {
+        teamId: null,
+        seatTier: null,
+        subscriptionStatus: 'NONE',
+      },
+    });
+  }
+
+  logger.info(
+    { requesterId: req.memberId, targetMemberId, teamId: requester.teamId },
+    'Seat revoked'
+  );
+
+  res.status(200).json({ success: true, message: 'Seat revoked successfully' });
 });
 
 /**

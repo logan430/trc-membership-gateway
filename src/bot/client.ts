@@ -2,11 +2,17 @@ import { Client, GatewayIntentBits, Events, ActivityType } from 'discord.js';
 import { env } from '../config/env.js';
 import { logger } from '../index.js';
 import { syncRoles } from './roles.js';
+import { setupIntroductionHandlers } from './events/introduction.js';
 
 // Create Discord client with required intents
-// GuildMembers is a privileged intent - must be enabled in Developer Portal
+// GuildMembers and MessageContent are privileged intents - must be enabled in Developer Portal
 export const discordClient = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers, // Privileged - for member.fetch() and role ops
+    GatewayIntentBits.GuildMessages, // For messageCreate events
+    GatewayIntentBits.MessageContent, // Privileged - for reading message content
+  ],
 });
 
 // Handle ClientReady event
@@ -25,6 +31,9 @@ discordClient.on(Events.ClientReady, async (readyClient) => {
 
   // Sync roles - ensure all managed roles exist
   await syncRoles(guild);
+
+  // Set up introduction message handlers
+  setupIntroductionHandlers();
 
   // Set presence per RESEARCH.md recommendation
   readyClient.user.setPresence({

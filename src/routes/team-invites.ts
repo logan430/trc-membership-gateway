@@ -4,6 +4,7 @@ import { requireAuth, AuthenticatedRequest } from '../middleware/session.js';
 import { prisma } from '../lib/prisma.js';
 import { env } from '../config/env.js';
 import { generateInviteToken } from '../lib/invite-tokens.js';
+import { sendSeatInviteEmail } from '../email/send.js';
 import { logger } from '../index.js';
 
 export const teamInvitesRouter = Router();
@@ -11,6 +12,7 @@ export const teamInvitesRouter = Router();
 // Validation schemas
 const createInviteSchema = z.object({
   seatTier: z.enum(['OWNER', 'TEAM_MEMBER']),
+  email: z.string().email().optional(),
 });
 
 /**
@@ -84,11 +86,26 @@ teamInvitesRouter.post('/invites', requireAuth, async (req: AuthenticatedRequest
       seatTier: seatTier,
       token: token,
       createdBy: member.id,
+      inviteeEmail: parsed.data.email,
     },
   });
 
+  const inviteUrl = `${env.APP_URL}/team/claim?token=${invite.token}`;
+
+  // Send invite email if email was provided (fire-and-forget)
+  if (parsed.data.email) {
+    sendSeatInviteEmail(
+      parsed.data.email,
+      team.name,
+      seatTier,
+      inviteUrl
+    ).catch(err => {
+      logger.error({ inviteId: invite.id, err }, 'Failed to send invite email');
+    });
+  }
+
   logger.info(
-    { memberId: member.id, teamId: member.teamId, inviteId: invite.id, seatTier },
+    { memberId: member.id, teamId: member.teamId, inviteId: invite.id, seatTier, emailSent: !!parsed.data.email },
     'Team invite created'
   );
 
@@ -97,7 +114,9 @@ teamInvitesRouter.post('/invites', requireAuth, async (req: AuthenticatedRequest
       id: invite.id,
       seatTier: invite.seatTier,
       token: invite.token,
-      inviteUrl: `${env.APP_URL}/team/claim?token=${invite.token}`,
+      inviteUrl,
+      inviteeEmail: invite.inviteeEmail,
+      emailSent: !!parsed.data.email,
       createdAt: invite.createdAt,
     },
   });
@@ -142,6 +161,7 @@ teamInvitesRouter.get('/invites', requireAuth, async (req: AuthenticatedRequest,
       id: i.id,
       seatTier: i.seatTier,
       inviteUrl: `${env.APP_URL}/team/claim?token=${i.token}`,
+      inviteeEmail: i.inviteeEmail,
       createdAt: i.createdAt,
       acceptedAt: i.acceptedAt,
       acceptedBy: i.acceptedBy,

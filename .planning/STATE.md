@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 7 of 8 (Email Notifications)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-01-19 - Completed 07-02-PLAN.md (Email Templates)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 - Completed 07-03-PLAN.md (Email Sending Integration)
 
-Progress: [████████░░] 80% (24/30 plans complete)
+Progress: [████████░░] 83% (25/30 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: 4.9 min
-- Total execution time: 118 min
+- Total execution time: 122 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [████████░░] 80% (24/30 plans complete)
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
-| 7-Email Notifications | 2/3 | 8 min | 4 min |
+| 7-Email Notifications | 3/3 | 12 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (4 min), 06-03 (3 min), 06-04 (5 min), 07-01 (4 min), 07-02 (4 min)
+- Last 5 plans: 06-03 (3 min), 06-04 (5 min), 07-01 (4 min), 07-02 (4 min), 07-03 (4 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -126,6 +126,9 @@ Recent decisions affecting current work:
 | 07-02 | Claim reminder schedule 48h-180d | 48h, 7d, 30d, then monthly for 6 months |
 | 07-02 | Fire-and-forget email pattern | Use .catch() to not block checkout/webhook flow |
 | 07-02 | Re-check discordId before send | Prevents race condition with claim |
+| 07-03 | Fire-and-forget billing emails | Use .catch() pattern for billing emails, don't block webhooks |
+| 07-03 | Owners only for team emails | isPrimaryOwner or isTeamAdmin get billing emails |
+| 07-03 | Fresh portal URL per email | Generate Stripe billing portal session for each failure email |
 
 ### Pending Todos
 
@@ -147,7 +150,9 @@ None.
 Email notifications progress:
 - [x] 07-01: Email provider infrastructure
 - [x] 07-02: Email templates
-- [ ] 07-03: Email sending integration
+- [x] 07-03: Email sending integration
+
+**Phase 7 COMPLETE**
 
 Delivered (07-01):
 - EMAIL_PROVIDER env var with 'console' and 'resend' options
@@ -166,9 +171,17 @@ Delivered (07-02):
 - CLAIM_REMINDER_SCHEDULE (48h, 7d, 30d, monthly x6)
 - processClaimReminders() integrated into billing scheduler
 
+Delivered (07-03):
+- paymentFailureEmailTemplate with portal URL and timeline
+- paymentRecoveredEmailTemplate with debtor state variation
+- sendPaymentFailureEmail and sendPaymentRecoveredEmail functions
+- Failure email wired to handlePaymentFailure and handleTeamPaymentFailure
+- Recovery email wired to handlePaymentRecovery and handleTeamPaymentRecovery
+- Billing portal URL generation for failure emails
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 07-02-PLAN.md
+Stopped at: Completed 07-03-PLAN.md (Phase 7 Complete)
 Resume file: None
-Next: 07-03 Email Sending Integration
+Next: Phase 8 - Polish & Launch

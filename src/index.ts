@@ -7,6 +7,7 @@ import { dirname, join } from 'path';
 import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
 import { authRouter } from './routes/auth.js';
+import { checkoutRouter } from './routes/checkout.js';
 import { publicRouter } from './routes/public.js';
 import { startBot } from './bot/client.js';
 
@@ -38,8 +39,11 @@ app.use('/webhooks/stripe', stripeWebhookRouter);
 // JSON parsing for all other routes
 app.use(express.json());
 
-// Auth routes (session refresh, logout)
+// Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);
+
+// Checkout routes (Stripe Checkout session creation)
+app.use('/checkout', checkoutRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

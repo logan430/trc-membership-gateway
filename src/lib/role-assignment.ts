@@ -1,5 +1,5 @@
 import pRetry from 'p-retry';
-import { addRoleToMember, removeAllManagedRoles } from '../bot/roles.js';
+import { addRoleToMember, removeRoleFromMember, removeAllManagedRoles } from '../bot/roles.js';
 import { discordClient } from '../bot/client.js';
 import { env } from '../config/env.js';
 import { prisma } from './prisma.js';
@@ -30,6 +30,42 @@ export function assignRoleAsync(discordId: string, roleName: string): void {
   }).catch((error) => {
     // After all retries exhausted - admin already alerted by addRoleToMember
     logger.error({ discordId, roleName, error: error.message }, 'Role assignment failed after all retries');
+  });
+}
+
+/**
+ * Swap role asynchronously with exponential backoff retry
+ * Fire-and-forget: returns immediately, role swap happens in background
+ * Atomically removes old role and adds new role
+ */
+export function swapRoleAsync(discordId: string, removeRole: string, addRole: string): void {
+  pRetry(
+    async () => {
+      const removed = await removeRoleFromMember(discordId, removeRole);
+      if (!removed) {
+        throw new Error(`Failed to remove role ${removeRole}`);
+      }
+      const added = await addRoleToMember(discordId, addRole);
+      if (!added) {
+        throw new Error(`Failed to add role ${addRole}`);
+      }
+      return true;
+    },
+    {
+      retries: 5,
+      minTimeout: 1000,
+      maxTimeout: 30000,
+      onFailedAttempt: (error) => {
+        logger.warn(
+          { discordId, removeRole, addRole, attempt: error.attemptNumber, retriesLeft: error.retriesLeft },
+          'Role swap retry'
+        );
+      },
+    }
+  ).then(() => {
+    logger.info({ discordId, removeRole, addRole }, 'Role swapped successfully (async)');
+  }).catch((error) => {
+    logger.error({ discordId, removeRole, addRole, error: error.message }, 'Role swap failed after all retries');
   });
 }
 

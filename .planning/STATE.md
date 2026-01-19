@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 7 of 8 (Email Notifications)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-19 - Completed 07-01-PLAN.md (Email Provider Infrastructure)
+Last activity: 2026-01-19 - Completed 07-02-PLAN.md (Email Templates)
 
-Progress: [███████░░░] 77% (23/30 plans complete)
+Progress: [████████░░] 80% (24/30 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
-- Average duration: 5.0 min
-- Total execution time: 114 min
+- Total plans completed: 24
+- Average duration: 4.9 min
+- Total execution time: 118 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [███████░░░] 77% (23/30 plans complete)
 | 4-Introduction | 3/3 | 11 min | 3.7 min |
 | 5-Team | 6/6 | 26 min | 4.3 min |
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
-| 7-Email Notifications | 1/3 | 4 min | 4 min |
+| 7-Email Notifications | 2/3 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (4 min), 06-02 (4 min), 06-03 (3 min), 06-04 (5 min), 07-01 (4 min)
+- Last 5 plans: 06-02 (4 min), 06-03 (3 min), 06-04 (5 min), 07-01 (4 min), 07-02 (4 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -122,6 +122,10 @@ Recent decisions affecting current work:
 | 07-01 | EMAIL_PROVIDER env var switch | Development without API keys, production with Resend |
 | 07-01 | Provider pattern for email | Clean abstraction for testing and swappable delivery |
 | 07-01 | Zod .refine() for conditional API key | App can start with console provider without Resend credentials |
+| 07-02 | Cheeky tone at 30+ days | Per CONTEXT.md - express gratitude and desire to have them |
+| 07-02 | Claim reminder schedule 48h-180d | 48h, 7d, 30d, then monthly for 6 months |
+| 07-02 | Fire-and-forget email pattern | Use .catch() to not block checkout/webhook flow |
+| 07-02 | Re-check discordId before send | Prevents race condition with claim |
 
 ### Pending Todos
 
@@ -142,7 +146,7 @@ None.
 
 Email notifications progress:
 - [x] 07-01: Email provider infrastructure
-- [ ] 07-02: Email templates
+- [x] 07-02: Email templates
 - [ ] 07-03: Email sending integration
 
 Delivered (07-01):
@@ -154,9 +158,17 @@ Delivered (07-01):
 - createEmailProvider factory function
 - emailProvider singleton in send.ts
 
+Delivered (07-02):
+- welcomeEmailTemplate with medieval greeting and claim CTA
+- claimReminderEmailTemplate with tone variation (standard/cheeky)
+- sendWelcomeEmail and sendClaimReminderEmail functions
+- Welcome email on individual and company checkout.session.completed
+- CLAIM_REMINDER_SCHEDULE (48h, 7d, 30d, monthly x6)
+- processClaimReminders() integrated into billing scheduler
+
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 07-01-PLAN.md
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None
-Next: 07-02 Email Templates
+Next: 07-03 Email Sending Integration

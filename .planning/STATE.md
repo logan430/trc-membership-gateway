@@ -31,7 +31,7 @@ Progress: [███████░░░] 37%
 | 2-Discord | 4/4 | 18 min | 4.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (12 min), 02-01 (8 min), 02-02 (5 min), 02-03 (0 min), 02-04 (5 min)
+- Last 5 plans: 01-03 (12 min), 02-01 (8 min), 02-02 (5 min), 02-03 (6 min), 02-04 (5 min)
 - Trend: Fast execution, averaging under 5 min per plan in Phase 2
 
 *Updated after each plan completion*
@@ -57,6 +57,9 @@ Recent decisions affecting current work:
 | 02-01 | 15min access / 7d or 30d refresh tokens | Balance security with UX |
 | 02-01 | httpOnly cookie for refresh token | Prevent XSS token theft |
 | 02-01 | Token rotation on every refresh | Security best practice |
+| 02-03 | DISCORD_REDIRECT_URI as explicit env | Configurable per environment |
+| 02-03 | State cookie with 10-min expiry | CSRF protection for OAuth |
+| 02-03 | Duplicate Discord linking blocked | Per CONTEXT.md requirements |
 | 02-04 | 5-minute magic link expiry | Short-lived for security |
 | 02-04 | Same response for email exists/not | Anti-enumeration protection |
 | 02-04 | Token in URL fragment | Client-only access, not sent to server |
@@ -75,7 +78,7 @@ None.
 Discord integration progress:
 - [x] 02-01: Session Infrastructure (JWT tokens, auth middleware)
 - [x] 02-02: Discord bot with role management
-- [x] 02-03: Discord OAuth helpers
+- [x] 02-03: Discord OAuth routes (/auth/discord, /auth/callback, /auth/error)
 - [x] 02-04: Magic link authentication
 
 Delivered:
@@ -88,6 +91,9 @@ Delivered:
 - addRoleToMember / removeRoleFromMember functions
 - Admin alerting on role operation failures
 - Discord OAuth helpers (generateAuthUrl, exchangeCode, fetchDiscordUser)
+- GET /auth/discord (initiates OAuth with CSRF state)
+- GET /auth/callback (validates state, exchanges code, links Discord)
+- GET /auth/error (displays OAuth error info)
 - Magic link token generation and verification
 - POST /auth/magic-link/request endpoint
 - GET /auth/magic-link/verify endpoint
@@ -95,5 +101,5 @@ Delivered:
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 02-04-PLAN.md (Magic Link Authentication)
+Stopped at: Completed 02-03-PLAN.md (Discord OAuth Routes)
 Resume file: None

@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Database schema, Stripe webhook infrastructure, project skeleton
 - [x] **Phase 2: Discord Integration** - OAuth linking, bot setup, role management core
-- [ ] **Phase 3: Individual Subscription** - Stripe Checkout, claim flow, basic role assignment
+- [x] **Phase 3: Individual Subscription** - Stripe Checkout, claim flow, basic role assignment
 - [ ] **Phase 4: Introduction Requirement** - Introduction monitoring, role promotion to Member/Owner
 - [ ] **Phase 5: Team Management** - Company plans, seat dashboard, invite system
 - [ ] **Phase 6: Billing Failure** - Billing Issue role, access restriction, recovery
@@ -70,9 +70,9 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01-PLAN.md - User registration (email+password) and Stripe Checkout flow (Wave 1)
-- [ ] 03-02-PLAN.md - Dashboard and Discord claim flow with Squire role assignment (Wave 2)
-- [ ] 03-03-PLAN.md - The Gatekeeper landing page with medieval theme (Wave 1)
+- [x] 03-01-PLAN.md - User registration (email+password) and Stripe Checkout flow (Wave 1)
+- [x] 03-02-PLAN.md - Dashboard and Discord claim flow with Squire role assignment (Wave 2)
+- [x] 03-03-PLAN.md - The Gatekeeper landing page with medieval theme (Wave 1)
 
 ### Phase 4: Introduction Requirement
 **Goal**: Users must introduce themselves before gaining full community access
@@ -173,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Discord Integration | 4/4 | Complete | 2026-01-18 |
-| 3. Individual Subscription | 0/3 | Planned | - |
+| 3. Individual Subscription | 3/3 | Complete | 2026-01-18 |
 | 4. Introduction Requirement | 0/3 | Not started | - |
 | 5. Team Management | 0/5 | Not started | - |
 | 6. Billing Failure | 0/3 | Not started | - |

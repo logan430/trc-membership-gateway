@@ -35,7 +35,16 @@ const envSchema = z.object({
   STRIPE_INDIVIDUAL_PRICE_ID: z.string().startsWith('price_').optional(), // Individual Monthly price ID
   STRIPE_OWNER_SEAT_PRICE_ID: z.string().startsWith('price_').optional(), // Company owner seat monthly price
   STRIPE_TEAM_SEAT_PRICE_ID: z.string().startsWith('price_').optional(), // Company team seat monthly price
-});
+
+  // Email
+  EMAIL_PROVIDER: z.enum(['resend', 'console']).default('console'), // console for dev, resend for prod
+  RESEND_API_KEY: z.string().startsWith('re_').optional(), // Required when EMAIL_PROVIDER is 'resend'
+  EMAIL_FROM_ADDRESS: z.string().default('The Revenue Council <noreply@revenuecouncil.com>'),
+  EMAIL_REPLY_TO: z.string().email().optional().default('support@revenuecouncil.com'),
+}).refine(
+  (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
+  { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }
+);
 
 export const env = envSchema.parse(process.env);
 export type Env = z.infer<typeof envSchema>;

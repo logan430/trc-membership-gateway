@@ -3,6 +3,7 @@ import { env } from '../config/env.js';
 import { logger } from '../index.js';
 import { syncRoles } from './roles.js';
 import { setupIntroductionHandlers } from './events/introduction.js';
+import { ensureBillingSupportChannel } from './channels.js';
 
 // Create Discord client with required intents
 // GuildMembers and MessageContent are privileged intents - must be enabled in Developer Portal
@@ -31,6 +32,14 @@ discordClient.on(Events.ClientReady, async (readyClient) => {
 
   // Sync roles - ensure all managed roles exist
   await syncRoles(guild);
+
+  // Ensure billing support channel exists (for Debtor role read-only access)
+  try {
+    await ensureBillingSupportChannel(guild);
+  } catch (error) {
+    // Log but don't fail startup - channel can be created later
+    logger.error({ error }, 'Failed to ensure billing support channel');
+  }
 
   // Set up introduction message handlers
   setupIntroductionHandlers();

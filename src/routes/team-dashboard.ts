@@ -1,6 +1,18 @@
 import { Router, Response } from 'express';
+import Stripe from 'stripe';
+import { z } from 'zod';
 import { requireAuth, AuthenticatedRequest } from '../middleware/session.js';
 import { prisma } from '../lib/prisma.js';
+import { env } from '../config/env.js';
+import { logger } from '../index.js';
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
+// Schema for adding seats
+const addSeatsSchema = z.object({
+  seatType: z.enum(['owner', 'team']),
+  quantity: z.number().int().min(1).max(50),
+});
 
 export const teamDashboardRouter = Router();
 
@@ -105,4 +117,96 @@ teamDashboardRouter.get('/dashboard', requireAuth, async (req: AuthenticatedRequ
       isPrimaryOwner: member.isPrimaryOwner,
     },
   });
+});
+
+/**
+ * POST /team/seats
+ * Add additional seats mid-subscription with immediate prorated charge.
+ * Only accessible by team members with OWNER seatTier.
+ */
+teamDashboardRouter.post('/seats', requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const validation = addSeatsSchema.safeParse(req.body);
+  if (!validation.success) {
+    res.status(400).json({ error: 'Invalid request', details: validation.error.issues });
+    return;
+  }
+
+  const { seatType, quantity } = validation.data;
+
+  // Get requester and verify ownership
+  const requester = await prisma.member.findUnique({
+    where: { id: req.memberId },
+    include: { team: true },
+  });
+
+  if (!requester?.team) {
+    res.status(404).json({ error: 'Not part of a team' });
+    return;
+  }
+
+  if (requester.seatTier !== 'OWNER') {
+    res.status(403).json({ error: 'Only team owners can add seats' });
+    return;
+  }
+
+  if (!requester.team.stripeSubscriptionId) {
+    res.status(400).json({ error: 'No active subscription' });
+    return;
+  }
+
+  // Determine which price ID to update
+  const priceId = seatType === 'owner'
+    ? env.STRIPE_OWNER_SEAT_PRICE_ID
+    : env.STRIPE_TEAM_SEAT_PRICE_ID;
+
+  if (!priceId) {
+    res.status(500).json({ error: 'Seat pricing not configured' });
+    return;
+  }
+
+  try {
+    // Retrieve subscription to find the subscription item
+    const subscription = await stripe.subscriptions.retrieve(
+      requester.team.stripeSubscriptionId
+    );
+
+    const item = subscription.items.data.find(i => i.price.id === priceId);
+
+    if (!item) {
+      res.status(400).json({ error: `No ${seatType} seat item on subscription` });
+      return;
+    }
+
+    // Update quantity with immediate proration
+    // Per RESEARCH.md: proration_behavior: 'always_invoice' charges immediately
+    const updatedItem = await stripe.subscriptionItems.update(item.id, {
+      quantity: (item.quantity ?? 0) + quantity,
+      proration_behavior: 'always_invoice',
+    });
+
+    // Note: Database update happens via webhook (customer.subscription.updated)
+    // This ensures Stripe is source of truth
+
+    logger.info(
+      {
+        teamId: requester.team.id,
+        seatType,
+        previousQuantity: item.quantity,
+        newQuantity: updatedItem.quantity,
+        addedQuantity: quantity,
+      },
+      'Seats added mid-subscription'
+    );
+
+    res.json({
+      success: true,
+      seatType,
+      previousQuantity: item.quantity,
+      newQuantity: updatedItem.quantity,
+      addedQuantity: quantity,
+    });
+  } catch (error) {
+    logger.error({ error, teamId: requester.team.id }, 'Failed to add seats');
+    res.status(500).json({ error: 'Failed to add seats. Please try again.' });
+  }
 });

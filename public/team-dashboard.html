@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Dashboard - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* Team Dashboard Specific Styles */
+    .dashboard-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .team-name {
+      font-size: 1.25rem;
+      color: var(--cream);
+      font-style: italic;
+    }
+
+    .subscription-status {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .subscription-status.active {
+      color: #4ade80;
+    }
+
+    /* Seat Summary */
+    .seat-summary {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 2rem;
+      background: var(--bg-section);
+      border-radius: 12px;
+      margin: 2rem 0;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .seat-type {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .seat-icon {
+      font-size: 2rem;
+      color: var(--gold);
+    }
+
+    .seat-label {
+      font-family: 'Cinzel', serif;
+      color: var(--cream);
+      font-size: 1rem;
+    }
+
+    .seat-count {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* Member Sections */
+    .member-section {
+      margin: 2rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .section-count {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Member Card */
+    .member-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1.25rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .member-card:hover {
+      border-color: var(--gold);
+    }
+
+    .member-card.primary-owner {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(212, 175, 55, 0.1) 100%);
+    }
+
+    .member-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .crown-icon {
+      color: var(--gold-light);
+      font-size: 1rem;
+    }
+
+    .member-email {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      word-break: break-all;
+    }
+
+    .member-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-family: 'Cinzel', serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge.claimed {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .badge.pending {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .badge.introduced {
+      background: rgba(96, 165, 250, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+    }
+
+    .badge.awaiting {
+      background: rgba(156, 163, 175, 0.2);
+      color: #9ca3af;
+      border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+
+    .badge.primary {
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--gold);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-style: italic;
+      background: var(--bg-section);
+      border-radius: 8px;
+      border: 1px dashed var(--border-subtle);
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-subtle);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error State */
+    .error-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #ef4444;
+    }
+
+    .error-state h2 {
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+
+    /* Action Buttons Placeholder */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .seat-summary {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .members-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <h1>Team Dashboard</h1>
+    <p class="team-name" id="team-name">Loading...</p>
+    <p class="subscription-status" id="subscription-status"></p>
+  </header>
+
+  <main class="dashboard-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading team data...</p>
+    </div>
+
+    <div id="error" class="error-state" style="display: none;">
+      <h2>Access Denied</h2>
+      <p id="error-message">Unable to load dashboard.</p>
+      <div class="action-buttons">
+        <a href="/" class="action-button">Return Home</a>
+      </div>
+    </div>
+
+    <div id="dashboard-content" style="display: none;">
+      <!-- Seat Summary -->
+      <div class="seat-summary">
+        <div class="seat-type">
+          <span class="seat-icon">&#9813;</span>
+          <span class="seat-label">Owner Seats:</span>
+          <span class="seat-count" id="owner-seats">0/0</span>
+        </div>
+        <div class="seat-type">
+          <span class="seat-icon">&#9816;</span>
+          <span class="seat-label">Team Seats:</span>
+          <span class="seat-count" id="team-seats">0/0</span>
+        </div>
+      </div>
+
+      <!-- Owners Section -->
+      <section class="member-section">
+        <div class="section-header">
+          <h2>Owners</h2>
+          <span class="section-count" id="owner-count">0 members</span>
+        </div>
+        <div class="members-grid" id="owners-list">
+          <div class="empty-state">No owner seats claimed yet</div>
+        </div>
+      </section>
+
+      <!-- Team Members Section -->
+      <section class="member-section">
+        <div class="section-header">
+          <h2>Team Members</h2>
+          <span class="section-count" id="team-count">0 members</span>
+        </div>
+        <div class="members-grid" id="team-list">
+          <div class="empty-state">No team seats claimed yet</div>
+        </div>
+      </section>
+
+      <!-- Action Buttons Placeholder (for future invite/revoke features) -->
+      <div class="action-buttons" id="action-buttons" style="display: none;">
+        <button class="action-button" id="invite-button" disabled>Invite Members</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+      <nav class="footer-links">
+        <a href="/">Home</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Get access token from storage
+    function getAccessToken() {
+      return localStorage.getItem('accessToken');
+    }
+
+    // Render a member card
+    function renderMemberCard(member, isOwnerSection) {
+      const isPrimary = isOwnerSection && member.isPrimaryOwner;
+      const statusBadge = member.status === 'claimed'
+        ? '<span class="badge claimed">Claimed</span>'
+        : '<span class="badge pending">Pending</span>';
+      const introBadge = member.introCompleted
+        ? '<span class="badge introduced">Introduced</span>'
+        : '<span class="badge awaiting">Awaiting Intro</span>';
+      const primaryBadge = isPrimary
+        ? '<span class="badge primary">Primary</span>'
+        : '';
+      const crownIcon = isPrimary ? '<span class="crown-icon">&#9813;</span>' : '';
+
+      return `
+        <div class="member-card${isPrimary ? ' primary-owner' : ''}">
+          <div class="member-name">
+            ${crownIcon}
+            ${escapeHtml(member.name)}
+          </div>
+          <div class="member-email">${member.email ? escapeHtml(member.email) : 'No email'}</div>
+          <div class="member-badges">
+            ${statusBadge}
+            ${introBadge}
+            ${primaryBadge}
+          </div>
+        </div>
+      `;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Show error state
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+    }
+
+    // Load dashboard data
+    async function loadDashboard() {
+      const token = getAccessToken();
+
+      if (!token) {
+        window.location.href = '/auth/login?redirect=/team-dashboard.html';
+        return;
+      }
+
+      try {
+        const response = await fetch('/team/dashboard', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.status === 401) {
+          // Token expired or invalid
+          localStorage.removeItem('accessToken');
+          window.location.href = '/auth/login?redirect=/team-dashboard.html';
+          return;
+        }
+
+        if (response.status === 403) {
+          showError('Only team owners can access the dashboard.');
+          return;
+        }
+
+        if (response.status === 404) {
+          showError('You are not part of a team.');
+          return;
+        }
+
+        if (!response.ok) {
+          const data = await response.json();
+          showError(data.error || 'Failed to load dashboard.');
+          return;
+        }
+
+        const data = await response.json();
+        renderDashboard(data);
+      } catch (err) {
+        console.error('Dashboard load error:', err);
+        showError('Failed to connect to server. Please try again.');
+      }
+    }
+
+    // Render dashboard with data
+    function renderDashboard(data) {
+      // Hide loading, show content
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'block';
+
+      // Team info
+      document.getElementById('team-name').textContent = data.team.name;
+      const statusEl = document.getElementById('subscription-status');
+      statusEl.textContent = data.team.subscriptionStatus;
+      if (data.team.subscriptionStatus === 'ACTIVE') {
+        statusEl.classList.add('active');
+      }
+
+      // Seat summary
+      document.getElementById('owner-seats').textContent =
+        `${data.seats.owner.claimed}/${data.seats.owner.total}`;
+      document.getElementById('team-seats').textContent =
+        `${data.seats.team.claimed}/${data.seats.team.total}`;
+
+      // Owners list
+      const ownersList = document.getElementById('owners-list');
+      const ownerCount = document.getElementById('owner-count');
+      if (data.members.owners.length > 0) {
+        ownersList.innerHTML = data.members.owners
+          .map(m => renderMemberCard(m, true))
+          .join('');
+        ownerCount.textContent = `${data.members.owners.length} member${data.members.owners.length !== 1 ? 's' : ''}`;
+      } else {
+        ownersList.innerHTML = '<div class="empty-state">No owner seats claimed yet</div>';
+        ownerCount.textContent = '0 members';
+      }
+
+      // Team members list
+      const teamList = document.getElementById('team-list');
+      const teamCount = document.getElementById('team-count');
+      if (data.members.team.length > 0) {
+        teamList.innerHTML = data.members.team
+          .map(m => renderMemberCard(m, false))
+          .join('');
+        teamCount.textContent = `${data.members.team.length} member${data.members.team.length !== 1 ? 's' : ''}`;
+      } else {
+        teamList.innerHTML = '<div class="empty-state">No team seats claimed yet</div>';
+        teamCount.textContent = '0 members';
+      }
+
+      // Show action buttons for primary owner (placeholder for future features)
+      if (data.currentUser.isPrimaryOwner) {
+        document.getElementById('action-buttons').style.display = 'flex';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

@@ -29,6 +29,7 @@ const envSchema = z.object({
   DISCORD_REDIRECT_URI: z.string().url().optional(), // OAuth callback URL (e.g., http://localhost:3000/auth/callback)
   DISCORD_INVITE_URL: z.string().url().optional(), // Discord server invite URL for post-payment redirect
   DISCORD_INTRODUCTIONS_CHANNEL_ID: z.string(), // Channel ID for #introductions (intro detection)
+  DISCORD_BILLING_SUPPORT_CHANNEL_ID: z.string().optional(), // Channel ID for #billing-support (auto-created if missing)
 
   // Stripe Products
   STRIPE_INDIVIDUAL_PRICE_ID: z.string().startsWith('price_').optional(), // Individual Monthly price ID

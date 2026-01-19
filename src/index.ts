@@ -4,6 +4,7 @@ import cors from 'cors';
 import pino from 'pino';
 import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
+import { authRouter } from './routes/auth.js';
 import { startBot } from './bot/client.js';
 
 // Initialize logger (exported for use in other modules)
@@ -27,6 +28,9 @@ app.use('/webhooks/stripe', stripeWebhookRouter);
 
 // JSON parsing for all other routes
 app.use(express.json());
+
+// Auth routes (session refresh, logout)
+app.use('/auth', authRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

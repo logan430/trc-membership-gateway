@@ -27,21 +27,21 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Discord Roles
 
 - [x] **ROLE-01**: Bot assigns "Paid (Unintroduced)" role when user claims access
-- [ ] **ROLE-02**: Bot promotes user to "Member" role after introduction post
-- [ ] **ROLE-03**: Bot promotes company owner to "Owner" role after introduction post
+- [x] **ROLE-02**: Bot promotes user to "Member" role after introduction post
+- [x] **ROLE-03**: Bot promotes company owner to "Owner" role after introduction post
 - [ ] **ROLE-04**: Bot assigns "Billing Issue" role when payment fails
 - [ ] **ROLE-05**: Bot removes "Billing Issue" and restores correct role when payment recovers
-- [ ] **ROLE-06**: Bot removes all managed roles when subscription is canceled/expired
+- [x] **ROLE-06**: Bot removes all managed roles when subscription is canceled/expired
 
 ### Onboarding
 
 - [x] **ONB-01**: Unpaid user sees The Gatekeeper (public lobby) with join instructions
 - [x] **ONB-02**: Paid user can access Claim page to link Stripe subscription to Discord
 - [x] **ONB-03**: After claiming, user receives join instructions or Discord invite
-- [ ] **ONB-04**: Bot detects first message in #introductions and triggers role promotion
+- [x] **ONB-04**: Bot detects first message in #introductions and triggers role promotion
 - [x] **ONB-05**: Paid (Unintroduced) user can only access #introductions and onboarding channels
-- [ ] **ONB-06**: Member/Owner can access full server (except owners-only for Members)
-- [ ] **ONB-07**: Owner can access owners-only channels
+- [x] **ONB-06**: Member/Owner can access full server (except owners-only for Members)
+- [x] **ONB-07**: Owner can access owners-only channels
 
 ### Company/Team Management
 
@@ -131,18 +131,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAY-06 | Phase 5 | Pending |
 | PAY-07 | Phase 5 | Pending |
 | ROLE-01 | Phase 3 | Pending |
-| ROLE-02 | Phase 4 | Pending |
-| ROLE-03 | Phase 4 | Pending |
+| ROLE-02 | Phase 4 | Complete |
+| ROLE-03 | Phase 4 | Complete |
 | ROLE-04 | Phase 6 | Pending |
 | ROLE-05 | Phase 6 | Pending |
-| ROLE-06 | Phase 4 | Pending |
+| ROLE-06 | Phase 4 | Complete |
 | ONB-01 | Phase 3 | Pending |
 | ONB-02 | Phase 3 | Pending |
 | ONB-03 | Phase 3 | Pending |
-| ONB-04 | Phase 4 | Pending |
+| ONB-04 | Phase 4 | Complete |
 | ONB-05 | Phase 3 | Pending |
-| ONB-06 | Phase 4 | Pending |
-| ONB-07 | Phase 4 | Pending |
+| ONB-06 | Phase 4 | Complete |
+| ONB-07 | Phase 4 | Complete |
 | TEAM-01 | Phase 5 | Pending |
 | TEAM-02 | Phase 5 | Pending |
 | TEAM-03 | Phase 5 | Pending |

@@ -42,7 +42,10 @@ model Member {
 
   // Stripe identity
   stripeCustomerId    String?            @unique
-  email               String?
+  email               String?            @unique
+
+  // Authentication (null for magic-link-only users)
+  passwordHash        String?
 
   // CRM-ready fields (captured during intro or checkout)
   firstName           String?
@@ -73,7 +76,6 @@ model Member {
 
   @@index([teamId])
   @@index([subscriptionStatus])
-  @@index([email])
 }
 
 model Team {

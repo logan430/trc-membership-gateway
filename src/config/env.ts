@@ -27,6 +27,10 @@ const envSchema = z.object({
   DISCORD_GUILD_ID: z.string(),
   DISCORD_ADMIN_CHANNEL_ID: z.string().optional(),
   DISCORD_REDIRECT_URI: z.string().url(), // OAuth callback URL (e.g., http://localhost:3000/auth/callback)
+  DISCORD_INVITE_URL: z.string().url(), // Discord server invite URL for post-payment redirect
+
+  // Stripe Products
+  STRIPE_INDIVIDUAL_PRICE_ID: z.string().startsWith('price_'), // Individual Monthly price ID
 });
 
 export const env = envSchema.parse(process.env);

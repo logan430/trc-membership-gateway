@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 11: Frontend Cleanup** - Team routes, checkout success, 404 page
 - [x] **Phase 12: Route Restructure** - Consolidate routes under /app/*
 - [x] **Phase 13: Billing Portal** - Stripe billing portal endpoint (Gap Closure)
-- [ ] **Phase 14: Admin Filter Fix** - Fix subscription status filter parameter (Gap Closure)
+- [x] **Phase 14: Admin Filter Fix** - Fix subscription status filter parameter (Gap Closure)
 
 ## Phase Details
 
@@ -262,7 +262,7 @@ Plans:
 **Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] 14-01-PLAN.md - Admin filter parameter alignment (Wave 1)
+- [x] 14-01-PLAN.md - Admin filter parameter alignment (Wave 1)
 
 ## Progress
 
@@ -284,7 +284,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 | 11. Frontend Cleanup | 1/1 | Complete | 2026-01-20 |
 | 12. Route Restructure | 2/2 | Complete | 2026-01-20 |
 | 13. Billing Portal | 1/1 | Complete | 2026-01-20 |
-| 14. Admin Filter Fix | 0/1 | Pending | - |
+| 14. Admin Filter Fix | 1/1 | Complete | 2026-01-20 |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -311,4 +311,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 *Phase 12 complete: 2026-01-20*
 *Gap closure phases 13-14 added: 2026-01-20*
 *Phase 13 complete: 2026-01-20*
+*Phase 14 complete: 2026-01-20*
 *Total requirements: 45 | Total phases: 14 | Total plans: 42*

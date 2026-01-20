@@ -45,7 +45,8 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-hashes'"],
+      scriptSrcAttr: ["'unsafe-inline'"], // Allow onclick handlers
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:"],
@@ -68,34 +69,20 @@ app.use(express.json());
 // =============================================================================
 // ADMIN ROUTES
 // =============================================================================
-// /admin/auth/*      - Auth routes (login, logout, refresh - no auth required)
-// /admin/members/*   - Member management (requireAdmin)
-// /admin/config/*    - Feature flags (requireAdmin, some requireSuperAdmin)
-// /admin/audit/*     - Audit logs (requireAdmin)
-// /admin/templates/* - Email templates (requireAdmin, PUT requireSuperAdmin)
-// /admin/admins/*    - Admin management (requireSuperAdmin)
+// HTML pages served first (browser navigation)
+// API routes use /api/admin/* prefix to avoid conflicts
 // =============================================================================
 
 // Admin auth routes (login, logout, refresh - no auth required for these)
 app.use('/admin/auth', adminAuthRouter);
 
-// Admin member management routes (requires admin auth)
-app.use('/admin/members', adminMembersRouter);
-
-// Admin access control routes (revoke, reset claim, grant role - same base path)
-app.use('/admin/members', adminAccessRouter);
-
-// Admin config routes (feature flags, discord channels)
-app.use('/admin/config', adminConfigRouter);
-
-// Admin audit log routes
-app.use('/admin/audit', adminAuditRouter);
-
-// Admin email template routes
-app.use('/admin/templates', adminTemplatesRouter);
-
-// Admin account management routes (super admin only)
-app.use('/admin/admins', adminAdminsRouter);
+// Admin API routes (JSON) - use /api/admin prefix
+app.use('/api/admin/members', adminMembersRouter);
+app.use('/api/admin/members', adminAccessRouter);
+app.use('/api/admin/config', adminConfigRouter);
+app.use('/api/admin/audit', adminAuditRouter);
+app.use('/api/admin/templates', adminTemplatesRouter);
+app.use('/api/admin/admins', adminAdminsRouter);
 
 // Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);
@@ -132,6 +119,11 @@ app.get('/health', (req, res) => {
 
 // Public routes (landing page - mounted last so named routes take precedence)
 app.use(publicRouter);
+
+// 404 catch-all - must be LAST route
+app.use((_req, res) => {
+  res.status(404).sendFile(join(__dirname, '../public/404.html'));
+});
 
 // Start server
 app.listen(env.PORT, () => {

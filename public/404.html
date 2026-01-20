@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* 404 Page Styles */
+    .error-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .error-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .error-code {
+      font-family: 'Cinzel', serif;
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .error-card h1 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .error-message {
+      color: var(--cream);
+      font-size: 1.2rem;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+
+    .error-subtext {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.875rem 1.5rem;
+      background: var(--gold);
+      color: var(--bg-dark);
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .error-code {
+        font-size: 4rem;
+      }
+
+      .error-card h1 {
+        font-size: 1.5rem;
+      }
+
+      .error-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="error-container">
+    <div class="error-card">
+      <div class="error-code">404</div>
+      <h1>Page Not Found</h1>
+      <p class="error-message">The scroll ye seek does not exist.</p>
+      <p class="error-subtext">Perhaps you took a wrong turn in the castle?</p>
+      <a href="/" class="action-button">Return to The Gatekeeper</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+      <nav class="footer-links">
+        <a href="/">Home</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

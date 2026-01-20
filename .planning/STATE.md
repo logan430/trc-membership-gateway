@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Phase 9 complete - All frontend pages implemented
+**Current focus:** Phase 10 - Admin system for member management
 
 ## Current Position
 
-Phase: 9 of 9 (Frontend Pages)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-01-20 - Completed 09-02-PLAN.md (Dashboard and Claim Pages)
+Phase: 10 of 10 (Admin System)
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-01-20 - Completed 10-01-PLAN.md (Admin Authentication)
 
-Progress: [██████████] 100% (31/31 plans complete)
+Progress: [██████████░] ~79% (32/~40 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 31
+- Total plans completed: 32
 - Average duration: 4.5 min
-- Total execution time: 142 min
+- Total execution time: 146 min
 
 **By Phase:**
 
@@ -36,9 +36,10 @@ Progress: [██████████] 100% (31/31 plans complete)
 | 7-Email Notifications | 4/4 | 17 min | 4.3 min |
 | 8-Operations | 2/2 | 7 min | 3.5 min |
 | 9-Frontend Pages | 2/2 | 8 min | 4 min |
+| 10-Admin System | 1/4 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-01 (3 min), 08-02 (4 min), 09-01 (5 min), 09-02 (3 min)
+- Last 5 plans: 08-02 (4 min), 09-01 (5 min), 09-02 (3 min), 10-01 (4 min)
 - Trend: Consistent execution, averaging 4 min per plan
 
 *Updated after each plan completion*
@@ -144,6 +145,11 @@ Recent decisions affecting current work:
 | 09-02 | /app/dashboard distinct from /dashboard API | Avoids route conflicts |
 | 09-02 | /app/claim distinct from /claim/* OAuth routes | Avoids route conflicts |
 | 09-02 | Status badge color coding | active=green, past_due=yellow, canceled=red, none=gray |
+| 10-01 | Reuse JWT_SECRET for admin tokens | With isAdmin:true flag to distinguish from member tokens |
+| 10-01 | 30-day admin refresh tokens | Per CONTEXT.md requirement for admin sessions |
+| 10-01 | Separate cookie path /admin/auth/refresh | Avoid conflicts with member /auth/refresh |
+| 10-01 | Case-insensitive admin email lookup | User convenience without security impact |
+| 10-01 | Anti-enumeration on admin login | Same error for wrong email or password |
 
 ### Pending Todos
 
@@ -158,32 +164,27 @@ None.
 - STRIPE_TEAM_SEAT_PRICE_ID must be set before testing company checkout
 - DISCORD_INTRODUCTIONS_CHANNEL_ID must be set before testing introduction detection
 - Message Content Intent must be enabled in Discord Developer Portal
-- Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
+- ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD must be set before running prisma seed
 
-## Phase 9 Progress
+## Phase 10 Progress
 
-Frontend pages progress:
-- [x] 09-01: Auth pages (signup, login)
-- [x] 09-02: Dashboard and claim pages (COMPLETE)
+Admin system progress:
+- [x] 10-01: Admin authentication (COMPLETE)
+- [ ] 10-02: Member management API
+- [ ] 10-03: Access control actions
+- [ ] 10-04: Configuration and audit
 
-Delivered (09-01):
-- Helmet CSP configuration for inline scripts and Google Fonts
-- public/signup.html with registration form
-- public/login.html with login form and redirect support
-- Form CSS classes in public/styles.css
-- Routes in src/routes/public.ts for /auth/signup and /auth/login
-
-Delivered (09-02):
-- public/dashboard.html with subscription status display
-- public/claim.html with Discord link flow
-- Routes for /app/dashboard and /app/claim
-- Status badge styling (active/past_due/canceled/none)
-- Discord connection section with link/claimed states
-- Billing warning banner for past_due status
+Delivered (10-01):
+- Admin, FeatureFlag, EmailTemplate models in Prisma schema
+- prisma/seed.ts for first super admin creation
+- src/admin/auth.ts with JWT token creation/verification
+- src/admin/middleware.ts with requireAdmin/requireSuperAdmin
+- POST /admin/auth/login, /refresh, /logout endpoints
+- ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD env vars
 
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Completed 09-02-PLAN.md (Dashboard and Claim Pages) - Phase 9 complete
+Stopped at: Completed 10-01-PLAN.md (Admin Authentication)
 Resume file: None
-Next: All phases complete - milestone ready for final verification
+Next: 10-02-PLAN.md (Member Management API)

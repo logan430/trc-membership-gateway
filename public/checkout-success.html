@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to The Council - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* Checkout Success Page Styles */
+    .success-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      min-height: calc(100vh - 200px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .success-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #4ade80;
+    }
+
+    .success-card h1 {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .success-message {
+      font-size: 1.2rem;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+
+    .next-steps {
+      background: var(--bg-section);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .next-steps h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .step-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .step-list li {
+      padding: 0.75rem 0;
+      padding-left: 2rem;
+      position: relative;
+      color: var(--cream);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .step-list li:last-child {
+      border-bottom: none;
+    }
+
+    .step-list li::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--gold);
+      color: var(--bg-dark);
+      border-radius: 50%;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.875rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button.primary {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button.primary:hover {
+      background: var(--gold-light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .success-container {
+        padding: 2rem 1rem;
+      }
+
+      .success-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .success-card h1 {
+        font-size: 1.5rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-button {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="success-container">
+    <div class="success-card">
+      <div class="success-icon">&#10003;</div>
+      <h1>Welcome to The Council</h1>
+      <p class="success-message">Your subscription is now active.</p>
+
+      <div class="next-steps">
+        <h2>Next Steps</h2>
+        <ol class="step-list">
+          <li data-step="1">Visit your dashboard to check your membership status</li>
+          <li data-step="2">Link your Discord account to access the community</li>
+          <li data-step="3">Post an introduction to unlock full access</li>
+        </ol>
+      </div>
+
+      <div class="action-buttons">
+        <a href="/app/dashboard" class="action-button primary">Go to Dashboard</a>
+        <a href="/app/claim" class="action-button">Link Discord</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+      <nav class="footer-links">
+        <a href="/">Home</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

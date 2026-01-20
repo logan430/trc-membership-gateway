@@ -59,6 +59,14 @@ publicRouter.get('/team/invite', (_req: Request, res: Response): void => {
 });
 
 /**
+ * GET /checkout/success
+ * Serve the post-checkout success page
+ */
+publicRouter.get('/checkout/success', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/checkout-success.html'));
+});
+
+/**
  * GET /
  * Serve The Gatekeeper landing page
  */

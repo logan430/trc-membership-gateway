@@ -21,7 +21,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Email Notifications** - Transactional emails for all lifecycle events
 - [x] **Phase 8: Operations** - Reconciliation, audit logging, CRM-ready schema
 - [x] **Phase 9: Frontend Pages** - Signup, login, dashboard, claim HTML pages
-- [ ] **Phase 10: Admin System** - Admin login, member management dashboard
+- [x] **Phase 10: Admin System** - Admin login, member management dashboard
+- [x] **Phase 11: Frontend Cleanup** - Team routes, checkout success, 404 page
+- [ ] **Phase 12: Route Restructure** - Consolidate routes under /app/* (DEFERRED)
 
 ## Phase Details
 
@@ -200,11 +202,32 @@ Plans:
 **Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 10-01-PLAN.md - Schema updates and admin auth infrastructure (Wave 1)
-- [ ] 10-02-PLAN.md - Member management and access control APIs (Wave 2)
-- [ ] 10-03-PLAN.md - Feature flags, audit log, and template APIs (Wave 2)
-- [ ] 10-04-PLAN.md - Admin account management API (Wave 2)
-- [ ] 10-05-PLAN.md - Admin UI pages (Wave 3)
+- [x] 10-01-PLAN.md - Schema updates and admin auth infrastructure (Wave 1)
+- [x] 10-02-PLAN.md - Member management and access control APIs (Wave 2)
+- [x] 10-03-PLAN.md - Feature flags, audit log, and template APIs (Wave 2)
+- [x] 10-04-PLAN.md - Admin account management API (Wave 2)
+- [x] 10-05-PLAN.md - Admin UI pages (Wave 3)
+
+### Phase 11: Frontend Cleanup
+**Goal**: Complete frontend coverage with team routes, checkout success, and error handling
+**Depends on**: Phase 10
+**Requirements**: None (polish/cleanup)
+**Plans**: 1 plan in 1 wave
+
+Plans:
+- [x] 11-01-PLAN.md - Team routes, checkout success, 404 page (Wave 1)
+
+### Phase 12: Route Restructure (DEFERRED)
+**Goal**: Consolidate all routes under /app/* for consistent URL structure
+**Depends on**: Phase 11
+**Requirements**: None (refactoring)
+**Status**: DEFERRED - Planned for future milestone
+**Success Criteria** (what must be TRUE):
+  1. Admin routes moved from /admin/* to /app/admin/*
+  2. Auth routes moved from /auth/* to /app/auth/*
+  3. Old routes redirect to new routes (backwards compatibility)
+  4. All internal links updated to new routes
+**Plans**: TBD (estimate: 1-2 plans)
 
 ## Progress
 
@@ -222,7 +245,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Email Notifications | 4/4 | Complete | 2026-01-19 |
 | 8. Operations | 2/2 | Complete | 2026-01-19 |
 | 9. Frontend Pages | 2/2 | Complete | 2026-01-19 |
-| 10. Admin System | 0/5 | Planned | - |
+| 10. Admin System | 5/5 | Complete | 2026-01-20 |
+| 11. Frontend Cleanup | 1/1 | Complete | 2026-01-20 |
+| 12. Route Restructure | 0/? | Deferred | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -242,4 +267,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 *Phase 9 planned: 2026-01-19*
 *Phase 9 complete: 2026-01-19*
 *Phase 10 planned: 2026-01-19*
-*Total requirements: 45 | Total phases: 10 | Total plans: 36*
+*Phase 10 complete: 2026-01-20*
+*Phase 11 planned: 2026-01-20*
+*Phase 12 added: 2026-01-20 (deferred)*
+*Phase 11 complete: 2026-01-20*
+*Total requirements: 45 | Total phases: 12 | Total plans: 38*

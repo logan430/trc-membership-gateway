@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member Detail - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Member Detail</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/members" class="active">Members</a>
+    <a href="/admin/config">Config</a>
+    <a href="/admin/audit">Audit</a>
+    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/admin/templates">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <a href="/admin/members" class="back-link">&larr; Back to Members</a>
+
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading member...</p>
+    </div>
+
+    <div id="error-state" class="error-state" style="display: none;">
+      <h3>Member Not Found</h3>
+      <p>The requested member could not be found.</p>
+    </div>
+
+    <div id="member-content" style="display: none;">
+      <!-- Member Info Card -->
+      <div class="detail-card">
+        <h3>Member Information</h3>
+        <div class="detail-row">
+          <span class="detail-label">Email</span>
+          <span class="detail-value" id="member-email"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Discord Username</span>
+          <span class="detail-value" id="member-discord"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Discord ID</span>
+          <span class="detail-value" id="member-discord-id"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Subscription Status</span>
+          <span class="detail-value" id="member-status"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Seat Tier</span>
+          <span class="detail-value" id="member-tier"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Introduction Completed</span>
+          <span class="detail-value" id="member-intro"></span>
+        </div>
+        <div class="detail-row" id="team-row" style="display: none;">
+          <span class="detail-label">Team</span>
+          <span class="detail-value" id="member-team"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Created</span>
+          <span class="detail-value" id="member-created"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Updated</span>
+          <span class="detail-value" id="member-updated"></span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="detail-card">
+        <h3>Actions</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn-danger" id="btn-revoke" onclick="revokeAccess()">
+            Revoke Discord Access
+          </button>
+          <button class="btn-secondary" id="btn-reset-claim" onclick="resetClaim()">
+            Reset Claim
+          </button>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <select id="role-select" style="padding: 0.75rem; background: var(--bg-dark); border: 1px solid var(--border-subtle); color: var(--text); border-radius: 4px;">
+              <option value="">Grant Role...</option>
+              <option value="Squire">Squire</option>
+              <option value="Knight">Knight</option>
+              <option value="Lord">Lord</option>
+              <option value="Debtor">Debtor</option>
+            </select>
+            <button class="btn-primary btn-small" onclick="grantRole()">Grant</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit History -->
+      <div class="detail-card">
+        <h3>Audit History</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Action</th>
+              <th>Performed By</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="audit-table">
+          </tbody>
+        </table>
+        <div class="empty-state" id="audit-empty" style="display: none;">
+          No audit history for this member.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Confirmation Dialog -->
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <h3 id="dialog-title">Confirm Action</h3>
+    <p id="dialog-message">Are you sure?</p>
+    <div class="reason-hint">Please provide a reason (minimum 10 characters):</div>
+    <textarea id="dialog-reason" placeholder="Reason for this action..." minlength="10"></textarea>
+    <div class="dialog-buttons">
+      <button class="btn-secondary" onclick="cancelDialog()">Cancel</button>
+      <button class="btn-danger" id="dialog-confirm-btn" onclick="confirmDialog()">Confirm</button>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    const TOKEN_KEY = 'adminAccessToken';
+    let member = null;
+    let dialogResolve = null;
+
+    // Get member ID from URL
+    function getMemberId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleString();
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Get badge HTML
+    function getBadge(value, type) {
+      const lower = (value || 'none').toLowerCase();
+      return `<span class="badge ${lower}">${value || 'None'}</span>`;
+    }
+
+    // Load member detail
+    async function loadMember() {
+      if (!checkAuth()) return;
+
+      const memberId = getMemberId();
+      if (!memberId) {
+        showError();
+        return;
+      }
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/members/${memberId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        if (response.status === 404) {
+          showError();
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load member');
+        }
+
+        const data = await response.json();
+        member = data.member;
+        renderMember();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('member-content').style.display = 'block';
+
+      } catch (err) {
+        console.error('Load member error:', err);
+        showError();
+      }
+    }
+
+    // Show error state
+    function showError() {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+    }
+
+    // Render member info
+    function renderMember() {
+      document.getElementById('member-email').textContent = member.email;
+      document.getElementById('member-discord').innerHTML = member.discordUsername
+        ? escapeHtml(member.discordUsername)
+        : '<span class="badge no">Not Linked</span>';
+      document.getElementById('member-discord-id').textContent = member.discordId || '-';
+      document.getElementById('member-status').innerHTML = getBadge(member.subscriptionStatus);
+      document.getElementById('member-tier').innerHTML = getBadge(member.seatTier);
+      document.getElementById('member-intro').innerHTML = member.introCompleted
+        ? '<span class="badge yes">Yes</span>'
+        : '<span class="badge no">No</span>';
+      document.getElementById('member-created').textContent = formatDate(member.createdAt);
+      document.getElementById('member-updated').textContent = formatDate(member.updatedAt);
+
+      // Team info
+      if (member.team) {
+        document.getElementById('team-row').style.display = 'flex';
+        document.getElementById('member-team').textContent = member.team.name;
+      }
+
+      // Update button states
+      const btnRevoke = document.getElementById('btn-revoke');
+      const btnResetClaim = document.getElementById('btn-reset-claim');
+
+      btnRevoke.disabled = !member.discordId;
+      btnResetClaim.disabled = !member.discordId;
+
+      // Render audit history
+      renderAuditHistory(member.auditLogs || []);
+    }
+
+    // Render audit history
+    function renderAuditHistory(logs) {
+      const tbody = document.getElementById('audit-table');
+      const empty = document.getElementById('audit-empty');
+
+      if (!logs || logs.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      tbody.innerHTML = logs.map(log => `
+        <tr>
+          <td>${formatDate(log.createdAt)}</td>
+          <td><span class="badge admin">${log.action}</span></td>
+          <td>${log.performedById ? 'Admin' : 'System'}</td>
+          <td>${log.details ? escapeHtml(JSON.stringify(log.details).slice(0, 50)) : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Show confirmation dialog
+    function showConfirmDialog(title, message) {
+      return new Promise((resolve) => {
+        dialogResolve = resolve;
+        document.getElementById('dialog-title').textContent = title;
+        document.getElementById('dialog-message').textContent = message;
+        document.getElementById('dialog-reason').value = '';
+        document.getElementById('confirm-dialog').showModal();
+      });
+    }
+
+    // Cancel dialog
+    function cancelDialog() {
+      document.getElementById('confirm-dialog').close();
+      if (dialogResolve) {
+        dialogResolve(null);
+        dialogResolve = null;
+      }
+    }
+
+    // Confirm dialog
+    function confirmDialog() {
+      const reason = document.getElementById('dialog-reason').value.trim();
+      if (reason.length < 10) {
+        alert('Please provide a reason with at least 10 characters.');
+        return;
+      }
+      document.getElementById('confirm-dialog').close();
+      if (dialogResolve) {
+        dialogResolve(reason);
+        dialogResolve = null;
+      }
+    }
+
+    // Revoke access
+    async function revokeAccess() {
+      if (!member || !member.discordId) return;
+
+      const reason = await showConfirmDialog(
+        'Revoke Discord Access',
+        `This will remove all Discord roles from ${member.email}. They will keep their subscription but lose access to restricted channels.`
+      );
+
+      if (!reason) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/members/${member.id}/revoke-access`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ reason }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Revoke failed');
+        }
+
+        alert('Access revoked successfully.');
+        loadMember(); // Refresh
+
+      } catch (err) {
+        console.error('Revoke error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Reset claim
+    async function resetClaim() {
+      if (!member || !member.discordId) return;
+
+      const reason = await showConfirmDialog(
+        'Reset Claim',
+        `This will unlink Discord from ${member.email}'s account. They will need to re-claim their access with Discord OAuth. Their introduction status will be preserved.`
+      );
+
+      if (!reason) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/members/${member.id}/reset-claim`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ reason }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Reset claim failed');
+        }
+
+        alert('Claim reset successfully.');
+        loadMember(); // Refresh
+
+      } catch (err) {
+        console.error('Reset claim error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Grant role
+    async function grantRole() {
+      if (!member) return;
+
+      const roleSelect = document.getElementById('role-select');
+      const roleName = roleSelect.value;
+
+      if (!roleName) {
+        alert('Please select a role to grant.');
+        return;
+      }
+
+      const reason = await showConfirmDialog(
+        'Grant Role',
+        `This will assign the ${roleName} role to ${member.email}. This bypasses the normal subscription/claim flow.`
+      );
+
+      if (!reason) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/members/${member.id}/grant-role`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ roleName, reason }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Grant role failed');
+        }
+
+        alert(`${roleName} role granted successfully.`);
+        roleSelect.value = '';
+        loadMember(); // Refresh
+
+      } catch (err) {
+        console.error('Grant role error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        if (adminInfo.role === 'SUPER_ADMIN') {
+          document.getElementById('admins-link').style.display = 'inline-block';
+        }
+      }
+
+      loadMember();
+    });
+
+    // Close dialog on backdrop click
+    document.getElementById('confirm-dialog').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        cancelDialog();
+      }
+    });
+  </script>
+</body>
+</html>

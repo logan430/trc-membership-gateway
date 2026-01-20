@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Admin Dashboard</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard" class="active">Dashboard</a>
+    <a href="/admin/members">Members</a>
+    <a href="/admin/config">Config</a>
+    <a href="/admin/audit">Audit</a>
+    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/admin/templates">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+
+    <div id="dashboard-content" style="display: none;">
+      <!-- Summary Stats -->
+      <div class="stat-grid" id="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-members">0</div>
+          <div class="stat-label">Total Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="active-subscriptions">0</div>
+          <div class="stat-label">Active Subscriptions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="billing-issues">0</div>
+          <div class="stat-label">Billing Issues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="pending-claims">0</div>
+          <div class="stat-label">Pending Claims</div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <section class="section-header">
+        <h2>Quick Actions</h2>
+      </section>
+      <div class="quick-links">
+        <a href="/admin/members" class="quick-link">
+          <span class="link-icon">&#9813;</span>
+          <span class="link-text">View All Members</span>
+        </a>
+        <a href="/admin/config" class="quick-link">
+          <span class="link-icon">&#9881;</span>
+          <span class="link-text">Feature Flags</span>
+        </a>
+        <a href="/admin/audit" class="quick-link">
+          <span class="link-icon">&#128220;</span>
+          <span class="link-text">Audit Log</span>
+        </a>
+        <a href="/admin/templates" class="quick-link">
+          <span class="link-icon">&#9993;</span>
+          <span class="link-text">Email Templates</span>
+        </a>
+      </div>
+
+      <!-- Recent Activity -->
+      <section class="detail-card">
+        <h3>Recent Activity</h3>
+        <ul class="activity-list" id="activity-list">
+          <li class="empty-state">No recent activity</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Admin token storage key
+    const TOKEN_KEY = 'adminAccessToken';
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth and redirect to login if needed
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      // Call logout endpoint to clear refresh cookie
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT to get admin info
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format date for display
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    }
+
+    // Load dashboard data
+    async function loadDashboard() {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      // Show admin email
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        // Show admins link for super admins
+        if (adminInfo.role === 'SUPER_ADMIN') {
+          document.getElementById('admins-link').style.display = 'inline-block';
+        }
+      }
+
+      try {
+        // Load members for stats
+        const membersResponse = await fetch('/admin/members?limit=1', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (membersResponse.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        // Count stats by loading various filters
+        const [
+          totalResp,
+          activeResp,
+          pastDueResp,
+          pendingResp
+        ] = await Promise.all([
+          fetch('/admin/members?limit=1', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch('/admin/members?limit=1&subscriptionStatus=ACTIVE', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch('/admin/members?limit=1&subscriptionStatus=PAST_DUE', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch('/admin/members?limit=1&hasDiscord=false', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ]);
+
+        // Parse responses - the API returns total in meta
+        // Since our API doesn't return totals, we'll estimate from the members array
+        const totalData = await totalResp.json();
+        const activeData = await activeResp.json();
+        const pastDueData = await pastDueResp.json();
+        const pendingData = await pendingResp.json();
+
+        // For now, show counts based on what we get (API could be enhanced to return totals)
+        // We'll fetch all members to get actual counts
+        const allMembersResp = await fetch('/admin/members?limit=100', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const allMembers = await allMembersResp.json();
+
+        // Calculate stats
+        const members = allMembers.members || [];
+        const totalMembers = members.length + (allMembers.hasMore ? '+' : '');
+        const activeCount = members.filter(m => m.subscriptionStatus === 'ACTIVE').length;
+        const billingIssues = members.filter(m => m.subscriptionStatus === 'PAST_DUE').length;
+        const pendingClaims = members.filter(m => m.subscriptionStatus && !m.discordId).length;
+
+        document.getElementById('total-members').textContent = totalMembers;
+        document.getElementById('active-subscriptions').textContent = activeCount;
+        document.getElementById('billing-issues').textContent = billingIssues;
+        document.getElementById('pending-claims').textContent = pendingClaims;
+
+        // Load recent audit activity
+        const auditResp = await fetch('/admin/audit?limit=10', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (auditResp.ok) {
+          const auditData = await auditResp.json();
+          renderActivity(auditData.logs || []);
+        }
+
+        // Show content
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('dashboard-content').style.display = 'block';
+
+      } catch (err) {
+        console.error('Dashboard load error:', err);
+        document.getElementById('loading').innerHTML =
+          '<div class="error-state"><h3>Error loading dashboard</h3><p>Please try again later.</p></div>';
+      }
+    }
+
+    // Render activity list
+    function renderActivity(logs) {
+      const activityList = document.getElementById('activity-list');
+
+      if (logs.length === 0) {
+        activityList.innerHTML = '<li class="empty-state">No recent activity</li>';
+        return;
+      }
+
+      activityList.innerHTML = logs.map(log => `
+        <li class="activity-item">
+          <span class="activity-time">${formatDate(log.createdAt)}</span>
+          <span class="activity-action">
+            <strong>${log.action}</strong> on ${log.entityType}
+            ${log.entityId ? `#${log.entityId.slice(0, 8)}` : ''}
+          </span>
+        </li>
+      `).join('');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

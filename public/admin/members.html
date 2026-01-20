@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member Management - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Member Management</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/members" class="active">Members</a>
+    <a href="/admin/config">Config</a>
+    <a href="/admin/audit">Audit</a>
+    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/admin/templates">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label for="search">Search</label>
+        <input type="text" id="search" class="search-input" placeholder="Email or Discord...">
+      </div>
+      <div class="filter-group">
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="">All Statuses</option>
+          <option value="ACTIVE">Active</option>
+          <option value="PAST_DUE">Past Due</option>
+          <option value="CANCELLED">Cancelled</option>
+          <option value="NONE">None</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="tier">Seat Tier</label>
+        <select id="tier">
+          <option value="">All Tiers</option>
+          <option value="INDIVIDUAL">Individual</option>
+          <option value="OWNER">Owner</option>
+          <option value="TEAM_MEMBER">Team Member</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="hasDiscord">Has Discord</label>
+        <select id="hasDiscord">
+          <option value="">Any</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="introCompleted">Intro Completed</label>
+        <select id="introCompleted">
+          <option value="">Any</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+      <button class="btn-clear-filters" onclick="clearFilters()">Clear Filters</button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading members...</p>
+    </div>
+
+    <!-- Members Table -->
+    <div id="table-container" style="display: none;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="checkbox-cell">
+              <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+            </th>
+            <th>Email</th>
+            <th>Discord</th>
+            <th>Status</th>
+            <th>Tier</th>
+            <th>Intro</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody id="members-table">
+        </tbody>
+      </table>
+
+      <div class="empty-state" id="empty-state" style="display: none;">
+        No members found matching your criteria.
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination">
+        <button onclick="loadMore()" id="load-more-btn">Load More</button>
+        <span class="page-info" id="page-info"></span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bulk Action Bar -->
+  <div class="bulk-action-bar" id="bulk-action-bar">
+    <div>
+      <span class="selected-count" id="selected-count">0 selected</span>
+    </div>
+    <div class="bulk-actions">
+      <button class="btn-danger" onclick="bulkRevoke()">Revoke Access</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <h3 id="dialog-title">Confirm Action</h3>
+    <p id="dialog-message">Are you sure?</p>
+    <div class="reason-hint">Please provide a reason (minimum 10 characters):</div>
+    <textarea id="dialog-reason" placeholder="Reason for this action..." minlength="10"></textarea>
+    <div class="dialog-buttons">
+      <button class="btn-secondary" onclick="cancelDialog()">Cancel</button>
+      <button class="btn-danger" id="dialog-confirm-btn" onclick="confirmDialog()">Confirm</button>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    const TOKEN_KEY = 'adminAccessToken';
+    let members = [];
+    let selectedIds = new Set();
+    let currentCursor = null;
+    let hasMore = false;
+    let debounceTimer = null;
+    let dialogResolve = null;
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Get badge class for status
+    function getStatusBadge(status) {
+      const statusLower = (status || 'none').toLowerCase();
+      return `<span class="badge ${statusLower}">${status || 'None'}</span>`;
+    }
+
+    // Get badge class for tier
+    function getTierBadge(tier) {
+      const tierLower = (tier || 'none').toLowerCase();
+      return `<span class="badge ${tierLower}">${tier || 'None'}</span>`;
+    }
+
+    // Get current filters
+    function getFilters() {
+      const filters = {};
+      const search = document.getElementById('search').value.trim();
+      const status = document.getElementById('status').value;
+      const tier = document.getElementById('tier').value;
+      const hasDiscord = document.getElementById('hasDiscord').value;
+      const introCompleted = document.getElementById('introCompleted').value;
+
+      if (search) filters.search = search;
+      if (status) filters.subscriptionStatus = status;
+      if (tier) filters.seatTier = tier;
+      if (hasDiscord) filters.hasDiscord = hasDiscord;
+      if (introCompleted) filters.introCompleted = introCompleted;
+
+      return filters;
+    }
+
+    // Build query string
+    function buildQueryString(filters, cursor = null) {
+      const params = new URLSearchParams();
+      params.set('limit', '25');
+
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.set(key, value);
+      });
+
+      if (cursor) params.set('cursor', cursor);
+
+      return params.toString();
+    }
+
+    // Load members
+    async function loadMembers(append = false) {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const filters = getFilters();
+      const query = buildQueryString(filters, append ? currentCursor : null);
+
+      if (!append) {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('table-container').style.display = 'none';
+        members = [];
+        selectedIds.clear();
+        updateBulkActionBar();
+      }
+
+      try {
+        const response = await fetch(`/admin/members?${query}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load members');
+        }
+
+        const data = await response.json();
+
+        if (append) {
+          members = [...members, ...(data.members || [])];
+        } else {
+          members = data.members || [];
+        }
+
+        hasMore = data.hasMore || false;
+        currentCursor = data.nextCursor || null;
+
+        renderTable();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('table-container').style.display = 'block';
+
+      } catch (err) {
+        console.error('Load members error:', err);
+        document.getElementById('loading').innerHTML =
+          '<div class="error-state"><h3>Error loading members</h3><p>Please try again later.</p></div>';
+      }
+    }
+
+    // Render table
+    function renderTable() {
+      const tbody = document.getElementById('members-table');
+      const emptyState = document.getElementById('empty-state');
+      const pagination = document.getElementById('pagination');
+
+      if (members.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        pagination.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      pagination.style.display = 'flex';
+
+      tbody.innerHTML = members.map(member => `
+        <tr class="clickable-row" onclick="viewMember('${member.id}')">
+          <td class="checkbox-cell" onclick="event.stopPropagation()">
+            <input type="checkbox"
+              ${selectedIds.has(member.id) ? 'checked' : ''}
+              onchange="toggleRow('${member.id}', this.checked)">
+          </td>
+          <td>${escapeHtml(member.email)}</td>
+          <td>${member.discordUsername ? escapeHtml(member.discordUsername) : '<span class="badge no">No</span>'}</td>
+          <td>${getStatusBadge(member.subscriptionStatus)}</td>
+          <td>${getTierBadge(member.seatTier)}</td>
+          <td>${member.introCompleted ? '<span class="badge yes">Yes</span>' : '<span class="badge no">No</span>'}</td>
+          <td>${formatDate(member.createdAt)}</td>
+        </tr>
+      `).join('');
+
+      // Update pagination info
+      document.getElementById('page-info').textContent = `Showing ${members.length} members`;
+      document.getElementById('load-more-btn').style.display = hasMore ? 'inline-block' : 'none';
+
+      // Update select all checkbox
+      updateSelectAllCheckbox();
+    }
+
+    // View member detail
+    function viewMember(id) {
+      window.location.href = `/admin/member-detail.html?id=${id}`;
+    }
+
+    // Toggle select all
+    function toggleSelectAll() {
+      const selectAll = document.getElementById('select-all').checked;
+
+      if (selectAll) {
+        members.forEach(m => selectedIds.add(m.id));
+      } else {
+        selectedIds.clear();
+      }
+
+      renderTable();
+      updateBulkActionBar();
+    }
+
+    // Toggle single row
+    function toggleRow(id, checked) {
+      if (checked) {
+        selectedIds.add(id);
+      } else {
+        selectedIds.delete(id);
+      }
+
+      updateSelectAllCheckbox();
+      updateBulkActionBar();
+    }
+
+    // Update select all checkbox state
+    function updateSelectAllCheckbox() {
+      const selectAll = document.getElementById('select-all');
+      const allSelected = members.length > 0 && members.every(m => selectedIds.has(m.id));
+      const someSelected = members.some(m => selectedIds.has(m.id));
+
+      selectAll.checked = allSelected;
+      selectAll.indeterminate = someSelected && !allSelected;
+    }
+
+    // Update bulk action bar visibility
+    function updateBulkActionBar() {
+      const bar = document.getElementById('bulk-action-bar');
+      const count = document.getElementById('selected-count');
+
+      if (selectedIds.size > 0) {
+        bar.classList.add('visible');
+        count.textContent = `${selectedIds.size} selected`;
+      } else {
+        bar.classList.remove('visible');
+      }
+    }
+
+    // Load more
+    function loadMore() {
+      if (hasMore && currentCursor) {
+        loadMembers(true);
+      }
+    }
+
+    // Clear filters
+    function clearFilters() {
+      document.getElementById('search').value = '';
+      document.getElementById('status').value = '';
+      document.getElementById('tier').value = '';
+      document.getElementById('hasDiscord').value = '';
+      document.getElementById('introCompleted').value = '';
+      loadMembers();
+    }
+
+    // Show confirmation dialog
+    function showConfirmDialog(title, message) {
+      return new Promise((resolve) => {
+        dialogResolve = resolve;
+        document.getElementById('dialog-title').textContent = title;
+        document.getElementById('dialog-message').textContent = message;
+        document.getElementById('dialog-reason').value = '';
+        document.getElementById('confirm-dialog').showModal();
+      });
+    }
+
+    // Cancel dialog
+    function cancelDialog() {
+      document.getElementById('confirm-dialog').close();
+      if (dialogResolve) {
+        dialogResolve(null);
+        dialogResolve = null;
+      }
+    }
+
+    // Confirm dialog
+    function confirmDialog() {
+      const reason = document.getElementById('dialog-reason').value.trim();
+      if (reason.length < 10) {
+        alert('Please provide a reason with at least 10 characters.');
+        return;
+      }
+      document.getElementById('confirm-dialog').close();
+      if (dialogResolve) {
+        dialogResolve(reason);
+        dialogResolve = null;
+      }
+    }
+
+    // Bulk revoke
+    async function bulkRevoke() {
+      if (selectedIds.size === 0) return;
+
+      const reason = await showConfirmDialog(
+        'Bulk Revoke Access',
+        `You are about to revoke Discord access for ${selectedIds.size} member(s). They will lose their Discord roles but keep their subscriptions.`
+      );
+
+      if (!reason) return;
+
+      const token = getAdminToken();
+      const memberIds = Array.from(selectedIds);
+
+      try {
+        const response = await fetch('/admin/members/bulk-revoke', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ memberIds, reason }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Bulk revoke failed');
+        }
+
+        const result = await response.json();
+        alert(`Successfully revoked access for ${result.revoked} member(s).`);
+
+        // Refresh list
+        selectedIds.clear();
+        loadMembers();
+
+      } catch (err) {
+        console.error('Bulk revoke error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Debounced search
+    function setupSearch() {
+      const searchInput = document.getElementById('search');
+      searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => loadMembers(), 300);
+      });
+    }
+
+    // Setup filter change handlers
+    function setupFilters() {
+      ['status', 'tier', 'hasDiscord', 'introCompleted'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => loadMembers());
+      });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        if (adminInfo.role === 'SUPER_ADMIN') {
+          document.getElementById('admins-link').style.display = 'inline-block';
+        }
+      }
+
+      setupSearch();
+      setupFilters();
+      loadMembers();
+    });
+
+    // Close dialog on backdrop click
+    document.getElementById('confirm-dialog').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        cancelDialog();
+      }
+    });
+  </script>
+</body>
+</html>

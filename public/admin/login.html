@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Council Chamber</h1>
+        <p>Admin access to The Revenue Council</p>
+      </div>
+
+      <div id="error-message" class="form-error"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-input"
+            placeholder="admin@example.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="Your password"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" id="submit-btn" class="form-button">
+          Enter the Council Chamber
+        </button>
+      </form>
+
+      <div class="form-footer">
+        <a href="/">Return to main site</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('login-form');
+    const errorDiv = document.getElementById('error-message');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function showError(message) {
+      errorDiv.textContent = message;
+      errorDiv.classList.add('visible');
+    }
+
+    function hideError() {
+      errorDiv.textContent = '';
+      errorDiv.classList.remove('visible');
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitBtn.textContent = loading ? 'Entering...' : 'Enter the Council Chamber';
+    }
+
+    // Check if already logged in
+    function checkAuth() {
+      const token = localStorage.getItem('adminAccessToken');
+      if (token) {
+        window.location.href = '/admin/dashboard.html';
+      }
+    }
+
+    // Check on page load
+    checkAuth();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      setLoading(true);
+
+      try {
+        const response = await fetch('/admin/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: 'include', // Include cookies for refresh token
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          showError(data.error || 'Invalid credentials.');
+          setLoading(false);
+          return;
+        }
+
+        // Store access token
+        if (data.accessToken) {
+          localStorage.setItem('adminAccessToken', data.accessToken);
+        }
+
+        // Redirect to admin dashboard
+        window.location.href = '/admin/dashboard.html';
+      } catch (err) {
+        console.error('Login error:', err);
+        showError('Failed to connect to server. Please try again.');
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

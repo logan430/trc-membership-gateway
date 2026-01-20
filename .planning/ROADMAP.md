@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: Frontend Pages** - Signup, login, dashboard, claim HTML pages
 - [x] **Phase 10: Admin System** - Admin login, member management dashboard
 - [x] **Phase 11: Frontend Cleanup** - Team routes, checkout success, 404 page
-- [ ] **Phase 12: Route Restructure** - Consolidate routes under /app/*
+- [x] **Phase 12: Route Restructure** - Consolidate routes under /app/*
 
 ## Phase Details
 
@@ -230,8 +230,8 @@ Plans:
 **Plans**: 2 plans in 1 wave
 
 Plans:
-- [ ] 12-01-PLAN.md - Auth page routes migration (/auth/* to /app/auth/*) (Wave 1)
-- [ ] 12-02-PLAN.md - Admin page routes migration (/admin/* to /app/admin/*) (Wave 1)
+- [x] 12-01-PLAN.md - Auth page routes migration (/auth/* to /app/auth/*) (Wave 1)
+- [x] 12-02-PLAN.md - Admin page routes migration (/admin/* to /app/admin/*) (Wave 1)
 
 ## Progress
 
@@ -251,7 +251,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 9. Frontend Pages | 2/2 | Complete | 2026-01-19 |
 | 10. Admin System | 5/5 | Complete | 2026-01-20 |
 | 11. Frontend Cleanup | 1/1 | Complete | 2026-01-20 |
-| 12. Route Restructure | 0/2 | Planned | - |
+| 12. Route Restructure | 2/2 | Complete | 2026-01-20 |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -275,4 +275,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 *Phase 11 planned: 2026-01-20*
 *Phase 11 complete: 2026-01-20*
 *Phase 12 planned: 2026-01-20*
+*Phase 12 complete: 2026-01-20*
 *Total requirements: 45 | Total phases: 12 | Total plans: 40*

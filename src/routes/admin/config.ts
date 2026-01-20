@@ -35,7 +35,7 @@ adminConfigRouter.patch(
   requireAdmin,
   requireSuperAdmin,
   async (req, res) => {
-    const { key } = req.params;
+    const key = req.params.key as string;
     const admin = res.locals.admin!;
 
     try {
@@ -69,7 +69,7 @@ adminConfigRouter.patch(
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        res.status(400).json({ error: 'Invalid request', details: error.errors });
+        res.status(400).json({ error: 'Invalid request', details: error.issues });
         return;
       }
       throw error;

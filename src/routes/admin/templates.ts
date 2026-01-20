@@ -26,7 +26,7 @@ adminTemplatesRouter.get('/', requireAdmin, async (req, res) => {
  * Get a specific template by name
  */
 adminTemplatesRouter.get('/:name', requireAdmin, async (req, res) => {
-  const { name } = req.params;
+  const name = req.params.name as string;
 
   const template = await prisma.emailTemplate.findUnique({
     where: { name },
@@ -55,7 +55,7 @@ adminTemplatesRouter.put(
   requireAdmin,
   requireSuperAdmin,
   async (req, res) => {
-    const { name } = req.params;
+    const name = req.params.name as string;
     const admin = res.locals.admin!;
 
     try {
@@ -102,7 +102,7 @@ adminTemplatesRouter.put(
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        res.status(400).json({ error: 'Invalid request', details: error.errors });
+        res.status(400).json({ error: 'Invalid request', details: error.issues });
         return;
       }
       throw error;
@@ -372,7 +372,7 @@ const SAMPLE_DATA: Record<string, Record<string, string>> = {
  * Preview a template with sample data
  */
 adminTemplatesRouter.get('/:name/preview', requireAdmin, async (req, res) => {
-  const { name } = req.params;
+  const name = req.params.name as string;
 
   const template = await prisma.emailTemplate.findUnique({
     where: { name },

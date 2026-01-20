@@ -295,7 +295,7 @@
     async function loadClaimStatus() {
       const token = getAccessToken();
       if (!token) {
-        window.location.href = '/auth/login?redirect=/app/claim';
+        window.location.href = '/app/auth/login?redirect=/app/claim';
         return;
       }
 
@@ -308,7 +308,7 @@
 
         if (response.status === 401) {
           localStorage.removeItem('accessToken');
-          window.location.href = '/auth/login?redirect=/app/claim';
+          window.location.href = '/app/auth/login?redirect=/app/claim';
           return;
         }
 

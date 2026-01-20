@@ -790,7 +790,7 @@
       const token = getAccessToken();
 
       if (!token) {
-        window.location.href = '/auth/login?redirect=/app/team';
+        window.location.href = '/app/auth/login?redirect=/app/team';
         return;
       }
 
@@ -805,7 +805,7 @@
         if (response.status === 401) {
           // Token expired or invalid
           localStorage.removeItem('accessToken');
-          window.location.href = '/auth/login?redirect=/app/team';
+          window.location.href = '/app/auth/login?redirect=/app/team';
           return;
         }
 

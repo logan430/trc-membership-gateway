@@ -422,7 +422,7 @@
     async function loadDashboard() {
       const token = getAccessToken();
       if (!token) {
-        window.location.href = '/auth/login?redirect=/app/dashboard';
+        window.location.href = '/app/auth/login?redirect=/app/dashboard';
         return;
       }
 
@@ -435,7 +435,7 @@
 
         if (response.status === 401) {
           localStorage.removeItem('accessToken');
-          window.location.href = '/auth/login?redirect=/app/dashboard';
+          window.location.href = '/app/auth/login?redirect=/app/dashboard';
           return;
         }
 

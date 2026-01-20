@@ -17,6 +17,7 @@ import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
 import { adminAuthRouter } from './routes/admin/auth.js';
 import { adminMembersRouter } from './routes/admin/members.js';
+import { adminAccessRouter } from './routes/admin/access.js';
 import { adminConfigRouter } from './routes/admin/config.js';
 import { adminAuditRouter } from './routes/admin/audit.js';
 import { adminTemplatesRouter } from './routes/admin/templates.js';
@@ -67,11 +68,12 @@ app.use(express.json());
 // =============================================================================
 // ADMIN ROUTES
 // =============================================================================
-// /admin/auth/*     - Auth routes (login, logout, refresh - no auth required)
-// /admin/members/*  - Member management (requireAdmin)
-// /admin/config/*   - Feature flags (requireAdmin, some requireSuperAdmin)
-// /admin/audit/*    - Audit logs (requireAdmin)
-// /admin/admins/*   - Admin management (requireSuperAdmin)
+// /admin/auth/*      - Auth routes (login, logout, refresh - no auth required)
+// /admin/members/*   - Member management (requireAdmin)
+// /admin/config/*    - Feature flags (requireAdmin, some requireSuperAdmin)
+// /admin/audit/*     - Audit logs (requireAdmin)
+// /admin/templates/* - Email templates (requireAdmin, PUT requireSuperAdmin)
+// /admin/admins/*    - Admin management (requireSuperAdmin)
 // =============================================================================
 
 // Admin auth routes (login, logout, refresh - no auth required for these)
@@ -79,6 +81,9 @@ app.use('/admin/auth', adminAuthRouter);
 
 // Admin member management routes (requires admin auth)
 app.use('/admin/members', adminMembersRouter);
+
+// Admin access control routes (revoke, reset claim, grant role - same base path)
+app.use('/admin/members', adminAccessRouter);
 
 // Admin config routes (feature flags, discord channels)
 app.use('/admin/config', adminConfigRouter);

@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Milestone complete - all phases executed
+**Current focus:** Phase 9 - Frontend pages
 
 ## Current Position
 
-Phase: 8 of 8 (Operations)
-Plan: 2 of 2 in current phase
-Status: Milestone complete, all phases verified ✓
-Last activity: 2026-01-19 - Completed Phase 8 execution and verification
+Phase: 9 of 9 (Frontend Pages)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-19 - Completed 09-01-PLAN.md (Auth Pages)
 
-Progress: [██████████] 100% (29/29 plans complete)
+Progress: [██████████] 100% (30/31 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: 4.6 min
-- Total execution time: 134 min
+- Total execution time: 139 min
 
 **By Phase:**
 
@@ -35,10 +35,11 @@ Progress: [██████████] 100% (29/29 plans complete)
 | 6-Billing Failure | 4/4 | 16 min | 4 min |
 | 7-Email Notifications | 4/4 | 17 min | 4.3 min |
 | 8-Operations | 2/2 | 7 min | 3.5 min |
+| 9-Frontend Pages | 1/2 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-03 (4 min), 07-04 (5 min), 08-01 (3 min), 08-02 (4 min)
-- Trend: Consistent execution, averaging 4 min per plan
+- Last 5 plans: 07-04 (5 min), 08-01 (3 min), 08-02 (4 min), 09-01 (5 min)
+- Trend: Consistent execution, averaging 4-5 min per plan
 
 *Updated after each plan completion*
 
@@ -137,6 +138,9 @@ Recent decisions affecting current work:
 | 08-02 | Three-way comparison | Stripe vs Database vs Discord for complete drift detection |
 | 08-02 | Batch 5 fixes with 2s delays | Discord rate limits 10 role ops per 10s |
 | 08-02 | Verification re-run after fixes | One-shot cron 1 hour later confirms fixes applied |
+| 09-01 | CSP allows unsafe-inline for scripts/styles | Matches existing team-dashboard.html pattern |
+| 09-01 | localStorage for accessToken storage | Consistent with existing patterns |
+| 09-01 | Magic link token support in login.html | URL hash fragment for client-only token access |
 
 ### Pending Todos
 
@@ -153,37 +157,22 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - Pre-existing TypeScript errors in discord-oauth.ts and claim.ts need attention
 
-## Phase 8 Progress
+## Phase 9 Progress
 
-Operations reconciliation progress:
-- [x] 08-01: Reconciliation infrastructure
-- [x] 08-02: Drift detection logic (COMPLETE)
+Frontend pages progress:
+- [x] 09-01: Auth pages (signup, login)
+- [ ] 09-02: Dashboard pages
 
-Delivered (08-01):
-- ReconciliationRun model in prisma schema
-- RECONCILIATION_AUTO_FIX, RECONCILIATION_PAUSED, RECONCILIATION_TIMEZONE, RECONCILIATION_HOUR env vars
-- ADMIN_EMAIL env var for reports
-- node-cron@4.2.1 for scheduling
-- DriftType, DriftSeverity, DriftIssue types
-- ReconciliationResult, ReconciliationOptions interfaces
-- startReconciliationScheduler() function
-- Re-exported types from src/reconciliation/index.ts
-
-Delivered (08-02):
-- detectMemberDrift() and detectTeamDrift() functions
-- applyFixes() with rate limiting (batch 5, delay 2s)
-- notifyAdmins() for Discord channel + email alerts
-- runReconciliation() orchestration function
-- Stripe subscription map builder (auto-pagination)
-- Discord member map builder (fresh fetch)
-- Verification re-run scheduling (1 hour after fixes)
-- reconciliationReportEmailTemplate for admin emails
-- sendReconciliationReportEmail function
-- Scheduler wired to app startup
+Delivered (09-01):
+- Helmet CSP configuration for inline scripts and Google Fonts
+- public/signup.html with registration form
+- public/login.html with login form and redirect support
+- Form CSS classes in public/styles.css
+- Routes in src/routes/public.ts for /auth/signup and /auth/login
 
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Milestone complete - all 8 phases executed and verified
+Stopped at: Completed 09-01-PLAN.md (Auth Pages)
 Resume file: None
-Next: /gsd:audit-milestone for requirement verification and cross-phase integration checks
+Next: Execute 09-02-PLAN.md (Dashboard pages)

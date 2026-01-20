@@ -12,7 +12,7 @@ const listQuerySchema = z.object({
   cursor: z.string().optional(),
   limit: z.coerce.number().min(1).max(100).default(50),
   search: z.string().optional(), // Searches email AND discordUsername
-  status: z.enum(['NONE', 'TRIALING', 'ACTIVE', 'PAST_DUE', 'CANCELLED']).optional(),
+  subscriptionStatus: z.enum(['NONE', 'TRIALING', 'ACTIVE', 'PAST_DUE', 'CANCELLED']).optional(),
   seatTier: z.enum(['INDIVIDUAL', 'OWNER', 'TEAM_MEMBER']).optional(),
   hasDiscord: z.enum(['true', 'false']).optional(), // Filter by discordId null/not null
   introCompleted: z.enum(['true', 'false']).optional(),
@@ -40,8 +40,8 @@ adminMembersRouter.get('/', requireAdmin, async (req, res) => {
     }
 
     // Filter by subscription status
-    if (query.status) {
-      conditions.push({ subscriptionStatus: query.status });
+    if (query.subscriptionStatus) {
+      conditions.push({ subscriptionStatus: query.subscriptionStatus });
     }
 
     // Filter by seat tier

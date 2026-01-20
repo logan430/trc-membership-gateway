@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* Dashboard Specific Styles */
+    .dashboard-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .user-email {
+      font-size: 1.1rem;
+      color: var(--cream);
+      font-style: italic;
+    }
+
+    /* Status Card */
+    .status-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .status-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.25rem;
+      color: var(--cream);
+      margin-bottom: 1rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .status-badge.active {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .status-badge.past-due {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .status-badge.canceled {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-badge.none {
+      background: rgba(156, 163, 175, 0.2);
+      color: #9ca3af;
+      border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+
+    .status-details {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .status-details strong {
+      color: var(--cream);
+    }
+
+    /* Billing Warning Banner */
+    .billing-warning {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: rgba(231, 76, 60, 0.1);
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .warning-icon {
+      font-size: 1.5rem;
+      color: #e74c3c;
+      font-weight: bold;
+      line-height: 1;
+      padding: 0.25rem 0.75rem;
+      background: rgba(231, 76, 60, 0.2);
+      border-radius: 50%;
+    }
+
+    .warning-content {
+      flex: 1;
+    }
+
+    .warning-content strong {
+      color: #e74c3c;
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .warning-content p {
+      color: var(--cream);
+      margin: 0 0 1rem 0;
+      line-height: 1.5;
+    }
+
+    /* Discord Status Section */
+    .discord-section {
+      background: var(--bg-section);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+
+    .discord-section h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .discord-status {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .discord-badge {
+      font-size: 0.85rem;
+      padding: 0.35rem 1rem;
+      border-radius: 4px;
+      font-family: 'Cinzel', serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .discord-badge.linked {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .discord-badge.not-linked {
+      background: rgba(156, 163, 175, 0.2);
+      color: #9ca3af;
+      border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+
+    .discord-badge.intro-done {
+      background: rgba(96, 165, 250, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+    }
+
+    .discord-badge.intro-pending {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .discord-username {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button.primary {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button.primary:hover {
+      background: var(--gold-light);
+    }
+
+    .action-button.danger {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .action-button.danger:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-subtle);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error State */
+    .error-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #ef4444;
+    }
+
+    .error-state h2 {
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+
+    /* Seat Tier Display */
+    .seat-tier {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .seat-tier .tier-badge {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--gold);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .status-badge {
+        font-size: 1.25rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-button {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <h1>Your Membership</h1>
+    <p class="user-email" id="user-email">Loading...</p>
+  </header>
+
+  <main class="dashboard-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading your dashboard...</p>
+    </div>
+
+    <div id="error" class="error-state" style="display: none;">
+      <h2>Error</h2>
+      <p id="error-message">Unable to load dashboard.</p>
+      <div class="action-buttons">
+        <a href="/" class="action-button">Return Home</a>
+      </div>
+    </div>
+
+    <div id="dashboard-content" style="display: none;">
+      <!-- Billing Warning Banner (hidden by default) -->
+      <div id="billing-warning" class="billing-warning" style="display: none;">
+        <div class="warning-icon">!</div>
+        <div class="warning-content">
+          <strong>Billing Issue</strong>
+          <p>There is an issue with your subscription payment. Please update your payment method to maintain your membership.</p>
+          <button class="action-button" onclick="openBillingPortal()">Update Payment Method</button>
+        </div>
+      </div>
+
+      <!-- Subscription Status Card -->
+      <div class="status-card">
+        <p class="status-title">Subscription Status</p>
+        <div id="status-badge" class="status-badge none">Not Subscribed</div>
+        <p id="status-details" class="status-details"></p>
+        <p id="seat-tier" class="seat-tier"></p>
+      </div>
+
+      <!-- Discord Section -->
+      <div class="discord-section">
+        <h3>Discord Connection</h3>
+        <div id="discord-content">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons" id="action-buttons">
+        <!-- Populated by JavaScript based on status -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+      <nav class="footer-links">
+        <a href="/">Home</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Get access token from localStorage
+    function getAccessToken() {
+      return localStorage.getItem('accessToken');
+    }
+
+    // Show error state
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+    }
+
+    // Format date for display
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }
+
+    // Get tier display name
+    function getTierDisplayName(tier) {
+      const tierNames = {
+        INDIVIDUAL: 'Lord',
+        OWNER: 'Lord',
+        TEAM: 'Knight',
+      };
+      return tierNames[tier] || tier;
+    }
+
+    // On page load
+    async function loadDashboard() {
+      const token = getAccessToken();
+      if (!token) {
+        window.location.href = '/auth/login?redirect=/app/dashboard';
+        return;
+      }
+
+      try {
+        const response = await fetch('/dashboard', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem('accessToken');
+          window.location.href = '/auth/login?redirect=/app/dashboard';
+          return;
+        }
+
+        if (!response.ok) {
+          const data = await response.json();
+          showError(data.error || 'Failed to load dashboard');
+          return;
+        }
+
+        const data = await response.json();
+        renderDashboard(data);
+      } catch (error) {
+        showError(error.message || 'Failed to connect to server');
+      }
+    }
+
+    // Render dashboard based on API response
+    function renderDashboard(data) {
+      // Hide loading, show content
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'block';
+
+      // Set email
+      document.getElementById('user-email').textContent = data.member.email;
+
+      // Render status based on subscriptionStatus
+      renderSubscriptionStatus(data.member);
+
+      // Render Discord status
+      renderDiscordStatus(data.member, data.claim);
+
+      // Render action buttons
+      renderActionButtons(data.member, data.claim);
+    }
+
+    // Render subscription status
+    function renderSubscriptionStatus(member) {
+      const statusBadge = document.getElementById('status-badge');
+      const statusDetails = document.getElementById('status-details');
+      const seatTier = document.getElementById('seat-tier');
+      const billingWarning = document.getElementById('billing-warning');
+
+      // Reset classes
+      statusBadge.className = 'status-badge';
+
+      switch (member.subscriptionStatus) {
+        case 'ACTIVE':
+          statusBadge.textContent = 'Active Member';
+          statusBadge.classList.add('active');
+          statusDetails.innerHTML = `<strong>Renews:</strong> ${formatDate(member.currentPeriodEnd)}`;
+          break;
+
+        case 'PAST_DUE':
+          statusBadge.textContent = 'Billing Issue';
+          statusBadge.classList.add('past-due');
+          statusDetails.innerHTML = `<strong>Action Required:</strong> Please update your payment method`;
+          billingWarning.style.display = 'flex';
+          break;
+
+        case 'CANCELED':
+          statusBadge.textContent = 'Canceled';
+          statusBadge.classList.add('canceled');
+          statusDetails.innerHTML = `Your membership has been canceled. Subscribe again to regain access.`;
+          break;
+
+        case 'NONE':
+        default:
+          statusBadge.textContent = 'Not Subscribed';
+          statusBadge.classList.add('none');
+          statusDetails.innerHTML = `Subscribe to join The Revenue Council and access our Discord community.`;
+          break;
+      }
+
+      // Show seat tier if applicable
+      if (member.seatTier && member.subscriptionStatus === 'ACTIVE') {
+        seatTier.innerHTML = `Rank: <span class="tier-badge">${getTierDisplayName(member.seatTier)}</span>`;
+      } else {
+        seatTier.innerHTML = '';
+      }
+    }
+
+    // Render Discord status
+    function renderDiscordStatus(member, claim) {
+      const discordContent = document.getElementById('discord-content');
+
+      if (claim.hasClaimed) {
+        // Discord is linked
+        const introBadge = member.introCompleted
+          ? '<span class="discord-badge intro-done">Introduced</span>'
+          : '<span class="discord-badge intro-pending">Awaiting Introduction</span>';
+
+        discordContent.innerHTML = `
+          <div class="discord-status">
+            <span class="discord-badge linked">Linked</span>
+            ${introBadge}
+          </div>
+          <p class="discord-username">${escapeHtml(member.discordUsername || 'Discord User')}</p>
+          ${!member.introCompleted ? '<p class="status-details">Post an introduction in the introductions channel to gain full access.</p>' : ''}
+        `;
+      } else if (claim.canClaim) {
+        // Can link Discord
+        discordContent.innerHTML = `
+          <div class="discord-status">
+            <span class="discord-badge not-linked">Not Linked</span>
+          </div>
+          <p class="status-details">Link your Discord account to access the community server.</p>
+          <a href="/app/claim" class="action-button primary" style="margin-top: 1rem; display: inline-block;">Link Discord Account</a>
+        `;
+      } else {
+        // Cannot claim (not subscribed)
+        discordContent.innerHTML = `
+          <div class="discord-status">
+            <span class="discord-badge not-linked">Not Available</span>
+          </div>
+          <p class="status-details">Subscribe to link your Discord account and access the community.</p>
+        `;
+      }
+    }
+
+    // Render action buttons
+    function renderActionButtons(member, claim) {
+      const actionButtons = document.getElementById('action-buttons');
+      const buttons = [];
+
+      // Subscribe button for non-subscribers
+      if (member.subscriptionStatus === 'NONE' || member.subscriptionStatus === 'CANCELED') {
+        buttons.push('<button class="action-button primary" onclick="initiateCheckout()">Subscribe Now</button>');
+      }
+
+      // Billing portal for active/past_due
+      if (member.subscriptionStatus === 'ACTIVE' || member.subscriptionStatus === 'PAST_DUE') {
+        buttons.push('<button class="action-button" onclick="openBillingPortal()">Manage Billing</button>');
+      }
+
+      // Discord invite if claimed
+      if (claim.hasClaimed && claim.discordInviteUrl) {
+        buttons.push(`<a href="${escapeHtml(claim.discordInviteUrl)}" target="_blank" class="action-button">Open Discord</a>`);
+      }
+
+      // Logout button
+      buttons.push('<button class="action-button danger" onclick="logout()">Logout</button>');
+
+      actionButtons.innerHTML = buttons.join('');
+    }
+
+    // Initiate checkout
+    async function initiateCheckout() {
+      try {
+        const response = await fetch('/checkout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getAccessToken()}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.error || 'Failed to start checkout');
+          return;
+        }
+
+        const { checkoutUrl } = await response.json();
+        window.location.href = checkoutUrl;
+      } catch (error) {
+        alert('Failed to start checkout. Please try again.');
+      }
+    }
+
+    // Open Stripe billing portal
+    async function openBillingPortal() {
+      try {
+        const response = await fetch('/billing/portal', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getAccessToken()}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.error || 'Failed to open billing portal');
+          return;
+        }
+
+        const { portalUrl } = await response.json();
+        window.location.href = portalUrl;
+      } catch (error) {
+        alert('Failed to open billing portal. Please try again.');
+      }
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/';
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

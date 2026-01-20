@@ -33,8 +33,19 @@ export const logger = pino({
 // Initialize Express
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Security middleware with CSP for inline scripts and Google Fonts
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'"],
+    },
+  },
+}));
 app.use(cors());
 
 // Static file serving (CSS, images, etc.)

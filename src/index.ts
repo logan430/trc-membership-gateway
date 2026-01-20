@@ -19,6 +19,7 @@ import { adminAuthRouter } from './routes/admin/auth.js';
 import { adminMembersRouter } from './routes/admin/members.js';
 import { adminConfigRouter } from './routes/admin/config.js';
 import { adminAuditRouter } from './routes/admin/audit.js';
+import { adminTemplatesRouter } from './routes/admin/templates.js';
 import { adminAdminsRouter } from './routes/admin/admins.js';
 import { startBot } from './bot/client.js';
 import { startBillingScheduler } from './billing/scheduler.js';
@@ -84,6 +85,9 @@ app.use('/admin/config', adminConfigRouter);
 
 // Admin audit log routes
 app.use('/admin/audit', adminAuditRouter);
+
+// Admin email template routes
+app.use('/admin/templates', adminTemplatesRouter);
 
 // Admin account management routes (super admin only)
 app.use('/admin/admins', adminAdminsRouter);

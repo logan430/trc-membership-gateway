@@ -10,6 +10,7 @@ import {
   ADMIN_REFRESH_COOKIE_NAME,
   ADMIN_REFRESH_COOKIE_OPTIONS,
 } from '../../admin/auth.js';
+import { logAuditEvent, AuditAction } from '../../lib/audit.js';
 
 export const adminAuthRouter = Router();
 
@@ -56,6 +57,14 @@ adminAuthRouter.post('/login', async (req, res) => {
       data: { lastLoginAt: new Date() },
     });
 
+    // Log successful login to audit
+    await logAuditEvent({
+      action: AuditAction.ADMIN_LOGIN,
+      entityType: 'Admin',
+      entityId: admin.id,
+      performedBy: admin.id,
+    });
+
     // Create tokens
     const accessToken = await createAdminAccessToken(admin.id, admin.role);
     const refreshToken = await createAdminRefreshToken(admin.id, admin.role);
@@ -76,7 +85,7 @@ adminAuthRouter.post('/login', async (req, res) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: 'Invalid request', details: error.errors });
+      res.status(400).json({ error: 'Invalid request', details: error.issues });
       return;
     }
     throw error;

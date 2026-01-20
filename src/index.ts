@@ -16,6 +16,9 @@ import { teamClaimRouter } from './routes/team-claim.js';
 import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
 import { adminAuthRouter } from './routes/admin/auth.js';
+import { adminMembersRouter } from './routes/admin/members.js';
+import { adminConfigRouter } from './routes/admin/config.js';
+import { adminAuditRouter } from './routes/admin/audit.js';
 import { startBot } from './bot/client.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
@@ -61,6 +64,15 @@ app.use(express.json());
 
 // Admin auth routes (login, logout, refresh - no auth required for these)
 app.use('/admin/auth', adminAuthRouter);
+
+// Admin member management routes (requires admin auth)
+app.use('/admin/members', adminMembersRouter);
+
+// Admin config routes (feature flags, discord channels)
+app.use('/admin/config', adminConfigRouter);
+
+// Admin audit log routes
+app.use('/admin/audit', adminAuditRouter);
 
 // Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);

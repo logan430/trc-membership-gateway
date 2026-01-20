@@ -42,6 +42,23 @@ publicRouter.get('/app/claim', (_req: Request, res: Response): void => {
 });
 
 /**
+ * GET /app/team
+ * Serve the team dashboard page (for team owners)
+ */
+publicRouter.get('/app/team', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/team-dashboard.html'));
+});
+
+/**
+ * GET /team/invite
+ * Serve the team invite claim page
+ * Token is passed via query string and handled client-side
+ */
+publicRouter.get('/team/invite', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/team-claim.html'));
+});
+
+/**
  * GET /
  * Serve The Gatekeeper landing page
  */

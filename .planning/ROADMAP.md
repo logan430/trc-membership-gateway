@@ -20,6 +20,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Billing Failure** - Billing Issue role, access restriction, recovery
 - [x] **Phase 7: Email Notifications** - Transactional emails for all lifecycle events
 - [x] **Phase 8: Operations** - Reconciliation, audit logging, CRM-ready schema
+- [ ] **Phase 9: Frontend Pages** - Signup, login, dashboard, claim HTML pages
+- [ ] **Phase 10: Admin System** - Admin login, member management dashboard
 
 ## Phase Details
 
@@ -166,10 +168,38 @@ Plans:
 - [x] 08-01-PLAN.md - Reconciliation infrastructure (schema, env vars, module scaffold) (Wave 1)
 - [x] 08-02-PLAN.md - Drift detection and auto-fix logic (Wave 2)
 
+### Phase 9: Frontend Pages
+**Goal**: Users can complete the full signup → login → dashboard → claim flow through the browser
+**Depends on**: Phase 8 (all backend complete)
+**Requirements**: UI-01, UI-02, UI-03, UI-04
+**Success Criteria** (what must be TRUE):
+  1. User can access `/auth/signup` and create an account via form
+  2. User can access `/auth/login` and authenticate via form
+  3. Authenticated user sees dashboard with subscription status
+  4. User can initiate checkout from dashboard
+  5. User can initiate Discord claim from dashboard
+  6. No CSP errors block page functionality
+**Plans**: 2 plans in 1 wave
+
+Plans:
+- [x] 09-01-PLAN.md - Auth pages (signup, login) with form styles (Wave 1)
+- [x] 09-02-PLAN.md - Dashboard and claim pages (Wave 1)
+
+### Phase 10: Admin System
+**Goal**: Admins can view members, manage access, and configure system
+**Depends on**: Phase 9
+**Requirements**: ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04 (TBD)
+**Success Criteria** (what must be TRUE):
+  1. Admin can login at `/admin/login` with separate credentials
+  2. Admin can view all members and subscription statuses
+  3. Admin can manually revoke access or reset claims
+  4. Admin can configure Discord channel IDs and feature toggles
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -181,6 +211,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 6. Billing Failure | 4/4 | Complete | 2026-01-19 |
 | 7. Email Notifications | 4/4 | Complete | 2026-01-19 |
 | 8. Operations | 2/2 | Complete | 2026-01-19 |
+| 9. Frontend Pages | 2/2 | Complete | 2026-01-19 |
+| 10. Admin System | 0/? | Not Started | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -197,4 +229,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 *Phase 7 complete: 2026-01-19*
 *Phase 8 planned: 2026-01-19*
 *Phase 8 complete: 2026-01-19*
-*Total requirements: 41 | Total phases: 8 | Total plans: 29*
+*Phase 9 planned: 2026-01-19*
+*Phase 9 complete: 2026-01-19*
+*Total requirements: 45 | Total phases: 10 | Total plans: 31*

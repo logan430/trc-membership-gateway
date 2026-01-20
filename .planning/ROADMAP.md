@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Admin System** - Admin login, member management dashboard
 - [x] **Phase 11: Frontend Cleanup** - Team routes, checkout success, 404 page
 - [x] **Phase 12: Route Restructure** - Consolidate routes under /app/*
-- [ ] **Phase 13: Billing Portal** - Stripe billing portal endpoint (Gap Closure)
+- [x] **Phase 13: Billing Portal** - Stripe billing portal endpoint (Gap Closure)
 - [ ] **Phase 14: Admin Filter Fix** - Fix subscription status filter parameter (Gap Closure)
 
 ## Phase Details
@@ -248,7 +248,7 @@ Plans:
 **Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] 13-01-PLAN.md - Stripe billing portal endpoint (Wave 1)
+- [x] 13-01-PLAN.md - Stripe billing portal endpoint (Wave 1)
 
 ### Phase 14: Admin Filter Fix
 **Goal**: Admin subscription status filter works correctly
@@ -283,7 +283,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 | 10. Admin System | 5/5 | Complete | 2026-01-20 |
 | 11. Frontend Cleanup | 1/1 | Complete | 2026-01-20 |
 | 12. Route Restructure | 2/2 | Complete | 2026-01-20 |
-| 13. Billing Portal | 0/1 | Pending | - |
+| 13. Billing Portal | 1/1 | Complete | 2026-01-20 |
 | 14. Admin Filter Fix | 0/1 | Pending | - |
 
 ---
@@ -310,4 +310,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 *Phase 12 planned: 2026-01-20*
 *Phase 12 complete: 2026-01-20*
 *Gap closure phases 13-14 added: 2026-01-20*
+*Phase 13 complete: 2026-01-20*
 *Total requirements: 45 | Total phases: 14 | Total plans: 42*

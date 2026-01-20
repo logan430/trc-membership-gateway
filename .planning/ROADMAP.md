@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Billing Failure** - Billing Issue role, access restriction, recovery
 - [x] **Phase 7: Email Notifications** - Transactional emails for all lifecycle events
 - [x] **Phase 8: Operations** - Reconciliation, audit logging, CRM-ready schema
-- [ ] **Phase 9: Frontend Pages** - Signup, login, dashboard, claim HTML pages
+- [x] **Phase 9: Frontend Pages** - Signup, login, dashboard, claim HTML pages
 - [ ] **Phase 10: Admin System** - Admin login, member management dashboard
 
 ## Phase Details
@@ -169,7 +169,7 @@ Plans:
 - [x] 08-02-PLAN.md - Drift detection and auto-fix logic (Wave 2)
 
 ### Phase 9: Frontend Pages
-**Goal**: Users can complete the full signup → login → dashboard → claim flow through the browser
+**Goal**: Users can complete the full signup -> login -> dashboard -> claim flow through the browser
 **Depends on**: Phase 8 (all backend complete)
 **Requirements**: UI-01, UI-02, UI-03, UI-04
 **Success Criteria** (what must be TRUE):
@@ -186,15 +186,25 @@ Plans:
 - [x] 09-02-PLAN.md - Dashboard and claim pages (Wave 1)
 
 ### Phase 10: Admin System
-**Goal**: Admins can view members, manage access, and configure system
+**Goal**: Admins can view members, manage access, configure feature flags, and review audit logs
 **Depends on**: Phase 9
-**Requirements**: ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04 (TBD)
+**Requirements**: ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04
 **Success Criteria** (what must be TRUE):
   1. Admin can login at `/admin/login` with separate credentials
-  2. Admin can view all members and subscription statuses
-  3. Admin can manually revoke access or reset claims
-  4. Admin can configure Discord channel IDs and feature toggles
-**Plans**: TBD
+  2. Admin can view all members with search, filter, and pagination
+  3. Admin can revoke Discord access, reset claims, and grant roles directly
+  4. Admin can toggle feature flags (super admin only)
+  5. Admin can view and search audit logs
+  6. Super admin can manage other admin accounts
+  7. Admin can view and edit email templates (super admin only)
+**Plans**: 5 plans in 3 waves
+
+Plans:
+- [ ] 10-01-PLAN.md - Schema updates and admin auth infrastructure (Wave 1)
+- [ ] 10-02-PLAN.md - Member management and access control APIs (Wave 2)
+- [ ] 10-03-PLAN.md - Feature flags, audit log, and template APIs (Wave 2)
+- [ ] 10-04-PLAN.md - Admin account management API (Wave 2)
+- [ ] 10-05-PLAN.md - Admin UI pages (Wave 3)
 
 ## Progress
 
@@ -212,7 +222,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Email Notifications | 4/4 | Complete | 2026-01-19 |
 | 8. Operations | 2/2 | Complete | 2026-01-19 |
 | 9. Frontend Pages | 2/2 | Complete | 2026-01-19 |
-| 10. Admin System | 0/? | Not Started | - |
+| 10. Admin System | 0/5 | Planned | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -231,4 +241,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 *Phase 8 complete: 2026-01-19*
 *Phase 9 planned: 2026-01-19*
 *Phase 9 complete: 2026-01-19*
-*Total requirements: 45 | Total phases: 10 | Total plans: 31*
+*Phase 10 planned: 2026-01-19*
+*Total requirements: 45 | Total phases: 10 | Total plans: 36*

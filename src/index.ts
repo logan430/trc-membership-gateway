@@ -8,6 +8,7 @@ import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
 import { authRouter } from './routes/auth.js';
 import { checkoutRouter } from './routes/checkout.js';
+import { billingRouter } from './routes/billing.js';
 import { companyCheckoutRouter } from './routes/company-checkout.js';
 import { dashboardRouter } from './routes/dashboard.js';
 import { teamDashboardRouter } from './routes/team-dashboard.js';
@@ -89,6 +90,9 @@ app.use('/auth', authRouter);
 
 // Checkout routes (Stripe Checkout session creation)
 app.use('/checkout', checkoutRouter);
+
+// Billing routes (Stripe billing portal)
+app.use('/billing', billingRouter);
 
 // Company checkout routes (team subscription purchase)
 app.use('/company', companyCheckoutRouter);

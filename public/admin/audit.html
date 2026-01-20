@@ -20,12 +20,12 @@
   </header>
 
   <nav class="admin-nav">
-    <a href="/admin/dashboard">Dashboard</a>
-    <a href="/admin/members">Members</a>
-    <a href="/admin/config">Config</a>
-    <a href="/admin/audit" class="active">Audit</a>
-    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
-    <a href="/admin/templates">Templates</a>
+    <a href="/app/admin/dashboard">Dashboard</a>
+    <a href="/app/admin/members">Members</a>
+    <a href="/app/admin/config">Config</a>
+    <a href="/app/admin/audit" class="active">Audit</a>
+    <a href="/app/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/app/admin/templates">Templates</a>
   </nav>
 
   <main class="admin-container">
@@ -116,6 +116,28 @@
   </footer>
 
   <script>
+    // UI Test Error Capture
+    window.__testErrors = [];
+    window.addEventListener('error', (e) => {
+      window.__testErrors.push({
+        type: 'error',
+        message: e.message,
+        file: e.filename,
+        line: e.lineno,
+        col: e.colno,
+        stack: e.error?.stack
+      });
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.__testErrors.push({
+        type: 'promise',
+        message: e.reason?.message || String(e.reason),
+        stack: e.reason?.stack
+      });
+    });
+  </script>
+
+  <script>
     // State
     const TOKEN_KEY = 'adminAccessToken';
     let logs = [];
@@ -131,7 +153,7 @@
     function checkAuth() {
       const token = getAdminToken();
       if (!token) {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
         return false;
       }
       return true;
@@ -144,7 +166,7 @@
         method: 'POST',
         credentials: 'include',
       }).finally(() => {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
       });
     }
 
@@ -216,10 +238,10 @@
 
       try {
         const [actionsResp, typesResp] = await Promise.all([
-          fetch('/admin/audit/actions', {
+          fetch('/api/admin/audit/actions', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('/admin/audit/entity-types', {
+          fetch('/api/admin/audit/entity-types', {
             headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);
@@ -266,13 +288,13 @@
       }
 
       try {
-        const response = await fetch(`/admin/audit?${query}`, {
+        const response = await fetch(`/api/admin/audit?${query}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.status === 401) {
           localStorage.removeItem(TOKEN_KEY);
-          window.location.href = '/admin/login';
+          window.location.href = '/app/admin/login';
           return;
         }
 

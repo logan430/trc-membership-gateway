@@ -20,12 +20,12 @@
   </header>
 
   <nav class="admin-nav">
-    <a href="/admin/dashboard">Dashboard</a>
-    <a href="/admin/members">Members</a>
-    <a href="/admin/config">Config</a>
-    <a href="/admin/audit">Audit</a>
-    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
-    <a href="/admin/templates" class="active">Templates</a>
+    <a href="/app/admin/dashboard">Dashboard</a>
+    <a href="/app/admin/members">Members</a>
+    <a href="/app/admin/config">Config</a>
+    <a href="/app/admin/audit">Audit</a>
+    <a href="/app/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/app/admin/templates" class="active">Templates</a>
   </nav>
 
   <main class="admin-container">
@@ -102,6 +102,28 @@
   </footer>
 
   <script>
+    // UI Test Error Capture
+    window.__testErrors = [];
+    window.addEventListener('error', (e) => {
+      window.__testErrors.push({
+        type: 'error',
+        message: e.message,
+        file: e.filename,
+        line: e.lineno,
+        col: e.colno,
+        stack: e.error?.stack
+      });
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.__testErrors.push({
+        type: 'promise',
+        message: e.reason?.message || String(e.reason),
+        stack: e.reason?.stack
+      });
+    });
+  </script>
+
+  <script>
     // State
     const TOKEN_KEY = 'adminAccessToken';
     let templates = [];
@@ -129,7 +151,7 @@
     function checkAuth() {
       const token = getAdminToken();
       if (!token) {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
         return false;
       }
       return true;
@@ -142,7 +164,7 @@
         method: 'POST',
         credentials: 'include',
       }).finally(() => {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
       });
     }
 
@@ -175,13 +197,13 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch('/admin/templates', {
+        const response = await fetch('/api/admin/templates', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.status === 401) {
           localStorage.removeItem(TOKEN_KEY);
-          window.location.href = '/admin/login';
+          window.location.href = '/app/admin/login';
           return;
         }
 
@@ -233,7 +255,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/templates/${name}`, {
+        const response = await fetch(`/api/admin/templates/${name}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -296,7 +318,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/templates/${currentTemplate.name}`, {
+        const response = await fetch(`/api/admin/templates/${currentTemplate.name}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -325,7 +347,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/templates/${currentTemplate.name}/preview`, {
+        const response = await fetch(`/api/admin/templates/${currentTemplate.name}/preview`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -353,7 +375,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch('/admin/templates/seed', {
+        const response = await fetch('/api/admin/templates/seed', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
         });

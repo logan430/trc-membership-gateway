@@ -20,12 +20,12 @@
   </header>
 
   <nav class="admin-nav">
-    <a href="/admin/dashboard" class="active">Dashboard</a>
-    <a href="/admin/members">Members</a>
-    <a href="/admin/config">Config</a>
-    <a href="/admin/audit">Audit</a>
-    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
-    <a href="/admin/templates">Templates</a>
+    <a href="/app/admin/dashboard" class="active">Dashboard</a>
+    <a href="/app/admin/members">Members</a>
+    <a href="/app/admin/config">Config</a>
+    <a href="/app/admin/audit">Audit</a>
+    <a href="/app/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/app/admin/templates">Templates</a>
   </nav>
 
   <main class="admin-container">
@@ -60,19 +60,19 @@
         <h2>Quick Actions</h2>
       </section>
       <div class="quick-links">
-        <a href="/admin/members" class="quick-link">
+        <a href="/app/admin/members" class="quick-link">
           <span class="link-icon">&#9813;</span>
           <span class="link-text">View All Members</span>
         </a>
-        <a href="/admin/config" class="quick-link">
+        <a href="/app/admin/config" class="quick-link">
           <span class="link-icon">&#9881;</span>
           <span class="link-text">Feature Flags</span>
         </a>
-        <a href="/admin/audit" class="quick-link">
+        <a href="/app/admin/audit" class="quick-link">
           <span class="link-icon">&#128220;</span>
           <span class="link-text">Audit Log</span>
         </a>
-        <a href="/admin/templates" class="quick-link">
+        <a href="/app/admin/templates" class="quick-link">
           <span class="link-icon">&#9993;</span>
           <span class="link-text">Email Templates</span>
         </a>
@@ -95,21 +95,47 @@
   </footer>
 
   <script>
+    // UI Test Error Capture
+    window.__testErrors = [];
+    window.addEventListener('error', (e) => {
+      window.__testErrors.push({
+        type: 'error',
+        message: e.message,
+        file: e.filename,
+        line: e.lineno,
+        col: e.colno,
+        stack: e.error?.stack
+      });
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.__testErrors.push({
+        type: 'promise',
+        message: e.reason?.message || String(e.reason),
+        stack: e.reason?.stack
+      });
+    });
+  </script>
+
+  <script>
     // Admin token storage key
     const TOKEN_KEY = 'adminAccessToken';
 
     // Get admin access token
     function getAdminToken() {
-      return localStorage.getItem(TOKEN_KEY);
+      const token = localStorage.getItem(TOKEN_KEY);
+      console.log('Getting token from localStorage:', token ? token.substring(0, 20) + '...' : 'NULL');
+      return token;
     }
 
     // Check auth and redirect to login if needed
     function checkAuth() {
       const token = getAdminToken();
       if (!token) {
-        window.location.href = '/admin/login';
+        console.log('No token found, redirecting to login');
+        window.location.href = '/app/admin/login';
         return false;
       }
+      console.log('Token found, proceeding');
       return true;
     }
 
@@ -121,7 +147,7 @@
         method: 'POST',
         credentials: 'include',
       }).finally(() => {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
       });
     }
 
@@ -163,13 +189,13 @@
 
       try {
         // Load members for stats
-        const membersResponse = await fetch('/admin/members?limit=1', {
+        const membersResponse = await fetch('/api/admin/members?limit=1', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (membersResponse.status === 401) {
           localStorage.removeItem(TOKEN_KEY);
-          window.location.href = '/admin/login';
+          window.location.href = '/app/admin/login';
           return;
         }
 
@@ -180,16 +206,16 @@
           pastDueResp,
           pendingResp
         ] = await Promise.all([
-          fetch('/admin/members?limit=1', {
+          fetch('/api/admin/members?limit=1', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('/admin/members?limit=1&subscriptionStatus=ACTIVE', {
+          fetch('/api/admin/members?limit=1&subscriptionStatus=ACTIVE', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('/admin/members?limit=1&subscriptionStatus=PAST_DUE', {
+          fetch('/api/admin/members?limit=1&subscriptionStatus=PAST_DUE', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('/admin/members?limit=1&hasDiscord=false', {
+          fetch('/api/admin/members?limit=1&hasDiscord=false', {
             headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);
@@ -203,7 +229,7 @@
 
         // For now, show counts based on what we get (API could be enhanced to return totals)
         // We'll fetch all members to get actual counts
-        const allMembersResp = await fetch('/admin/members?limit=100', {
+        const allMembersResp = await fetch('/api/admin/members?limit=100', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const allMembers = await allMembersResp.json();
@@ -221,7 +247,7 @@
         document.getElementById('pending-claims').textContent = pendingClaims;
 
         // Load recent audit activity
-        const auditResp = await fetch('/admin/audit?limit=10', {
+        const auditResp = await fetch('/api/admin/audit?limit=10', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 

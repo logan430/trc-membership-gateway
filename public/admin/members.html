@@ -20,12 +20,12 @@
   </header>
 
   <nav class="admin-nav">
-    <a href="/admin/dashboard">Dashboard</a>
-    <a href="/admin/members" class="active">Members</a>
-    <a href="/admin/config">Config</a>
-    <a href="/admin/audit">Audit</a>
-    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
-    <a href="/admin/templates">Templates</a>
+    <a href="/app/admin/dashboard">Dashboard</a>
+    <a href="/app/admin/members" class="active">Members</a>
+    <a href="/app/admin/config">Config</a>
+    <a href="/app/admin/audit">Audit</a>
+    <a href="/app/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/app/admin/templates">Templates</a>
   </nav>
 
   <main class="admin-container">
@@ -140,6 +140,28 @@
   </footer>
 
   <script>
+    // UI Test Error Capture
+    window.__testErrors = [];
+    window.addEventListener('error', (e) => {
+      window.__testErrors.push({
+        type: 'error',
+        message: e.message,
+        file: e.filename,
+        line: e.lineno,
+        col: e.colno,
+        stack: e.error?.stack
+      });
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.__testErrors.push({
+        type: 'promise',
+        message: e.reason?.message || String(e.reason),
+        stack: e.reason?.stack
+      });
+    });
+  </script>
+
+  <script>
     // State
     const TOKEN_KEY = 'adminAccessToken';
     let members = [];
@@ -158,7 +180,7 @@
     function checkAuth() {
       const token = getAdminToken();
       if (!token) {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
         return false;
       }
       return true;
@@ -171,7 +193,7 @@
         method: 'POST',
         credentials: 'include',
       }).finally(() => {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
       });
     }
 
@@ -265,13 +287,13 @@
       }
 
       try {
-        const response = await fetch(`/admin/members?${query}`, {
+        const response = await fetch(`/api/admin/members?${query}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.status === 401) {
           localStorage.removeItem(TOKEN_KEY);
-          window.location.href = '/admin/login';
+          window.location.href = '/app/admin/login';
           return;
         }
 
@@ -344,7 +366,7 @@
 
     // View member detail
     function viewMember(id) {
-      window.location.href = `/admin/member-detail.html?id=${id}`;
+      window.location.href = `/app/admin/members/${id}`;
     }
 
     // Toggle select all
@@ -462,7 +484,7 @@
       const memberIds = Array.from(selectedIds);
 
       try {
-        const response = await fetch('/admin/members/bulk-revoke', {
+        const response = await fetch('/api/admin/members/bulk-revoke', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

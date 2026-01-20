@@ -20,16 +20,16 @@
   </header>
 
   <nav class="admin-nav">
-    <a href="/admin/dashboard">Dashboard</a>
-    <a href="/admin/members" class="active">Members</a>
-    <a href="/admin/config">Config</a>
-    <a href="/admin/audit">Audit</a>
-    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
-    <a href="/admin/templates">Templates</a>
+    <a href="/app/admin/dashboard">Dashboard</a>
+    <a href="/app/admin/members" class="active">Members</a>
+    <a href="/app/admin/config">Config</a>
+    <a href="/app/admin/audit">Audit</a>
+    <a href="/app/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/app/admin/templates">Templates</a>
   </nav>
 
   <main class="admin-container">
-    <a href="/admin/members" class="back-link">&larr; Back to Members</a>
+    <a href="/app/admin/members" class="back-link">&larr; Back to Members</a>
 
     <div id="loading" class="loading">
       <div class="loading-spinner"></div>
@@ -147,6 +147,28 @@
   </footer>
 
   <script>
+    // UI Test Error Capture
+    window.__testErrors = [];
+    window.addEventListener('error', (e) => {
+      window.__testErrors.push({
+        type: 'error',
+        message: e.message,
+        file: e.filename,
+        line: e.lineno,
+        col: e.colno,
+        stack: e.error?.stack
+      });
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.__testErrors.push({
+        type: 'promise',
+        message: e.reason?.message || String(e.reason),
+        stack: e.reason?.stack
+      });
+    });
+  </script>
+
+  <script>
     // State
     const TOKEN_KEY = 'adminAccessToken';
     let member = null;
@@ -167,7 +189,7 @@
     function checkAuth() {
       const token = getAdminToken();
       if (!token) {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
         return false;
       }
       return true;
@@ -180,7 +202,7 @@
         method: 'POST',
         credentials: 'include',
       }).finally(() => {
-        window.location.href = '/admin/login';
+        window.location.href = '/app/admin/login';
       });
     }
 
@@ -231,13 +253,13 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/members/${memberId}`, {
+        const response = await fetch(`/api/admin/members/${memberId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.status === 401) {
           localStorage.removeItem(TOKEN_KEY);
-          window.location.href = '/admin/login';
+          window.location.href = '/app/admin/login';
           return;
         }
 
@@ -371,7 +393,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/members/${member.id}/revoke-access`, {
+        const response = await fetch(`/api/admin/members/${member.id}/revoke-access`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -408,7 +430,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/members/${member.id}/reset-claim`, {
+        const response = await fetch(`/api/admin/members/${member.id}/reset-claim`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -453,7 +475,7 @@
       const token = getAdminToken();
 
       try {
-        const response = await fetch(`/admin/members/${member.id}/grant-role`, {
+        const response = await fetch(`/api/admin/members/${member.id}/grant-role`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

@@ -65,6 +65,28 @@
   </footer>
 
   <script>
+    // UI Test Error Capture
+    window.__testErrors = [];
+    window.addEventListener('error', (e) => {
+      window.__testErrors.push({
+        type: 'error',
+        message: e.message,
+        file: e.filename,
+        line: e.lineno,
+        col: e.colno,
+        stack: e.error?.stack
+      });
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.__testErrors.push({
+        type: 'promise',
+        message: e.reason?.message || String(e.reason),
+        stack: e.reason?.stack
+      });
+    });
+  </script>
+
+  <script>
     const form = document.getElementById('login-form');
     const errorDiv = document.getElementById('error-message');
     const submitBtn = document.getElementById('submit-btn');
@@ -88,7 +110,7 @@
     function checkAuth() {
       const token = localStorage.getItem('adminAccessToken');
       if (token) {
-        window.location.href = '/admin/dashboard.html';
+        window.location.href = '/app/admin/dashboard';
       }
     }
 
@@ -124,11 +146,15 @@
 
         // Store access token
         if (data.accessToken) {
+          console.log('Storing token:', data.accessToken.substring(0, 20) + '...');
           localStorage.setItem('adminAccessToken', data.accessToken);
+          console.log('Token stored, verifying:', localStorage.getItem('adminAccessToken')?.substring(0, 20) + '...');
+        } else {
+          console.error('No access token in response:', data);
         }
 
         // Redirect to admin dashboard
-        window.location.href = '/admin/dashboard.html';
+        window.location.href = '/app/admin/dashboard';
       } catch (err) {
         console.error('Login error:', err);
         showError('Failed to connect to server. Please try again.');

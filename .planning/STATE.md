@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** v1 Complete - Phase 11 complete
+**Current focus:** Route Restructure - Phase 12 in progress
 
 ## Current Position
 
-Phase: 11 of 11 (Frontend Cleanup - COMPLETE)
+Phase: 12 of 12 (Route Restructure)
 Plan: 1 of 1 in current phase
-Status: v1 Complete
-Last activity: 2026-01-20 - Completed 11-01-PLAN.md
+Status: In progress
+Last activity: 2026-01-20 - Completed 12-01-PLAN.md
 
-Progress: [████████████] 100% (38/38 plans complete)
+Progress: [████████████] 100% (39/39 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38
-- Average duration: 4.5 min
-- Total execution time: ~185 min
+- Total plans completed: 39
+- Average duration: 4.6 min
+- Total execution time: ~190 min
 
 **By Phase:**
 
@@ -38,9 +38,10 @@ Progress: [████████████] 100% (38/38 plans complete)
 | 9-Frontend Pages | 2/2 | 8 min | 4 min |
 | 10-Admin System | 5/5 | ~31 min | 6.2 min |
 | 11-Frontend Cleanup | 1/1 | 8 min | 8 min |
+| 12-Route Restructure | 1/1 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 10-03 (4 min), 10-04 (4 min), 10-05 (~15 min), 11-01 (8 min)
+- Last 5 plans: 10-04 (4 min), 10-05 (~15 min), 11-01 (8 min), 12-01 (5 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -161,6 +162,8 @@ Recent decisions affecting current work:
 | 11-01 | Medieval theme for 404 messaging | Consistent with "Revenue Council" branding |
 | 11-01 | Catch-all 404 handler at end of routes | Proper fallback for unmatched routes |
 | 11-01 | /app/* pattern for authenticated pages | Clean URLs for user-facing pages |
+| 12-01 | Auth page routes at /app/auth/* | Consistent URL structure for page routes |
+| 12-01 | API routes remain at /auth/* | Avoid breaking existing fetch calls |
 
 ### Pending Todos
 
@@ -177,20 +180,20 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD must be set before running prisma seed
 
-## Phase 11 Progress (COMPLETE)
+## Phase 12 Progress (IN PROGRESS)
 
-Frontend cleanup progress:
-- [x] 11-01: Team routes, checkout success, 404 pages (COMPLETE)
+Route restructure progress:
+- [x] 12-01: Auth page routes migration (COMPLETE)
 
-Delivered (11-01):
-- Clean route aliases for team pages (/app/team, /team/invite)
-- Checkout success page with onboarding guidance
-- Medieval-themed 404 error page
-- Catch-all route handler for invalid URLs
+Delivered (12-01):
+- Auth pages at /app/auth/signup and /app/auth/login
+- All internal links updated across 6 HTML files
+- Old /auth/* page routes now return 404
+- API routes at /auth/* (POST) unchanged
 
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Completed 11-01-PLAN.md
+Stopped at: Completed 12-01-PLAN.md
 Resume file: None
-Next: v1 COMPLETE - 38/38 plans executed
+Next: Phase 12 complete (1/1 plans executed)

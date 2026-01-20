@@ -8,18 +8,18 @@ const __dirname = dirname(__filename);
 export const publicRouter = Router();
 
 /**
- * GET /auth/signup
+ * GET /app/auth/signup
  * Serve the registration page
  */
-publicRouter.get('/auth/signup', (_req: Request, res: Response): void => {
+publicRouter.get('/app/auth/signup', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/signup.html'));
 });
 
 /**
- * GET /auth/login
+ * GET /app/auth/login
  * Serve the login page
  */
-publicRouter.get('/auth/login', (_req: Request, res: Response): void => {
+publicRouter.get('/app/auth/login', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/login.html'));
 });
 
@@ -79,65 +79,65 @@ publicRouter.get('/', (_req: Request, res: Response): void => {
    ================================ */
 
 /**
- * GET /admin/login
- * Serve the admin login page (redirects from /admin/login.html)
+ * GET /app/admin/login
+ * Serve the admin login page
  */
-publicRouter.get('/admin/login', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/login', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/login.html'));
 });
 
 /**
- * GET /admin/dashboard
+ * GET /app/admin/dashboard
  * Serve the admin dashboard page (auth checked client-side)
  */
-publicRouter.get('/admin/dashboard', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/dashboard', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/dashboard.html'));
 });
 
 /**
- * GET /admin/members
+ * GET /app/admin/members
  * Serve the member management page
  */
-publicRouter.get('/admin/members', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/members', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/members.html'));
 });
 
 /**
- * GET /admin/members/:id
+ * GET /app/admin/members/:id
  * Serve the member detail page (ID parsed client-side from query param)
  */
-publicRouter.get('/admin/members/:id', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/members/:id', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/member-detail.html'));
 });
 
 /**
- * GET /admin/config
+ * GET /app/admin/config
  * Serve the feature flags/config page
  */
-publicRouter.get('/admin/config', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/config', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/config.html'));
 });
 
 /**
- * GET /admin/audit
+ * GET /app/admin/audit
  * Serve the audit log viewer page
  */
-publicRouter.get('/admin/audit', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/audit', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/audit.html'));
 });
 
 /**
- * GET /admin/admins
+ * GET /app/admin/admins
  * Serve the admin account management page (super admin only, checked client-side)
  */
-publicRouter.get('/admin/admins', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/admins', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/admins.html'));
 });
 
 /**
- * GET /admin/templates
+ * GET /app/admin/templates
  * Serve the email template editor page
  */
-publicRouter.get('/admin/templates', (_req: Request, res: Response): void => {
+publicRouter.get('/app/admin/templates', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/templates.html'));
 });

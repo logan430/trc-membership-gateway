@@ -150,6 +150,10 @@ Recent decisions affecting current work:
 | 10-01 | Separate cookie path /admin/auth/refresh | Avoid conflicts with member /auth/refresh |
 | 10-01 | Case-insensitive admin email lookup | User convenience without security impact |
 | 10-01 | Anti-enumeration on admin login | Same error for wrong email or password |
+| 10-03 | 1-minute feature flag cache TTL | Balance performance and freshness |
+| 10-03 | Cache invalidated immediately on flag update | Changes take effect instantly |
+| 10-03 | Discord channel IDs read-only | Configured via env vars |
+| 10-03 | Cursor-based pagination for audit logs | Scalable for large datasets |
 | 10-04 | Zod v4 uses .issues not .errors | Fixed error handling in admin routes |
 | 10-04 | Admin login creates audit log entry | Track admin login events |
 | 10-04 | Password reset does not include password in audit | Security best practice |

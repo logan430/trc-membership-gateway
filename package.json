@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Stripe-backed membership gateway for The Revenue Council Discord community",
   "main": "dist/index.js",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",

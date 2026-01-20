@@ -48,6 +48,10 @@ const envSchema = z.object({
   RECONCILIATION_TIMEZONE: z.string().default('America/New_York'),
   RECONCILIATION_HOUR: z.coerce.number().min(0).max(23).default(3), // 3 AM
   ADMIN_EMAIL: z.string().email().optional(), // For reconciliation reports
+
+  // Admin seed (for first super admin creation)
+  ADMIN_SEED_EMAIL: z.string().email().optional(),
+  ADMIN_SEED_PASSWORD: z.string().min(8).optional(),
 }).refine(
   (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
   { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }

@@ -28,6 +28,11 @@ enum SeatTier {
   TEAM_MEMBER   // Company team seat (standard member access)
 }
 
+enum AdminRole {
+  ADMIN        // Member management only
+  SUPER_ADMIN  // Full access including admin management + system config
+}
+
 // ============================================
 // CORE MODELS
 // ============================================
@@ -189,4 +194,42 @@ model ReconciliationRun {
   issues            Json     @default("[]")
 
   @@index([startedAt])
+}
+
+// ============================================
+// ADMIN MODELS
+// ============================================
+
+model Admin {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(ADMIN)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  createdBy    String?   // Admin ID who created this admin, null for seed admin
+
+  @@index([email])
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  category    String   @default("general")  // general, billing, discord, email
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?  // Admin ID
+
+  @@index([key])
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique  // e.g., "welcome", "claim_reminder", "payment_failure"
+  subject   String
+  body      String   // Plain text with {{variable}} placeholders
+  updatedAt DateTime @updatedAt
+  updatedBy String?  // Admin ID
 }

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Configuration</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/members">Members</a>
+    <a href="/admin/config" class="active">Config</a>
+    <a href="/admin/audit">Audit</a>
+    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/admin/templates">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading configuration...</p>
+    </div>
+
+    <div id="config-content" style="display: none;">
+      <!-- Feature Flags Section -->
+      <section class="detail-card">
+        <div class="section-header">
+          <h3>Feature Flags</h3>
+          <button class="btn-secondary btn-small" id="seed-flags-btn" onclick="seedFlags()" style="display: none;">
+            Seed Default Flags
+          </button>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+          Toggle system behaviors. Changes take effect immediately.
+        </p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Flag</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Last Updated</th>
+            </tr>
+          </thead>
+          <tbody id="flags-table">
+          </tbody>
+        </table>
+        <div class="empty-state" id="flags-empty" style="display: none;">
+          No feature flags configured. Click "Seed Default Flags" to create them.
+        </div>
+      </section>
+
+      <!-- Discord Channels Section -->
+      <section class="detail-card">
+        <h3>Discord Channels</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+          Channel IDs are configured via environment variables and cannot be changed here.
+        </p>
+        <div id="channels-list">
+          <div class="detail-row">
+            <span class="detail-label">Introductions Channel</span>
+            <span class="detail-value" id="intro-channel-id">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Admin Alerts Channel</span>
+            <span class="detail-value" id="alerts-channel-id">-</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seed Section (Super Admin Only) -->
+      <section class="detail-card" id="seed-section" style="display: none;">
+        <h3>Data Seeding</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+          Initialize default data for the system.
+        </p>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn-primary" onclick="seedFlags()">Seed Default Flags</button>
+          <button class="btn-primary" onclick="seedTemplates()">Seed Default Templates</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    const TOKEN_KEY = 'adminAccessToken';
+    let isSuperAdmin = false;
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleString();
+    }
+
+    // Load config
+    async function loadConfig() {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+
+      try {
+        // Load feature flags
+        const flagsResp = await fetch('/admin/config/feature-flags', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (flagsResp.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        const flagsData = await flagsResp.json();
+        renderFlags(flagsData.flags || []);
+
+        // Load Discord channels
+        const channelsResp = await fetch('/admin/config/discord-channels', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (channelsResp.ok) {
+          const channelsData = await channelsResp.json();
+          document.getElementById('intro-channel-id').textContent =
+            channelsData.channels?.introductions || 'Not configured';
+          document.getElementById('alerts-channel-id').textContent =
+            channelsData.channels?.adminAlerts || 'Not configured';
+        }
+
+        // Show super admin features
+        if (isSuperAdmin) {
+          document.getElementById('seed-section').style.display = 'block';
+          if (flagsData.flags?.length === 0) {
+            document.getElementById('seed-flags-btn').style.display = 'inline-block';
+          }
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('config-content').style.display = 'block';
+
+      } catch (err) {
+        console.error('Load config error:', err);
+        document.getElementById('loading').innerHTML =
+          '<div class="error-state"><h3>Error loading configuration</h3><p>Please try again later.</p></div>';
+      }
+    }
+
+    // Render feature flags
+    function renderFlags(flags) {
+      const tbody = document.getElementById('flags-table');
+      const empty = document.getElementById('flags-empty');
+
+      if (!flags || flags.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      tbody.innerHTML = flags.map(flag => `
+        <tr>
+          <td><code style="color: var(--gold);">${flag.key}</code></td>
+          <td>${flag.description || '-'}</td>
+          <td><span class="badge admin">${flag.category || 'general'}</span></td>
+          <td>
+            <label class="toggle-switch">
+              <input type="checkbox"
+                ${flag.enabled ? 'checked' : ''}
+                ${!isSuperAdmin ? 'disabled' : ''}
+                onchange="toggleFlag('${flag.key}', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </td>
+          <td style="color: var(--text-muted); font-size: 0.85rem;">${formatDate(flag.updatedAt)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Toggle feature flag
+    async function toggleFlag(key, enabled) {
+      if (!isSuperAdmin) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/config/feature-flags/${key}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ enabled }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Toggle failed');
+        }
+
+        // Reload to show updated timestamp
+        loadConfig();
+
+      } catch (err) {
+        console.error('Toggle flag error:', err);
+        alert(`Error: ${err.message}`);
+        // Reload to reset checkbox state
+        loadConfig();
+      }
+    }
+
+    // Seed default flags
+    async function seedFlags() {
+      if (!isSuperAdmin) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch('/admin/config/feature-flags/seed', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Seed failed');
+        }
+
+        alert('Default feature flags created successfully.');
+        loadConfig();
+
+      } catch (err) {
+        console.error('Seed flags error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Seed default templates
+    async function seedTemplates() {
+      if (!isSuperAdmin) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch('/admin/templates/seed', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Seed failed');
+        }
+
+        alert('Default email templates created successfully.');
+
+      } catch (err) {
+        console.error('Seed templates error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        isSuperAdmin = adminInfo.role === 'SUPER_ADMIN';
+        if (isSuperAdmin) {
+          document.getElementById('admins-link').style.display = 'inline-block';
+        }
+      }
+
+      loadConfig();
+    });
+  </script>
+</body>
+</html>

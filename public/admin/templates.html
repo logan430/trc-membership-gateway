@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Templates - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Email Templates</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/members">Members</a>
+    <a href="/admin/config">Config</a>
+    <a href="/admin/audit">Audit</a>
+    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/admin/templates" class="active">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading templates...</p>
+    </div>
+
+    <div id="templates-content" style="display: none;">
+      <div class="template-container">
+        <!-- Template List -->
+        <div class="template-list">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3>Templates</h3>
+            <button class="btn-secondary btn-small" id="seed-btn" onclick="seedTemplates()" style="display: none;">Seed</button>
+          </div>
+          <ul class="template-list-items" id="template-list">
+          </ul>
+          <div class="empty-state" id="list-empty" style="display: none; padding: 1rem;">
+            No templates. Click "Seed" to create defaults.
+          </div>
+        </div>
+
+        <!-- Template Editor -->
+        <div class="template-editor">
+          <h3>Editor</h3>
+          <div id="editor-placeholder" class="empty-state" style="margin: 2rem 0;">
+            Select a template from the list to edit.
+          </div>
+          <div id="editor-content" style="display: none;">
+            <div class="form-group">
+              <label>Subject</label>
+              <input type="text" id="template-subject" placeholder="Email subject line">
+            </div>
+            <div class="form-group">
+              <label>Body</label>
+              <textarea id="template-body" placeholder="Email body content..."></textarea>
+            </div>
+            <div class="template-variables" id="template-variables">
+              <strong>Available Variables:</strong> <code>{{name}}</code>, <code>{{email}}</code>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+              <button class="btn-primary" id="save-btn" onclick="saveTemplate()">Save Template</button>
+              <button class="btn-secondary" onclick="previewTemplate()">Preview</button>
+            </div>
+            <p id="edit-warning" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; display: none;">
+              Only Super Admins can edit templates. You are viewing in read-only mode.
+            </p>
+          </div>
+        </div>
+
+        <!-- Template Preview -->
+        <div class="template-preview">
+          <h3>Preview</h3>
+          <div id="preview-placeholder" class="empty-state" style="margin: 2rem 0;">
+            Click "Preview" to see the rendered template.
+          </div>
+          <div id="preview-content" style="display: none;">
+            <div style="margin-bottom: 0.5rem;">
+              <strong style="color: var(--gold);">Subject:</strong>
+              <span id="preview-subject" style="color: var(--cream);"></span>
+            </div>
+            <div class="template-preview-content" id="preview-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    const TOKEN_KEY = 'adminAccessToken';
+    let templates = [];
+    let currentTemplate = null;
+    let isSuperAdmin = false;
+
+    // Template variable hints
+    const templateVariables = {
+      welcome: ['name', 'email', 'claimUrl'],
+      claim_reminder: ['name', 'email', 'claimUrl', 'daysSinceSignup'],
+      claim_reminder_cheeky: ['name', 'email', 'claimUrl', 'daysSinceSignup'],
+      payment_failure: ['name', 'email', 'billingPortalUrl'],
+      payment_recovered: ['name', 'email'],
+      payment_recovered_debtor: ['name', 'email'],
+      seat_invite: ['teamName', 'inviterName', 'inviteUrl', 'expiresIn'],
+      reconciliation_report: ['date', 'discrepancies', 'fixes'],
+    };
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Load templates
+    async function loadTemplates() {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch('/admin/templates', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load templates');
+        }
+
+        const data = await response.json();
+        templates = data.templates || [];
+        renderList();
+
+        // Show seed button for super admin if no templates
+        if (isSuperAdmin && templates.length === 0) {
+          document.getElementById('seed-btn').style.display = 'inline-block';
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('templates-content').style.display = 'block';
+
+      } catch (err) {
+        console.error('Load templates error:', err);
+        document.getElementById('loading').innerHTML =
+          '<div class="error-state"><h3>Error loading templates</h3><p>Please try again later.</p></div>';
+      }
+    }
+
+    // Render template list
+    function renderList() {
+      const list = document.getElementById('template-list');
+      const empty = document.getElementById('list-empty');
+
+      if (templates.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      list.innerHTML = templates.map(t => `
+        <li class="template-list-item ${currentTemplate?.name === t.name ? 'active' : ''}"
+            onclick="selectTemplate('${t.name}')">
+          ${escapeHtml(t.name)}
+        </li>
+      `).join('');
+    }
+
+    // Select template
+    async function selectTemplate(name) {
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/templates/${name}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load template');
+        }
+
+        currentTemplate = await response.json();
+
+        // Update editor
+        document.getElementById('editor-placeholder').style.display = 'none';
+        document.getElementById('editor-content').style.display = 'block';
+        document.getElementById('template-subject').value = currentTemplate.subject || '';
+        document.getElementById('template-body').value = currentTemplate.body || '';
+
+        // Update variables hint
+        const vars = templateVariables[name] || ['name', 'email'];
+        document.getElementById('template-variables').innerHTML =
+          '<strong>Available Variables:</strong> ' +
+          vars.map(v => `<code>{{${v}}}</code>`).join(', ');
+
+        // Set read-only for non-super admin
+        if (!isSuperAdmin) {
+          document.getElementById('template-subject').readOnly = true;
+          document.getElementById('template-body').readOnly = true;
+          document.getElementById('save-btn').style.display = 'none';
+          document.getElementById('edit-warning').style.display = 'block';
+        } else {
+          document.getElementById('template-subject').readOnly = false;
+          document.getElementById('template-body').readOnly = false;
+          document.getElementById('save-btn').style.display = 'inline-block';
+          document.getElementById('edit-warning').style.display = 'none';
+        }
+
+        // Reset preview
+        document.getElementById('preview-placeholder').style.display = 'block';
+        document.getElementById('preview-content').style.display = 'none';
+
+        // Update list selection
+        renderList();
+
+      } catch (err) {
+        console.error('Select template error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Save template
+    async function saveTemplate() {
+      if (!currentTemplate || !isSuperAdmin) return;
+
+      const subject = document.getElementById('template-subject').value;
+      const body = document.getElementById('template-body').value;
+
+      if (!subject || !body) {
+        alert('Subject and body are required.');
+        return;
+      }
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/templates/${currentTemplate.name}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ subject, body }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Save failed');
+        }
+
+        alert('Template saved successfully.');
+
+      } catch (err) {
+        console.error('Save template error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Preview template
+    async function previewTemplate() {
+      if (!currentTemplate) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/templates/${currentTemplate.name}/preview`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Preview failed');
+        }
+
+        const data = await response.json();
+
+        document.getElementById('preview-placeholder').style.display = 'none';
+        document.getElementById('preview-content').style.display = 'block';
+        document.getElementById('preview-subject').textContent = data.subject || '';
+        document.getElementById('preview-body').textContent = data.body || '';
+
+      } catch (err) {
+        console.error('Preview error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Seed templates
+    async function seedTemplates() {
+      if (!isSuperAdmin) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch('/admin/templates/seed', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Seed failed');
+        }
+
+        alert('Default templates created successfully.');
+        loadTemplates();
+
+      } catch (err) {
+        console.error('Seed templates error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        isSuperAdmin = adminInfo.role === 'SUPER_ADMIN';
+        if (isSuperAdmin) {
+          document.getElementById('admins-link').style.display = 'inline-block';
+          document.getElementById('seed-btn').style.display = 'inline-block';
+        }
+      }
+
+      loadTemplates();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Management - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Admin Management</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/members">Members</a>
+    <a href="/admin/config">Config</a>
+    <a href="/admin/audit">Audit</a>
+    <a href="/admin/admins" class="active">Admins</a>
+    <a href="/admin/templates">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <!-- Access Denied (shown if not super admin) -->
+    <div id="access-denied" class="access-denied" style="display: none;">
+      <h2>Access Denied</h2>
+      <p>Only Super Admins can manage admin accounts.</p>
+      <a href="/admin/dashboard" class="btn-secondary">Return to Dashboard</a>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading admins...</p>
+    </div>
+
+    <div id="admins-content" style="display: none;">
+      <!-- Create Admin Form -->
+      <section class="detail-card">
+        <h3>Create New Admin</h3>
+        <form id="create-form" class="admin-form">
+          <div class="form-group">
+            <label for="new-email">Email Address</label>
+            <input type="email" id="new-email" required placeholder="admin@example.com">
+          </div>
+          <div class="form-group">
+            <label for="new-password">Password</label>
+            <input type="password" id="new-password" required minlength="8" placeholder="Minimum 8 characters">
+          </div>
+          <div class="form-group">
+            <label for="new-role">Role</label>
+            <select id="new-role" required>
+              <option value="ADMIN">Admin</option>
+              <option value="SUPER_ADMIN">Super Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Create Admin</button>
+        </form>
+      </section>
+
+      <!-- Admin List -->
+      <section class="detail-card">
+        <h3>Admin Accounts</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Last Login</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admins-table">
+          </tbody>
+        </table>
+        <div class="empty-state" id="empty-state" style="display: none;">
+          No admin accounts found.
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Confirm Dialog -->
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <h3 id="dialog-title">Confirm Action</h3>
+    <p id="dialog-message">Are you sure?</p>
+    <div class="dialog-buttons">
+      <button class="btn-secondary" onclick="cancelDialog()">Cancel</button>
+      <button class="btn-danger" onclick="confirmDialog()">Confirm</button>
+    </div>
+  </dialog>
+
+  <!-- Reset Password Dialog -->
+  <dialog id="reset-dialog" class="confirm-dialog">
+    <h3>Reset Password</h3>
+    <p id="reset-message">Enter new password for admin.</p>
+    <div class="form-group" style="margin: 1rem 0;">
+      <input type="password" id="reset-password" placeholder="New password (min 8 characters)" minlength="8" style="width: 100%; padding: 0.75rem; background: var(--bg-dark); border: 1px solid var(--border-subtle); color: var(--text); border-radius: 4px;">
+    </div>
+    <div class="dialog-buttons">
+      <button class="btn-secondary" onclick="cancelReset()">Cancel</button>
+      <button class="btn-primary" onclick="confirmReset()">Reset Password</button>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    const TOKEN_KEY = 'adminAccessToken';
+    let admins = [];
+    let currentAdminId = null;
+    let dialogResolve = null;
+    let resetAdminId = null;
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return 'Never';
+      return new Date(dateString).toLocaleString();
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Get role badge
+    function getRoleBadge(role) {
+      const lower = role.toLowerCase();
+      return `<span class="badge ${lower}">${role}</span>`;
+    }
+
+    // Load admins
+    async function loadAdmins() {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch('/admin/admins', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        if (response.status === 403) {
+          // Not a super admin
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('access-denied').style.display = 'block';
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load admins');
+        }
+
+        const data = await response.json();
+        admins = data.admins || [];
+        renderTable();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('admins-content').style.display = 'block';
+
+      } catch (err) {
+        console.error('Load admins error:', err);
+        document.getElementById('loading').innerHTML =
+          '<div class="error-state"><h3>Error loading admins</h3><p>Please try again later.</p></div>';
+      }
+    }
+
+    // Render table
+    function renderTable() {
+      const tbody = document.getElementById('admins-table');
+      const emptyState = document.getElementById('empty-state');
+
+      if (admins.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      tbody.innerHTML = admins.map(admin => {
+        const isSelf = admin.id === currentAdminId;
+        return `
+          <tr>
+            <td>${escapeHtml(admin.email)} ${isSelf ? '<span class="badge you" style="margin-left: 0.5rem;">You</span>' : ''}</td>
+            <td>${getRoleBadge(admin.role)}</td>
+            <td style="color: var(--text-muted); font-size: 0.9rem;">${formatDate(admin.lastLoginAt)}</td>
+            <td style="color: var(--text-muted); font-size: 0.9rem;">${formatDate(admin.createdAt)}</td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <select onchange="changeRole('${admin.id}', this.value)" style="padding: 0.4rem; background: var(--bg-dark); border: 1px solid var(--border-subtle); color: var(--text); border-radius: 4px; font-size: 0.85rem;">
+                  <option value="">Change Role...</option>
+                  <option value="ADMIN" ${admin.role === 'ADMIN' ? 'disabled' : ''}>Admin</option>
+                  <option value="SUPER_ADMIN" ${admin.role === 'SUPER_ADMIN' ? 'disabled' : ''}>Super Admin</option>
+                </select>
+                <button class="btn-secondary btn-small" onclick="showResetPassword('${admin.id}', '${escapeHtml(admin.email)}')">Reset Password</button>
+                <button class="btn-danger btn-small" onclick="deleteAdmin('${admin.id}', '${escapeHtml(admin.email)}')" ${isSelf ? 'disabled title="Cannot delete yourself"' : ''}>Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Show confirm dialog
+    function showConfirmDialog(title, message) {
+      return new Promise((resolve) => {
+        dialogResolve = resolve;
+        document.getElementById('dialog-title').textContent = title;
+        document.getElementById('dialog-message').textContent = message;
+        document.getElementById('confirm-dialog').showModal();
+      });
+    }
+
+    // Cancel confirm dialog
+    function cancelDialog() {
+      document.getElementById('confirm-dialog').close();
+      if (dialogResolve) {
+        dialogResolve(false);
+        dialogResolve = null;
+      }
+    }
+
+    // Confirm dialog
+    function confirmDialog() {
+      document.getElementById('confirm-dialog').close();
+      if (dialogResolve) {
+        dialogResolve(true);
+        dialogResolve = null;
+      }
+    }
+
+    // Show reset password dialog
+    function showResetPassword(adminId, email) {
+      resetAdminId = adminId;
+      document.getElementById('reset-message').textContent = `Enter new password for ${email}`;
+      document.getElementById('reset-password').value = '';
+      document.getElementById('reset-dialog').showModal();
+    }
+
+    // Cancel reset
+    function cancelReset() {
+      document.getElementById('reset-dialog').close();
+      resetAdminId = null;
+    }
+
+    // Confirm reset
+    async function confirmReset() {
+      const newPassword = document.getElementById('reset-password').value;
+      if (newPassword.length < 8) {
+        alert('Password must be at least 8 characters.');
+        return;
+      }
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/admins/${resetAdminId}/reset-password`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ newPassword }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Reset failed');
+        }
+
+        alert('Password reset successfully.');
+        document.getElementById('reset-dialog').close();
+        resetAdminId = null;
+
+      } catch (err) {
+        console.error('Reset password error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Change role
+    async function changeRole(adminId, newRole) {
+      if (!newRole) return;
+
+      const confirmed = await showConfirmDialog(
+        'Change Role',
+        `Are you sure you want to change this admin's role to ${newRole}?`
+      );
+
+      if (!confirmed) {
+        loadAdmins(); // Reset select
+        return;
+      }
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/admins/${adminId}/role`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ role: newRole }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Role change failed');
+        }
+
+        loadAdmins();
+
+      } catch (err) {
+        console.error('Change role error:', err);
+        alert(`Error: ${err.message}`);
+        loadAdmins();
+      }
+    }
+
+    // Delete admin
+    async function deleteAdmin(adminId, email) {
+      const confirmed = await showConfirmDialog(
+        'Delete Admin',
+        `Are you sure you want to delete ${email}? This action cannot be undone.`
+      );
+
+      if (!confirmed) return;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch(`/admin/admins/${adminId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Delete failed');
+        }
+
+        loadAdmins();
+
+      } catch (err) {
+        console.error('Delete admin error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    }
+
+    // Create admin form handler
+    document.getElementById('create-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('new-email').value.trim();
+      const password = document.getElementById('new-password').value;
+      const role = document.getElementById('new-role').value;
+
+      const token = getAdminToken();
+
+      try {
+        const response = await fetch('/admin/admins', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password, role }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Create failed');
+        }
+
+        // Reset form
+        document.getElementById('new-email').value = '';
+        document.getElementById('new-password').value = '';
+        document.getElementById('new-role').value = 'ADMIN';
+
+        alert('Admin created successfully.');
+        loadAdmins();
+
+      } catch (err) {
+        console.error('Create admin error:', err);
+        alert(`Error: ${err.message}`);
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        currentAdminId = adminInfo.sub;
+
+        if (adminInfo.role !== 'SUPER_ADMIN') {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('access-denied').style.display = 'block';
+          return;
+        }
+      }
+
+      loadAdmins();
+    });
+
+    // Close dialogs on backdrop click
+    document.getElementById('confirm-dialog').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) cancelDialog();
+    });
+    document.getElementById('reset-dialog').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) cancelReset();
+    });
+  </script>
+</body>
+</html>

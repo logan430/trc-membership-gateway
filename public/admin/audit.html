@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Log - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Audit Log</h1>
+    <div class="admin-header-right">
+      <span class="admin-user-info" id="admin-email"></span>
+      <button class="btn-secondary btn-small" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard">Dashboard</a>
+    <a href="/admin/members">Members</a>
+    <a href="/admin/config">Config</a>
+    <a href="/admin/audit" class="active">Audit</a>
+    <a href="/admin/admins" id="admins-link" style="display: none;">Admins</a>
+    <a href="/admin/templates">Templates</a>
+  </nav>
+
+  <main class="admin-container">
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label for="action">Action</label>
+        <select id="action">
+          <option value="">All Actions</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="entityType">Entity Type</label>
+        <select id="entityType">
+          <option value="">All Types</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="entityId">Entity ID</label>
+        <input type="text" id="entityId" placeholder="UUID...">
+      </div>
+      <div class="filter-group">
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="filter-group">
+        <label for="endDate">End Date</label>
+        <input type="date" id="endDate">
+      </div>
+      <div class="filter-group">
+        <label for="search">Search Details</label>
+        <input type="text" id="search" class="search-input" placeholder="Search...">
+      </div>
+      <button class="btn-primary btn-small" onclick="applyFilters()">Apply Filters</button>
+      <button class="btn-clear-filters" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading audit logs...</p>
+    </div>
+
+    <!-- Audit Table -->
+    <div id="table-container" style="display: none;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Action</th>
+            <th>Entity Type</th>
+            <th>Entity ID</th>
+            <th>Performed By</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="audit-table">
+        </tbody>
+      </table>
+
+      <div class="empty-state" id="empty-state" style="display: none;">
+        No audit logs found matching your criteria.
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination">
+        <button onclick="loadMore()" id="load-more-btn">Load More</button>
+        <span class="page-info" id="page-info"></span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <dialog id="detail-dialog" class="confirm-dialog" style="max-width: 600px;">
+    <h3>Audit Log Details</h3>
+    <div id="detail-content" style="max-height: 400px; overflow-y: auto;">
+      <pre style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; color: var(--cream); font-family: 'Courier New', monospace; font-size: 0.85rem;"></pre>
+    </div>
+    <div class="dialog-buttons" style="margin-top: 1rem;">
+      <button class="btn-secondary" onclick="closeDetail()">Close</button>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    const TOKEN_KEY = 'adminAccessToken';
+    let logs = [];
+    let currentCursor = null;
+    let hasMore = false;
+
+    // Get admin access token
+    function getAdminToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    // Check auth
+    function checkAuth() {
+      const token = getAdminToken();
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      return true;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      fetch('/admin/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      }).finally(() => {
+        window.location.href = '/admin/login';
+      });
+    }
+
+    // Parse JWT
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleString();
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Get current filters
+    function getFilters() {
+      const filters = {};
+      const action = document.getElementById('action').value;
+      const entityType = document.getElementById('entityType').value;
+      const entityId = document.getElementById('entityId').value.trim();
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const search = document.getElementById('search').value.trim();
+
+      if (action) filters.action = action;
+      if (entityType) filters.entityType = entityType;
+      if (entityId) filters.entityId = entityId;
+      if (startDate) filters.startDate = startDate;
+      if (endDate) filters.endDate = endDate;
+      if (search) filters.search = search;
+
+      return filters;
+    }
+
+    // Build query string
+    function buildQueryString(filters, cursor = null) {
+      const params = new URLSearchParams();
+      params.set('limit', '25');
+
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.set(key, value);
+      });
+
+      if (cursor) params.set('cursor', cursor);
+
+      return params.toString();
+    }
+
+    // Load filter options
+    async function loadFilterOptions() {
+      const token = getAdminToken();
+
+      try {
+        const [actionsResp, typesResp] = await Promise.all([
+          fetch('/admin/audit/actions', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch('/admin/audit/entity-types', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ]);
+
+        if (actionsResp.ok) {
+          const actionsData = await actionsResp.json();
+          const actionSelect = document.getElementById('action');
+          (actionsData.actions || []).forEach(action => {
+            const option = document.createElement('option');
+            option.value = action;
+            option.textContent = action;
+            actionSelect.appendChild(option);
+          });
+        }
+
+        if (typesResp.ok) {
+          const typesData = await typesResp.json();
+          const typeSelect = document.getElementById('entityType');
+          (typesData.entityTypes || []).forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            typeSelect.appendChild(option);
+          });
+        }
+
+      } catch (err) {
+        console.error('Load filter options error:', err);
+      }
+    }
+
+    // Load audit logs
+    async function loadLogs(append = false) {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const filters = getFilters();
+      const query = buildQueryString(filters, append ? currentCursor : null);
+
+      if (!append) {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('table-container').style.display = 'none';
+        logs = [];
+      }
+
+      try {
+        const response = await fetch(`/admin/audit?${query}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load logs');
+        }
+
+        const data = await response.json();
+
+        if (append) {
+          logs = [...logs, ...(data.logs || [])];
+        } else {
+          logs = data.logs || [];
+        }
+
+        hasMore = data.hasMore || false;
+        currentCursor = data.nextCursor || null;
+
+        renderTable();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('table-container').style.display = 'block';
+
+      } catch (err) {
+        console.error('Load logs error:', err);
+        document.getElementById('loading').innerHTML =
+          '<div class="error-state"><h3>Error loading audit logs</h3><p>Please try again later.</p></div>';
+      }
+    }
+
+    // Render table
+    function renderTable() {
+      const tbody = document.getElementById('audit-table');
+      const emptyState = document.getElementById('empty-state');
+      const pagination = document.getElementById('pagination');
+
+      if (logs.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        pagination.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      pagination.style.display = 'flex';
+
+      tbody.innerHTML = logs.map((log, index) => {
+        const detailsPreview = log.details
+          ? JSON.stringify(log.details).slice(0, 50) + (JSON.stringify(log.details).length > 50 ? '...' : '')
+          : '-';
+
+        return `
+          <tr onclick="showDetail(${index})" class="clickable-row">
+            <td>${formatDate(log.createdAt)}</td>
+            <td><span class="badge admin">${log.action}</span></td>
+            <td>${log.entityType || '-'}</td>
+            <td style="font-family: monospace; font-size: 0.85rem;">${log.entityId ? log.entityId.slice(0, 8) + '...' : '-'}</td>
+            <td>${log.performedById ? 'Admin' : 'System'}</td>
+            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(detailsPreview)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('page-info').textContent = `Showing ${logs.length} logs`;
+      document.getElementById('load-more-btn').style.display = hasMore ? 'inline-block' : 'none';
+    }
+
+    // Show detail modal
+    function showDetail(index) {
+      const log = logs[index];
+      if (!log) return;
+
+      const content = {
+        id: log.id,
+        action: log.action,
+        entityType: log.entityType,
+        entityId: log.entityId,
+        performedById: log.performedById,
+        createdAt: log.createdAt,
+        details: log.details
+      };
+
+      document.querySelector('#detail-dialog pre').textContent = JSON.stringify(content, null, 2);
+      document.getElementById('detail-dialog').showModal();
+    }
+
+    // Close detail modal
+    function closeDetail() {
+      document.getElementById('detail-dialog').close();
+    }
+
+    // Apply filters
+    function applyFilters() {
+      loadLogs();
+    }
+
+    // Clear filters
+    function clearFilters() {
+      document.getElementById('action').value = '';
+      document.getElementById('entityType').value = '';
+      document.getElementById('entityId').value = '';
+      document.getElementById('startDate').value = '';
+      document.getElementById('endDate').value = '';
+      document.getElementById('search').value = '';
+      loadLogs();
+    }
+
+    // Load more
+    function loadMore() {
+      if (hasMore && currentCursor) {
+        loadLogs(true);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuth()) return;
+
+      const token = getAdminToken();
+      const adminInfo = parseAdminToken(token);
+
+      if (adminInfo) {
+        document.getElementById('admin-email').textContent = adminInfo.email || 'Admin';
+        if (adminInfo.role === 'SUPER_ADMIN') {
+          document.getElementById('admins-link').style.display = 'inline-block';
+        }
+      }
+
+      await loadFilterOptions();
+      loadLogs();
+    });
+
+    // Close detail on backdrop click
+    document.getElementById('detail-dialog').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        closeDetail();
+      }
+    });
+  </script>
+</body>
+</html>

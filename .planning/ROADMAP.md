@@ -24,6 +24,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Admin System** - Admin login, member management dashboard
 - [x] **Phase 11: Frontend Cleanup** - Team routes, checkout success, 404 page
 - [x] **Phase 12: Route Restructure** - Consolidate routes under /app/*
+- [ ] **Phase 13: Billing Portal** - Stripe billing portal endpoint (Gap Closure)
+- [ ] **Phase 14: Admin Filter Fix** - Fix subscription status filter parameter (Gap Closure)
 
 ## Phase Details
 
@@ -233,10 +235,39 @@ Plans:
 - [x] 12-01-PLAN.md - Auth page routes migration (/auth/* to /app/auth/*) (Wave 1)
 - [x] 12-02-PLAN.md - Admin page routes migration (/admin/* to /app/admin/*) (Wave 1)
 
+### Phase 13: Billing Portal
+**Goal**: Users can access Stripe billing portal to manage their subscription
+**Depends on**: Phase 12
+**Requirements**: None (gap closure from audit)
+**Gap Closure**: Closes critical integration gap - missing `/billing/portal` endpoint
+**Success Criteria** (what must be TRUE):
+  1. POST `/billing/portal` endpoint exists and returns Stripe billing portal URL
+  2. Endpoint requires authentication (valid session)
+  3. Dashboard "Manage Billing" button successfully opens billing portal
+  4. Billing portal flow works end-to-end (no 404 errors)
+**Plans**: 1 plan in 1 wave
+
+Plans:
+- [ ] 13-01-PLAN.md - Stripe billing portal endpoint (Wave 1)
+
+### Phase 14: Admin Filter Fix
+**Goal**: Admin subscription status filter works correctly
+**Depends on**: Phase 13
+**Requirements**: None (gap closure from audit)
+**Gap Closure**: Closes minor integration gap - parameter mismatch between frontend and backend
+**Success Criteria** (what must be TRUE):
+  1. Admin dashboard filter parameter matches backend expectation
+  2. Filtering by subscription status returns correct results
+  3. All filter states work: active, past_due, canceled, none
+**Plans**: 1 plan in 1 wave
+
+Plans:
+- [ ] 14-01-PLAN.md - Admin filter parameter alignment (Wave 1)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12
+Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -252,6 +283,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 10. Admin System | 5/5 | Complete | 2026-01-20 |
 | 11. Frontend Cleanup | 1/1 | Complete | 2026-01-20 |
 | 12. Route Restructure | 2/2 | Complete | 2026-01-20 |
+| 13. Billing Portal | 0/1 | Pending | - |
+| 14. Admin Filter Fix | 0/1 | Pending | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -276,4 +309,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 *Phase 11 complete: 2026-01-20*
 *Phase 12 planned: 2026-01-20*
 *Phase 12 complete: 2026-01-20*
-*Total requirements: 45 | Total phases: 12 | Total plans: 40*
+*Gap closure phases 13-14 added: 2026-01-20*
+*Total requirements: 45 | Total phases: 14 | Total plans: 42*

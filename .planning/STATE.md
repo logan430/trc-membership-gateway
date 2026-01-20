@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** v1 MILESTONE COMPLETE - All 12 phases executed
+**Current focus:** Gap closure phases 13-14 from audit
 
 ## Current Position
 
-Phase: 12 of 12 (Route Restructure - COMPLETE)
-Plan: 2 of 2 in current phase
-Status: v1 MILESTONE COMPLETE
-Last activity: 2026-01-20 - Phase 12 verification passed
+Phase: 13 of 14 (Billing Portal - NOT STARTED)
+Plan: 0 of 1 in current phase
+Status: Gap closure in progress
+Last activity: 2026-01-20 - Gap closure phases created from audit
 
-Progress: [████████████] 100% (40/40 plans complete)
+Progress: [████████████░░] 95% (40/42 plans complete)
 
 ## Performance Metrics
 
@@ -182,27 +182,18 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD must be set before running prisma seed
 
-## Phase 12 Progress (COMPLETE)
+## Gap Closure Phases (from v1-MILESTONE-AUDIT.md)
 
-Route restructure progress:
-- [x] 12-01: Auth page routes migration (COMPLETE)
-- [x] 12-02: Admin page routes migration (COMPLETE)
+Audit identified 2 integration gaps requiring closure:
 
-Delivered (12-01):
-- Auth pages at /app/auth/signup and /app/auth/login
-- All internal links updated across 6 HTML files
-- Old /auth/* page routes now return 404
-- API routes at /auth/* (POST) unchanged
-
-Delivered (12-02):
-- Admin pages at /app/admin/* (login, dashboard, members, etc.)
-- All navigation links updated across 8 admin HTML files
-- Old /admin/* page routes now return 404
-- API routes at /admin/auth/* and /api/admin/* unchanged
+| Phase | Gap | Severity | Status |
+|-------|-----|----------|--------|
+| 13 | Missing `/billing/portal` endpoint | Critical | NOT STARTED |
+| 14 | Admin filter parameter mismatch | Minor | NOT STARTED |
 
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Phase 12 verification passed
+Stopped at: Gap closure phases 13-14 created
 Resume file: None
-Next: MILESTONE COMPLETE - Run /gsd:audit-milestone
+Next: Run /gsd:plan-phase 13

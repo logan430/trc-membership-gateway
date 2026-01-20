@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Discord - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* Claim Page Specific Styles */
+    .claim-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      min-height: calc(100vh - 200px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .claim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .claim-card h1 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .claim-description {
+      color: var(--cream);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Discord Button */
+    .discord-button {
+      display: inline-block;
+      background: #5865F2;
+      color: #fff;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: background 0.3s ease, transform 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .discord-button:hover {
+      background: #4752C4;
+      transform: scale(1.02);
+    }
+
+    .discord-button:active {
+      transform: scale(0.98);
+    }
+
+    .discord-icon {
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    /* Success State */
+    .success-state {
+      display: none;
+    }
+
+    .success-icon {
+      font-size: 4rem;
+      color: #4ade80;
+      margin-bottom: 1rem;
+    }
+
+    .discord-username {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin: 1rem 0;
+    }
+
+    .success-message {
+      color: var(--cream);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Cannot Claim State */
+    .cannot-claim {
+      display: none;
+    }
+
+    .warning-icon {
+      font-size: 3rem;
+      color: #fbbf24;
+      margin-bottom: 1rem;
+    }
+
+    .cannot-claim-message {
+      color: var(--cream);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-subtle);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error State */
+    .error-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #ef4444;
+      display: none;
+    }
+
+    .error-state h2 {
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button.primary {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    .action-button.primary:hover {
+      background: var(--gold-light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .claim-container {
+        padding: 2rem 1rem;
+      }
+
+      .claim-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .claim-card h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="claim-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <div id="error" class="error-state">
+      <h2>Error</h2>
+      <p id="error-message">Unable to load claim page.</p>
+      <div class="action-buttons">
+        <a href="/" class="action-button">Return Home</a>
+      </div>
+    </div>
+
+    <div id="claim-content" class="claim-card" style="display: none;">
+      <!-- Claim Action (not yet claimed) -->
+      <div id="claim-action" style="display: none;">
+        <h1>Link Your Discord Account</h1>
+        <p class="claim-description">
+          Connect your Discord account to gain access to The Revenue Council community server.
+          Once linked, you will receive your role and can introduce yourself to unlock full server access.
+        </p>
+        <button class="discord-button" onclick="linkDiscord()">
+          <svg class="discord-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Link Discord Account
+        </button>
+      </div>
+
+      <!-- Already Claimed (success state) -->
+      <div id="already-claimed" class="success-state">
+        <div class="success-icon">&#10004;</div>
+        <h1>Discord Linked!</h1>
+        <p class="discord-username" id="discord-username">Discord User</p>
+        <p class="success-message">
+          Your Discord account is connected. You now have access to The Revenue Council server.
+        </p>
+        <div class="action-buttons">
+          <a href="/app/dashboard" class="action-button primary">Back to Dashboard</a>
+        </div>
+      </div>
+
+      <!-- Cannot Claim (not subscribed) -->
+      <div id="cannot-claim" class="cannot-claim">
+        <div class="warning-icon">&#9888;</div>
+        <h1>Subscription Required</h1>
+        <p class="cannot-claim-message">
+          You need an active subscription to link your Discord account and access The Revenue Council community.
+        </p>
+        <div class="action-buttons">
+          <a href="/app/dashboard" class="action-button primary">Subscribe Now</a>
+          <a href="/" class="action-button">Return Home</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+      <nav class="footer-links">
+        <a href="/">Home</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Get access token from localStorage
+    function getAccessToken() {
+      return localStorage.getItem('accessToken');
+    }
+
+    // Show error state
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('claim-content').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Load claim status from dashboard API
+    async function loadClaimStatus() {
+      const token = getAccessToken();
+      if (!token) {
+        window.location.href = '/auth/login?redirect=/app/claim';
+        return;
+      }
+
+      try {
+        const response = await fetch('/dashboard', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem('accessToken');
+          window.location.href = '/auth/login?redirect=/app/claim';
+          return;
+        }
+
+        if (!response.ok) {
+          const data = await response.json();
+          showError(data.error || 'Failed to load claim status');
+          return;
+        }
+
+        const data = await response.json();
+        renderClaimPage(data);
+      } catch (error) {
+        showError(error.message || 'Failed to connect to server');
+      }
+    }
+
+    // Render claim page based on claim status
+    function renderClaimPage(data) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('claim-content').style.display = 'block';
+
+      if (data.claim.hasClaimed) {
+        // Show success state - already linked
+        document.getElementById('already-claimed').style.display = 'block';
+        document.getElementById('discord-username').textContent = escapeHtml(data.member.discordUsername || 'Discord User');
+      } else if (data.claim.canClaim) {
+        // Show claim button
+        document.getElementById('claim-action').style.display = 'block';
+      } else {
+        // Cannot claim - not subscribed
+        document.getElementById('cannot-claim').style.display = 'block';
+      }
+    }
+
+    // Redirect to Discord OAuth flow
+    function linkDiscord() {
+      window.location.href = '/claim/discord';
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', loadClaimStatus);
+  </script>
+</body>
+</html>

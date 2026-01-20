@@ -24,6 +24,24 @@ publicRouter.get('/auth/login', (_req: Request, res: Response): void => {
 });
 
 /**
+ * GET /app/dashboard
+ * Serve the member dashboard page (HTML)
+ * Note: /dashboard is the API route, /app/dashboard is the HTML page
+ */
+publicRouter.get('/app/dashboard', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/dashboard.html'));
+});
+
+/**
+ * GET /app/claim
+ * Serve the Discord claim page (HTML)
+ * Note: /claim/* routes handle OAuth callbacks, /app/claim is the HTML page
+ */
+publicRouter.get('/app/claim', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/claim.html'));
+});
+
+/**
  * GET /
  * Serve The Gatekeeper landing page
  */

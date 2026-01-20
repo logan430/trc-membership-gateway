@@ -15,6 +15,7 @@ import { teamInvitesRouter } from './routes/team-invites.js';
 import { teamClaimRouter } from './routes/team-claim.js';
 import { claimRouter } from './routes/claim.js';
 import { publicRouter } from './routes/public.js';
+import { adminAuthRouter } from './routes/admin/auth.js';
 import { startBot } from './bot/client.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
@@ -57,6 +58,9 @@ app.use('/webhooks/stripe', stripeWebhookRouter);
 
 // JSON parsing for all other routes
 app.use(express.json());
+
+// Admin auth routes (login, logout, refresh - no auth required for these)
+app.use('/admin/auth', adminAuthRouter);
 
 // Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);

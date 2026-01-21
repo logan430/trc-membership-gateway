@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import pino from 'pino';
+import * as Sentry from '@sentry/node';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { env } from './config/env.js';
@@ -136,6 +137,10 @@ app.get('/health', (req, res) => {
 
 // Public routes (landing page - mounted last so named routes take precedence)
 app.use(publicRouter);
+
+// Sentry error handler - captures Express errors for monitoring
+// Must be after all routes but before 404 handler
+Sentry.setupExpressErrorHandler(app);
 
 // 404 catch-all - must be LAST route
 app.use((_req, res) => {

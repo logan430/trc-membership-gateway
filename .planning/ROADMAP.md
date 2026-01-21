@@ -460,10 +460,10 @@ Plans:
   3. Seed script creates test admin accounts
   4. Seed data covers edge cases (billing failures, unclaimed, etc.)
   5. Seed can be run repeatedly without conflicts
-**Plans**: 0 plans
+**Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 24 to break down)
+- [ ] 24-01-PLAN.md - Comprehensive seed script for all test scenarios (Wave 1)
 
 ## Progress
 
@@ -495,7 +495,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 21. Documentation Audit | 3/3 | Complete | 2026-01-21 |
 | 22. Operational Readiness | 4/4 | Complete | 2026-01-21 |
 | 23. Email Templates Dashboard | 2/2 | Complete | 2026-01-21 |
-| 24. Seed Data Testing | 0/? | Not Started | - |
+| 24. Seed Data Testing | 0/1 | Not Started | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -545,3 +545,4 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 23 planned: 2026-01-21*
 *Phase 23 complete: 2026-01-21*
 *Phase 24 added: 2026-01-21*
+*Phase 24 planned: 2026-01-21*

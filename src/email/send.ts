@@ -1,12 +1,5 @@
 import { createEmailProvider, type EmailResult } from './provider.js';
-import {
-  welcomeEmailTemplate,
-  claimReminderEmailTemplate,
-  paymentFailureEmailTemplate,
-  paymentRecoveredEmailTemplate,
-  seatInviteEmailTemplate,
-  reconciliationReportEmailTemplate,
-} from './templates.js';
+import { getTemplate } from './template-fetcher.js';
 import type { ReconciliationResult } from '../reconciliation/types.js';
 import { logger } from '../index.js';
 
@@ -36,7 +29,7 @@ export async function sendWelcomeEmail(
   email: string,
   claimUrl: string
 ): Promise<EmailResult> {
-  const { subject, text } = welcomeEmailTemplate({ claimUrl });
+  const { subject, text } = await getTemplate('welcome', { claimUrl });
 
   const result = await emailProvider.send({
     to: email,
@@ -57,10 +50,8 @@ export async function sendClaimReminderEmail(
   claimUrl: string,
   daysSincePurchase: number
 ): Promise<EmailResult> {
-  const { subject, text } = claimReminderEmailTemplate({
-    claimUrl,
-    daysSincePurchase,
-  });
+  const templateName = daysSincePurchase >= 30 ? 'claim_reminder_cheeky' : 'claim_reminder';
+  const { subject, text } = await getTemplate(templateName, { claimUrl });
 
   const result = await emailProvider.send({
     to: email,
@@ -81,9 +72,9 @@ export async function sendPaymentFailureEmail(
   portalUrl: string,
   gracePeriodHours = 48
 ): Promise<EmailResult> {
-  const { subject, text } = paymentFailureEmailTemplate({
+  const { subject, text } = await getTemplate('payment_failure', {
+    gracePeriodHours: String(gracePeriodHours),
     portalUrl,
-    gracePeriodHours,
   });
 
   const result = await emailProvider.send({
@@ -104,9 +95,8 @@ export async function sendPaymentRecoveredEmail(
   email: string,
   wasInDebtorState: boolean
 ): Promise<EmailResult> {
-  const { subject, text } = paymentRecoveredEmailTemplate({
-    wasInDebtorState,
-  });
+  const templateName = wasInDebtorState ? 'payment_recovered_debtor' : 'payment_recovered';
+  const { subject, text } = await getTemplate(templateName, {});
 
   const result = await emailProvider.send({
     to: email,
@@ -128,7 +118,11 @@ export async function sendSeatInviteEmail(
   seatTier: 'OWNER' | 'TEAM_MEMBER',
   claimUrl: string
 ): Promise<EmailResult> {
-  const { subject, text } = seatInviteEmailTemplate({ teamName, seatTier, claimUrl });
+  const { subject, text } = await getTemplate('seat_invite', {
+    teamName,
+    claimUrl,
+    seatTier,
+  });
 
   const result = await emailProvider.send({
     to: email,
@@ -172,11 +166,15 @@ export async function sendReconciliationReportEmail(
     }
   }
 
-  const { subject, text } = reconciliationReportEmailTemplate({
+  // Build fix status string
+  const fixStatus = result.autoFixEnabled
+    ? `Auto-fix is ENABLED. ${result.issuesFixed} issue${result.issuesFixed === 1 ? '' : 's'} were automatically corrected.`
+    : `Auto-fix is DISABLED. Manual review required.`;
+
+  const { subject, text } = await getTemplate('reconciliation_report', {
     runId: result.runId,
-    issuesFound: result.issuesFound,
-    issuesFixed: result.issuesFixed,
-    autoFixEnabled: result.autoFixEnabled,
+    issuesFound: String(result.issuesFound),
+    fixStatus,
     summaryText: summaryLines.join('\n'),
   });
 

@@ -5,16 +5,17 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** v1 MILESTONE COMPLETE - all integration gaps closed
+**Current focus:** Production Readiness Audits
 
 ## Current Position
 
-Phase: 14 of 14 (Admin Filter Fix - COMPLETE)
-Plan: 1 of 1 in current phase
-Status: v1 MILESTONE COMPLETE
-Last activity: 2026-01-20 - Completed 14-01-PLAN.md
+Phase: 15 of 22 (Security Audit - COMPLETE)
+Plan: 2 of 2 in current phase
+Status: Phase 15 complete, ready for Phase 16
+Last activity: 2026-01-20 - Completed 15-02-PLAN.md (Security Fixes)
 
-Progress: [██████████████] 100% (42/42 plans complete)
+Progress v1: [██████████████] 100% (42/42 plans complete)
+Progress Audits: [██░░░░░░░░░░░░] 12.5% (1/8 phases complete)
 
 ## Performance Metrics
 
@@ -42,8 +43,10 @@ Progress: [██████████████] 100% (42/42 plans complet
 | 13-Billing Portal | 1/1 | 4 min | 4 min |
 | 14-Admin Filter Fix | 1/1 | 3 min | 3 min |
 
+| 15-Security Audit | 2/2 | ~7 min | 3.5 min |
+
 **Recent Trend:**
-- Last 5 plans: 12-01 (5 min), 12-02 (7 min), 13-01 (4 min), 14-01 (3 min)
+- Last 5 plans: 13-01 (4 min), 14-01 (3 min), 15-01 (3 min), 15-02 (4 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -171,6 +174,10 @@ Recent decisions affecting current work:
 | 13-01 | Team members use team.stripeCustomerId | Team owns subscription, not individual member |
 | 13-01 | Return URL /app/dashboard | Matches Phase 12 route restructure |
 | 14-01 | Backend subscriptionStatus parameter | Match frontend naming and database field |
+| Quick fix | grant-role body: { role: roleName } | Backend expects `role`, not `roleName` |
+| 15-01 | Rate limiting on auth endpoints | 5 attempts / 15 min on login/signup/magic-link/admin-login |
+| 15-02 | CORS restricts to APP_URL in production | Allow all in dev, restrict in prod |
+| 15-02 | credentials: true for CORS | Support cookie-based authentication |
 
 ### Pending Todos
 
@@ -187,18 +194,33 @@ None.
 - Message Content Intent must be enabled in Discord Developer Portal
 - ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD must be set before running prisma seed
 
-## Gap Closure Phases (from v1-MILESTONE-AUDIT.md)
+## Gap Closure (from v1-MILESTONE-AUDIT.md)
 
-Audit identified 2 integration gaps requiring closure:
+All gaps identified by audit have been closed:
 
-| Phase | Gap | Severity | Status |
-|-------|-----|----------|--------|
-| 13 | Missing `/billing/portal` endpoint | Critical | COMPLETE |
-| 14 | Admin filter parameter mismatch | Minor | COMPLETE |
+| Phase/Fix | Gap | Severity | Status |
+|-----------|-----|----------|--------|
+| Phase 13 | Missing `/billing/portal` endpoint | Critical | COMPLETE |
+| Phase 14 | Admin filter parameter mismatch | Minor | COMPLETE |
+| Quick fix | Admin grant-role parameter mismatch | Minor | COMPLETE |
+
+**v1 Audit Status: PASSED (100%)**
+
+## Roadmap Evolution
+
+- 2026-01-20: Added audit phases 15-22 for production readiness
+  - Phase 15: Security Audit (Critical)
+  - Phase 16: Data Integrity Audit (High)
+  - Phase 17: Code Quality Audit (Medium)
+  - Phase 18: Performance Audit (Medium)
+  - Phase 19: Testing Coverage Audit (Medium)
+  - Phase 20: Accessibility Audit (Medium)
+  - Phase 21: Documentation Audit (Low)
+  - Phase 22: Operational Readiness (High)
 
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: v1 MILESTONE COMPLETE - all 42 plans executed
+Stopped at: Completed 15-02-PLAN.md (Security Fixes)
 Resume file: None
-Next: Production deployment or additional feature development
+Next: Run /gsd:plan-phase 16 to start Data Integrity Audit

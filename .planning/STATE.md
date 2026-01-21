@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 16 of 22 (Data Integrity Audit - IN PROGRESS)
-Plan: 1 of ? in current phase
-Status: Plan 16-01 complete, ready for Plan 16-02
-Last activity: 2026-01-20 - Completed 16-01 Schema and Constraint Verification Audit
+Plan: 2 of ? in current phase
+Status: Plan 16-02 complete, Transaction and Idempotency Audit passed (17/17)
+Last activity: 2026-01-21 - Completed 16-02 Transaction and Idempotency Verification Audit
 
 Progress v1: [██████████████] 100% (42/42 plans complete)
-Progress Audits: [██░░░░░░░░░░░░] 12.5% (1/8 phases complete, 1 plan in Phase 16)
+Progress Audits: [██░░░░░░░░░░░░] ~15% (1/8 phases complete, 2 plans in Phase 16)
 
 ## Performance Metrics
 
@@ -44,10 +44,10 @@ Progress Audits: [██░░░░░░░░░░░░] 12.5% (1/8 phases 
 | 14-Admin Filter Fix | 1/1 | 3 min | 3 min |
 
 | 15-Security Audit | 2/2 | ~7 min | 3.5 min |
-| 16-Data Integrity | 1/? | 4 min | 4 min |
+| 16-Data Integrity | 2/? | 7 min | 3.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 14-01 (3 min), 15-01 (3 min), 15-02 (4 min), 16-01 (4 min)
+- Last 5 plans: 15-01 (3 min), 15-02 (4 min), 16-01 (4 min), 16-02 (3 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -182,6 +182,9 @@ Recent decisions affecting current work:
 | 16-01 | Prisma default cascade behavior acceptable | SetNull/Restrict align with app requirements |
 | 16-01 | Redundant indexes acceptable | @unique creates index; explicit @@index redundant but not harmful |
 | 16-01 | All 10 unique constraints verified | Prevent duplicate Discord/email/Stripe/events |
+| 16-02 | Transaction boundaries verified | Seat claim and team payment failure correctly wrapped |
+| 16-02 | Record-before-process pattern | Stripe webhook deduplication prevents race conditions |
+| 16-02 | Stripe source of truth verified | DB mirrors Stripe via webhooks, never leads |
 
 ### Pending Todos
 
@@ -224,7 +227,7 @@ All gaps identified by audit have been closed:
 
 ## Session Continuity
 
-Last session: 2026-01-20
-Stopped at: Completed 16-01-PLAN.md (Schema and Constraint Verification Audit)
+Last session: 2026-01-21
+Stopped at: Completed 16-02-PLAN.md (Transaction and Idempotency Verification Audit)
 Resume file: None
-Next: Execute 16-02-PLAN.md (Transaction and Atomicity Audit)
+Next: Continue Phase 16 Data Integrity Audit (if more plans exist) or proceed to Phase 17

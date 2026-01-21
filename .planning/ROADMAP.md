@@ -26,6 +26,14 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 12: Route Restructure** - Consolidate routes under /app/*
 - [x] **Phase 13: Billing Portal** - Stripe billing portal endpoint (Gap Closure)
 - [x] **Phase 14: Admin Filter Fix** - Fix subscription status filter parameter (Gap Closure)
+- [ ] **Phase 15: Security Audit** - Review auth, input validation, secrets management (Audit)
+- [ ] **Phase 16: Data Integrity Audit** - Schema constraints, transactions, idempotency (Audit)
+- [ ] **Phase 17: Code Quality Audit** - Dead code, types, linting (Audit)
+- [ ] **Phase 18: Performance Audit** - Query optimization, load testing (Audit)
+- [ ] **Phase 19: Testing Coverage Audit** - Unit and integration test gaps (Audit)
+- [ ] **Phase 20: Accessibility Audit** - WCAG compliance (Audit)
+- [ ] **Phase 21: Documentation Audit** - API docs, setup guides (Audit)
+- [ ] **Phase 22: Operational Readiness** - Logging, monitoring, deployment (Audit)
 
 ## Phase Details
 
@@ -264,10 +272,161 @@ Plans:
 Plans:
 - [x] 14-01-PLAN.md - Admin filter parameter alignment (Wave 1)
 
+### Phase 15: Security Audit
+**Goal**: Verify all security controls are properly implemented and fix identified gaps
+**Depends on**: Phase 14
+**Category**: Audit
+**Priority**: Critical - blocks production deployment
+**Success Criteria** (what must be TRUE):
+  1. JWT tokens use secure expiry and httpOnly cookies
+  2. Password hashing uses Argon2id with OWASP params
+  3. All user input validated with Zod schemas
+  4. Stripe webhook signatures verified on all events
+  5. No hardcoded secrets in codebase
+  6. CSRF protection on OAuth flows
+  7. Rate limiting on auth endpoints
+  8. Admin routes properly protected
+**Plans**: 2 plans in 1 wave
+
+Plans:
+- [ ] 15-01-PLAN.md - Add rate limiting to authentication endpoints (Wave 1)
+- [ ] 15-02-PLAN.md - Fix security issues and complete audit verification (Wave 1)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 3
+
+### Phase 16: Data Integrity Audit
+**Goal**: Verify data constraints and transaction safety
+**Depends on**: Phase 15
+**Category**: Audit
+**Priority**: High - prevents data corruption
+**Success Criteria** (what must be TRUE):
+  1. Prisma schema has proper unique constraints
+  2. Cascade delete behavior verified for Team → Member
+  3. Seat claims use atomic transactions
+  4. Webhook handlers are idempotent
+  5. Stripe remains source of truth (DB mirrors correctly)
+  6. Backup procedures documented
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 16 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 6
+
+### Phase 17: Code Quality Audit
+**Goal**: Identify and address technical debt
+**Depends on**: Phase 16
+**Category**: Audit
+**Priority**: Medium
+**Success Criteria** (what must be TRUE):
+  1. No dead code (unused exports/functions)
+  2. No `any` types in production code
+  3. Consistent error handling patterns
+  4. No console.log in production paths
+  5. Dependencies up to date (npm audit clean)
+  6. No circular dependencies
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 17 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 4
+
+### Phase 18: Performance Audit
+**Goal**: Ensure acceptable performance under load
+**Depends on**: Phase 17
+**Category**: Audit
+**Priority**: Medium
+**Success Criteria** (what must be TRUE):
+  1. No N+1 database queries
+  2. API endpoints respond in <200ms
+  3. Connection pooling configured
+  4. Discord rate limits respected (batch delays)
+  5. No memory leaks under load
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 18 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 5
+
+### Phase 19: Testing Coverage Audit
+**Goal**: Identify gaps in automated testing
+**Depends on**: Phase 18
+**Category**: Audit
+**Priority**: Medium
+**Success Criteria** (what must be TRUE):
+  1. Critical user flows have test coverage
+  2. Webhook handlers have integration tests
+  3. Auth flows tested (login, logout, refresh)
+  4. Error scenarios covered
+  5. Edge cases documented
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 19 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 7
+
+### Phase 20: Accessibility Audit
+**Goal**: Ensure WCAG AA compliance
+**Depends on**: Phase 19
+**Category**: Audit
+**Priority**: Medium
+**Success Criteria** (what must be TRUE):
+  1. All forms have proper labels
+  2. Color contrast meets WCAG AA
+  3. Keyboard navigation works
+  4. Focus indicators visible
+  5. ARIA labels on interactive elements
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 20 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 8
+
+### Phase 21: Documentation Audit
+**Goal**: Ensure handoff readiness
+**Depends on**: Phase 20
+**Category**: Audit
+**Priority**: Low
+**Success Criteria** (what must be TRUE):
+  1. Environment variables fully documented
+  2. Setup instructions accurate and tested
+  3. API endpoints documented
+  4. Deployment guide exists
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 21 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 9
+
+### Phase 22: Operational Readiness
+**Goal**: Production deployment readiness
+**Depends on**: Phase 21
+**Category**: Audit
+**Priority**: High
+**Success Criteria** (what must be TRUE):
+  1. Logging in place for key events
+  2. Error monitoring configured (Sentry or similar)
+  3. Health check endpoint exists
+  4. Graceful shutdown implemented
+  5. Environment separation (dev/staging/prod)
+  6. Rollback plan documented
+  7. Incident runbook created
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 22 to break down)
+
+**Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 10
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
+Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -285,6 +444,14 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 | 12. Route Restructure | 2/2 | Complete | 2026-01-20 |
 | 13. Billing Portal | 1/1 | Complete | 2026-01-20 |
 | 14. Admin Filter Fix | 1/1 | Complete | 2026-01-20 |
+| 15. Security Audit | 0/2 | Planned | - |
+| 16. Data Integrity Audit | 0/? | Not Started | - |
+| 17. Code Quality Audit | 0/? | Not Started | - |
+| 18. Performance Audit | 0/? | Not Started | - |
+| 19. Testing Coverage Audit | 0/? | Not Started | - |
+| 20. Accessibility Audit | 0/? | Not Started | - |
+| 21. Documentation Audit | 0/? | Not Started | - |
+| 22. Operational Readiness | 0/? | Not Started | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -312,4 +479,6 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 12 -> 13 -> 14
 *Gap closure phases 13-14 added: 2026-01-20*
 *Phase 13 complete: 2026-01-20*
 *Phase 14 complete: 2026-01-20*
-*Total requirements: 45 | Total phases: 14 | Total plans: 42*
+*Audit phases 15-22 added: 2026-01-20*
+*Phase 15 planned: 2026-01-20*
+*Total requirements: 45 | Total phases: 22 | Total plans: 44 (v1 + Phase 15)*

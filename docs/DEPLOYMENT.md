@@ -507,53 +507,130 @@ Set up alerts for:
 
 ## 9. Rollback Plan
 
-### Before Deployment
+### Pre-Deployment Checklist
 
-1. **Create Database Backup**
-   - Supabase: Dashboard > Database > Backups > Create backup
-   - Or use pg_dump for manual backup
+Before EVERY deployment, complete this checklist:
 
-2. **Keep Previous Build**
-   - Tag releases: `git tag v1.0.0`
-   - Keep `dist/` backup: `cp -r dist dist.backup`
+- [ ] **Tag current release**: `git tag v1.X.Y` (use semantic versioning)
+- [ ] **Note current commit**: `git rev-parse HEAD` (save this hash)
+- [ ] **Backup dist folder**: `cp -r dist dist.backup`
+- [ ] **Note Supabase backup time**: Dashboard > Database > Backups (note timestamp)
+- [ ] **Check pending Stripe webhooks**: Dashboard > Developers > Webhooks (any pending?)
+- [ ] **Verify health check works**: `curl https://yourdomain.com/health`
 
-### Rollback Steps
+### Immediate Rollback (No Schema Changes)
 
-If deployment fails:
+**Use when:** New code has bugs but database schema is unchanged.
+**Time required:** ~2 minutes
 
-1. **Stop New Deployment**
+```bash
+# 1. Stop current deployment
+pm2 stop trc-gateway
+
+# 2. Restore previous code
+git checkout v1.X.Y  # Replace with your previous tag
+npm install
+npm run build
+
+# 3. Start and verify
+pm2 start trc-gateway
+curl https://yourdomain.com/health
+```
+
+### Full Rollback (With Schema Changes)
+
+**Use when:** Database migration caused issues and schema must be reverted.
+**Time required:** 5-15 minutes (depends on database size)
+
+```bash
+# 1. Stop application immediately
+pm2 stop trc-gateway
+
+# 2. Restore code
+git checkout v1.X.Y
+npm install
+npm run build
+
+# 3. Restore database (Supabase PITR - Pro tier)
+# Dashboard > Database > Backups > Point in Time Recovery
+# Select timestamp BEFORE the deployment
+# Wait for restore to complete
+
+# 4. Push previous schema (if PITR not available)
+npx prisma db push
+
+# 5. Start and verify
+pm2 start trc-gateway
+curl https://yourdomain.com/health
+```
+
+### Post-Rollback Recovery
+
+After successfully rolling back, perform these recovery steps:
+
+1. **Replay Stripe webhooks** (if any occurred during outage):
+   - Stripe Dashboard > Developers > Webhooks > Events
+   - Find events that failed during outage
+   - Click each event, then "Resend"
+   - Verify in app logs that events processed
+
+2. **Check data reconciliation** (next scheduled run or manual):
+   - Wait for scheduled reconciliation, or
+   - Review logs to ensure Stripe/Discord/Database are in sync
+
+3. **Notify affected users** (if applicable):
+   - Payment issues: Check for failed webhooks that need manual attention
+   - Access issues: Run manual role sync if needed
+
+4. **Document the incident**:
+   - What went wrong
+   - Timeline of events
+   - Root cause (if known)
+   - Prevention measures
+
+### Zero-Downtime Deployment (Advanced)
+
+For deployments that cannot have any downtime:
+
+1. Build new version on same server:
    ```bash
-   pm2 stop trc-gateway
-   # or
-   sudo systemctl stop trc-gateway
-   ```
-
-2. **Restore Previous Build**
-   ```bash
-   git checkout v1.0.0  # Previous tag
-   npm install
    npm run build
    ```
 
-3. **Verify Health Check**
+2. Start on different port (e.g., 3001):
    ```bash
-   pm2 start trc-gateway
-   curl https://yourdomain.com/health
+   PORT=3001 pm2 start dist/index.js --name trc-gateway-new
    ```
 
-4. **If Schema Changed: Restore Database**
-   - Supabase: Dashboard > Database > Backups > Restore
-   - Critical: Only do this if migration caused issues
+3. Verify health check on new port:
+   ```bash
+   curl http://localhost:3001/health
+   ```
 
-### Zero-Downtime Deployment
+4. Update load balancer/reverse proxy to new port:
+   - nginx: Update `proxy_pass` to port 3001
+   - Caddy: Update reverse proxy target
+   - Reload reverse proxy config
 
-For zero-downtime updates:
+5. Stop old instance after traffic drains:
+   ```bash
+   pm2 stop trc-gateway
+   pm2 delete trc-gateway
+   pm2 rename trc-gateway-new trc-gateway
+   ```
 
-1. Build new version
-2. Start on different port (e.g., 3001)
-3. Verify health check passes
-4. Update load balancer/proxy to new port
-5. Stop old instance
+**Note:** Requires load balancer or reverse proxy (nginx, Caddy) configured in front of the application.
+
+### Runbook Reference
+
+For detailed incident response procedures, see **docs/RUNBOOK.md**. The runbook covers:
+
+- Application won't start
+- Discord bot offline
+- Stripe webhooks failing
+- Email delivery issues
+- Database connection problems
+- Reconciliation job failures
 
 ---
 

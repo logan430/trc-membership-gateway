@@ -344,3 +344,207 @@ if (!member.sentBillingNotifications.includes(notification.key)) {
 - Already-sent notifications have keys in array -> skipped
 - Only unsent notifications at current time offset are sent
 
+---
+
+## Stripe Source of Truth Audit
+
+### Data Flow Direction
+
+All subscription data flows FROM Stripe TO database (never reverse):
+
+| Data | Source | DB Field | Sync Mechanism | Status |
+|------|--------|----------|----------------|--------|
+| Subscription status | Stripe | `subscriptionStatus` | Webhook `customer.subscription.updated` | CORRECT |
+| Owner seat count | Stripe | `Team.ownerSeatCount` | Webhook `customer.subscription.updated` | CORRECT |
+| Team seat count | Stripe | `Team.teamSeatCount` | Webhook `customer.subscription.updated` | CORRECT |
+| Period end | Stripe | `currentPeriodEnd` | Webhook `checkout.session.completed` / `subscription.updated` | CORRECT |
+| Payment failure | Stripe | `paymentFailedAt` | Webhook `invoice.payment_failed` | CORRECT |
+| Payment recovery | Stripe | Clears `paymentFailedAt` | Webhook `invoice.paid` | CORRECT |
+
+**Assessment:** CORRECT - Database mirrors Stripe, never leads
+
+---
+
+### Schema Alignment
+
+**SubscriptionStatus Enum Mapping:**
+
+```typescript
+// src/webhooks/stripe.ts:17-32
+function mapStripeStatus(stripeStatus: string): 'NONE' | 'TRIALING' | 'ACTIVE' | 'PAST_DUE' | 'CANCELLED' {
+  switch (stripeStatus) {
+    case 'active': return 'ACTIVE';
+    case 'trialing': return 'TRIALING';
+    case 'past_due': return 'PAST_DUE';
+    case 'canceled':
+    case 'unpaid':
+    case 'incomplete_expired':
+      return 'CANCELLED';
+    default: return 'NONE';
+  }
+}
+```
+
+| Stripe Status | DB Enum | Assessment |
+|---------------|---------|------------|
+| `active` | `ACTIVE` | CORRECT |
+| `trialing` | `TRIALING` | CORRECT |
+| `past_due` | `PAST_DUE` | CORRECT |
+| `canceled` | `CANCELLED` | CORRECT |
+| `unpaid` | `CANCELLED` | CORRECT (maps to canceled access) |
+| `incomplete_expired` | `CANCELLED` | CORRECT (failed checkout) |
+| Any other | `NONE` | CORRECT (safe default) |
+
+**Seat Counts:**
+- `ownerSeatCount` and `teamSeatCount` are `Int` type
+- Stripe provides integer quantities from subscription items
+- Match: CORRECT
+
+**Timestamps:**
+- `currentPeriodEnd` is `DateTime?` type
+- Stripe provides Unix epoch seconds
+- Conversion: `new Date(firstItem.current_period_end * 1000)`
+- Match: CORRECT
+
+---
+
+### Add Seats Operation Flow
+
+**Location:** Team dashboard add-seats functionality
+
+**Flow:**
+
+1. **API updates Stripe first**
+   ```typescript
+   await stripe.subscriptionItems.update(seatItemId, { quantity: newQuantity });
+   ```
+
+2. **Stripe sends webhook**
+   - Event: `customer.subscription.updated`
+   - Contains new seat quantities
+
+3. **Webhook handler syncs to DB**
+   ```typescript
+   await prisma.team.update({
+     where: { id: team.id },
+     data: {
+       ownerSeatCount: ownerItem?.quantity ?? team.ownerSeatCount,
+       teamSeatCount: teamItem?.quantity ?? team.teamSeatCount,
+     },
+   });
+   ```
+
+4. **Source of truth:** STRIPE - DB is cache
+
+**Code Comment (src/routes/team-dashboard.ts):**
+```typescript
+// Note: Database update happens via webhook (customer.subscription.updated)
+// This ensures Stripe is source of truth
+```
+
+**Assessment:** CORRECT - Stripe leads, DB follows via webhook
+
+---
+
+## Scheduled Job Idempotency
+
+### Billing Scheduler
+
+**Field:** `Member.sentBillingNotifications` (String array)
+
+**Pattern:**
+1. Check if notification key exists in array
+2. If not: send notification, then push key to array
+3. If exists: skip notification
+
+**Assessment:** Prevents duplicate notifications on scheduler restart
+
+**Verification:**
+- Key `immediate` pushed during payment failure handler
+- Keys `24h_warning`, `7d_reminder`, etc. pushed by scheduler
+- Array is cleared on payment recovery (`sentBillingNotifications: []`)
+
+---
+
+### Reconciliation Job
+
+**Location:** `src/reconciliation/`
+
+**Safety for Multiple Runs:**
+1. Detects drift by comparing Stripe vs DB vs Discord
+2. Logs all issues found to `ReconciliationRun` record
+3. Auto-fix mode updates Discord to match DB state
+4. DB state is synced from Stripe via webhooks
+
+**Source of Truth Chain:**
+```
+Stripe -> DB -> Discord
+```
+
+**Assessment:** CORRECT - Reconciliation can run multiple times safely
+- Each run creates new `ReconciliationRun` record
+- Fixes are idempotent (add role if missing, remove if shouldn't have)
+- Verification run scheduled 1 hour after auto-fix to confirm
+
+---
+
+## Summary
+
+| Category | Items Checked | Passed | Issues |
+|----------|---------------|--------|--------|
+| Transactions | 2 | 2 | 0 |
+| Webhook Idempotency | 7 | 7 | 0 |
+| Stripe Source of Truth | 6 | 6 | 0 |
+| Scheduled Jobs | 2 | 2 | 0 |
+| **Total** | **17** | **17** | **0** |
+
+---
+
+## Findings
+
+**No issues found.**
+
+All audited mechanisms are correctly implemented:
+
+1. **Transaction Boundaries:** Both multi-entity operations (seat claim, team payment failure) use Prisma interactive transactions correctly.
+
+2. **Webhook Idempotency:** Stripe webhook handler implements record-before-process pattern with `@unique` constraint for race condition protection. All event handlers are idempotent.
+
+3. **Discord Event Idempotency:** Introduction handler uses `introCompleted` flag to prevent duplicate promotions.
+
+4. **Scheduled Job Idempotency:** Billing scheduler tracks sent notifications in `sentBillingNotifications` array.
+
+5. **Stripe Source of Truth:** All subscription data flows from Stripe to database via webhooks. No direct database mutations that bypass Stripe.
+
+---
+
+## Recommendations
+
+While no issues were found, these enhancements could strengthen data integrity in the future:
+
+1. **Consider explicit transaction isolation level**
+   - Current: Uses Prisma default (database default, typically `READ COMMITTED`)
+   - Enhancement: Could specify `isolationLevel: 'Serializable'` for seat claim transaction if higher consistency is needed
+   - Priority: LOW (current implementation is sufficient)
+
+2. **StripeEvent cleanup strategy**
+   - Current: Events accumulate indefinitely
+   - Enhancement: Add TTL/cleanup job to remove events older than 30 days
+   - Priority: LOW (operational, not data integrity)
+
+3. **Reconciliation run retention**
+   - Current: `ReconciliationRun` records accumulate
+   - Enhancement: Archive old runs to maintain query performance
+   - Priority: LOW (operational optimization)
+
+4. **Add explicit cascade behavior to schema**
+   - Current: Relies on Prisma defaults (SetNull for optional relations)
+   - Enhancement: Make cascade behavior explicit with `onDelete: SetNull` annotation
+   - Priority: LOW (defaults are correct, explicit is documentation)
+
+---
+
+**Audit Complete:** 2026-01-21
+**Result:** PASSED (17/17 items verified)
+**Auditor:** Claude Opus 4.5
+

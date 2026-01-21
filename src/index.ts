@@ -23,7 +23,8 @@ import { adminConfigRouter } from './routes/admin/config.js';
 import { adminAuditRouter } from './routes/admin/audit.js';
 import { adminTemplatesRouter } from './routes/admin/templates.js';
 import { adminAdminsRouter } from './routes/admin/admins.js';
-import { startBot } from './bot/client.js';
+import { startBot, discordClient } from './bot/client.js';
+import { prisma } from './lib/prisma.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
 import { authLimiter, signupLimiter, magicLinkLimiter, adminAuthLimiter } from './middleware/rate-limit.js';
@@ -141,8 +142,64 @@ app.use((_req, res) => {
   res.status(404).sendFile(join(__dirname, '../public/404.html'));
 });
 
+// =============================================================================
+// GRACEFUL SHUTDOWN
+// =============================================================================
+// Handle SIGTERM (PM2/containers) and SIGINT (Ctrl+C) for clean shutdown
+// =============================================================================
+
+const SHUTDOWN_TIMEOUT = 10000; // 10 seconds
+
+let isShuttingDown = false;
+
+async function gracefulShutdown(signal: string): Promise<void> {
+  // Prevent multiple shutdown triggers
+  if (isShuttingDown) {
+    logger.info({ signal }, 'Shutdown already in progress, ignoring signal');
+    return;
+  }
+  isShuttingDown = true;
+
+  logger.info({ signal }, 'Shutdown signal received');
+
+  // Set forced shutdown timeout
+  const forceExitTimeout = setTimeout(() => {
+    logger.error('Forced shutdown after timeout - cleanup did not complete in time');
+    process.exit(1);
+  }, SHUTDOWN_TIMEOUT);
+
+  try {
+    // 1. Stop accepting new HTTP connections
+    server.close(() => {
+      logger.info('HTTP server closed');
+    });
+
+    // 2. Disconnect Discord bot
+    discordClient.destroy();
+    logger.info('Discord client disconnected');
+
+    // 3. Close Prisma database connections
+    await prisma.$disconnect();
+    logger.info('Database connections closed');
+
+    // Clear the forced exit timeout since cleanup completed
+    clearTimeout(forceExitTimeout);
+
+    logger.info('Graceful shutdown complete');
+    process.exit(0);
+  } catch (error) {
+    logger.error({ error: error instanceof Error ? { message: error.message, stack: error.stack } : error }, 'Error during graceful shutdown');
+    clearTimeout(forceExitTimeout);
+    process.exit(1);
+  }
+}
+
+// Register signal handlers
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 // Start server
-app.listen(env.PORT, () => {
+const server = app.listen(env.PORT, () => {
   logger.info({ port: env.PORT, env: env.NODE_ENV }, 'Server started');
 
   // Start Discord bot after HTTP server is ready

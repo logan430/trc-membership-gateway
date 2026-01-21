@@ -26,6 +26,7 @@ import { adminAdminsRouter } from './routes/admin/admins.js';
 import { startBot } from './bot/client.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
+import { authLimiter, signupLimiter, magicLinkLimiter, adminAuthLimiter } from './middleware/rate-limit.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -55,7 +56,12 @@ app.use(helmet({
     },
   },
 }));
-app.use(cors());
+app.use(cors({
+  origin: env.NODE_ENV === 'production'
+    ? env.APP_URL
+    : true, // Allow all origins in development
+  credentials: true, // Allow cookies to be sent
+}));
 
 // Static file serving (CSS, images, etc.)
 app.use(express.static(join(__dirname, '../public')));
@@ -66,6 +72,12 @@ app.use('/webhooks/stripe', stripeWebhookRouter);
 
 // JSON parsing for all other routes
 app.use(express.json());
+
+// Rate limiting on auth endpoints (security - prevent brute force)
+app.use('/auth/login', authLimiter);
+app.use('/auth/signup', signupLimiter);
+app.use('/auth/magic-link/request', magicLinkLimiter);
+app.use('/admin/auth/login', adminAuthLimiter);
 
 // =============================================================================
 // ADMIN ROUTES
@@ -142,7 +154,7 @@ app.listen(env.PORT, () => {
       startReconciliationScheduler();
     })
     .catch((error) => {
-      logger.error({ error }, 'Failed to start Discord bot');
+      logger.error({ error: error instanceof Error ? { message: error.message, stack: error.stack } : error }, 'Failed to start Discord bot');
     });
 });
 

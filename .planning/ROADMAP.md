@@ -316,7 +316,7 @@ Plans:
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 6
 
 ### Phase 17: Code Quality Audit
-**Goal**: Identify and address technical debt
+**Goal**: Identify and document technical debt (audit only, no fixes)
 **Depends on**: Phase 16
 **Category**: Audit
 **Priority**: Medium
@@ -327,10 +327,10 @@ Plans:
   4. No console.log in production paths
   5. Dependencies up to date (npm audit clean)
   6. No circular dependencies
-**Plans**: 0 plans
+**Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 17 to break down)
+- [ ] 17-01-PLAN.md - Run audit tools and produce prioritized report (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 4
 
@@ -378,8 +378,8 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. All forms have proper labels
   2. Color contrast meets WCAG AA
-  3. Keyboard navigation works
-  4. Focus indicators visible
+  3. Focus indicators visible
+  4. Keyboard navigation works
   5. ARIA labels on interactive elements
 **Plans**: 0 plans
 
@@ -448,7 +448,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 14. Admin Filter Fix | 1/1 | Complete | 2026-01-20 |
 | 15. Security Audit | 2/2 | Complete | 2026-01-20 |
 | 16. Data Integrity Audit | 3/3 | Complete | 2026-01-20 |
-| 17. Code Quality Audit | 0/? | Not Started | - |
+| 17. Code Quality Audit | 0/1 | Not Started | - |
 | 18. Performance Audit | 0/? | Not Started | - |
 | 19. Testing Coverage Audit | 0/? | Not Started | - |
 | 20. Accessibility Audit | 0/? | Not Started | - |
@@ -486,4 +486,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 15 complete: 2026-01-20*
 *Phase 16 planned: 2026-01-20*
 *Phase 16 gap closure plan added: 2026-01-21*
-*Total requirements: 45 | Total phases: 22 | Total plans: 47 (v1 + Phase 15-16)*
+*Phase 17 planned: 2026-01-21*
+*Total requirements: 45 | Total phases: 22 | Total plans: 48 (v1 + Phase 15-17)*

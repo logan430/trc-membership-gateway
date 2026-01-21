@@ -306,11 +306,12 @@ Plans:
   4. Webhook handlers are idempotent
   5. Stripe remains source of truth (DB mirrors correctly)
   6. Backup procedures documented
-**Plans**: 2 plans in 1 wave
+**Plans**: 3 plans in 1 wave
 
 Plans:
-- [ ] 16-01-PLAN.md - Schema and constraint verification audit (Wave 1)
-- [ ] 16-02-PLAN.md - Transaction and idempotency verification audit (Wave 1)
+- [x] 16-01-PLAN.md - Schema and constraint verification audit (Wave 1)
+- [x] 16-02-PLAN.md - Transaction and idempotency verification audit (Wave 1)
+- [ ] 16-03-PLAN.md - Backup procedure documentation (Wave 1, Gap Closure)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 6
 
@@ -446,7 +447,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 13. Billing Portal | 1/1 | Complete | 2026-01-20 |
 | 14. Admin Filter Fix | 1/1 | Complete | 2026-01-20 |
 | 15. Security Audit | 2/2 | Complete | 2026-01-20 |
-| 16. Data Integrity Audit | 0/2 | Not Started | - |
+| 16. Data Integrity Audit | 2/3 | In Progress | - |
 | 17. Code Quality Audit | 0/? | Not Started | - |
 | 18. Performance Audit | 0/? | Not Started | - |
 | 19. Testing Coverage Audit | 0/? | Not Started | - |
@@ -484,4 +485,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 15 planned: 2026-01-20*
 *Phase 15 complete: 2026-01-20*
 *Phase 16 planned: 2026-01-20*
-*Total requirements: 45 | Total phases: 22 | Total plans: 46 (v1 + Phase 15-16)*
+*Phase 16 gap closure plan added: 2026-01-21*
+*Total requirements: 45 | Total phases: 22 | Total plans: 47 (v1 + Phase 15-16)*

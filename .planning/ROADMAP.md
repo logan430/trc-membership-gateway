@@ -381,10 +381,10 @@ Plans:
   3. Focus indicators visible
   4. Keyboard navigation works
   5. ARIA labels on interactive elements
-**Plans**: 0 plans
+**Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 20 to break down)
+- [ ] 20-01-PLAN.md - WCAG 2.1 AA compliance audit across all HTML pages (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 8
 
@@ -451,7 +451,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 17. Code Quality Audit | 1/1 | Complete | 2026-01-21 |
 | 18. Performance Audit | 1/1 | Complete | 2026-01-21 |
 | 19. Testing Coverage Audit | 1/1 | Complete | 2026-01-21 |
-| 20. Accessibility Audit | 0/? | Not Started | - |
+| 20. Accessibility Audit | 0/1 | Not Started | - |
 | 21. Documentation Audit | 0/? | Not Started | - |
 | 22. Operational Readiness | 0/? | Not Started | - |
 
@@ -492,4 +492,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 18 complete: 2026-01-21*
 *Phase 19 planned: 2026-01-21*
 *Phase 19 complete: 2026-01-21*
-*Total requirements: 45 | Total phases: 22 | Total plans: 50 (v1 + Phase 15-19)*
+*Phase 20 planned: 2026-01-21*
+*Total requirements: 45 | Total phases: 22 | Total plans: 51 (v1 + Phase 15-20)*

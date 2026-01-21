@@ -330,7 +330,7 @@ Plans:
 **Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] 17-01-PLAN.md - Run audit tools and produce prioritized report (Wave 1)
+- [x] 17-01-PLAN.md - Run audit tools and produce prioritized report (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 4
 
@@ -345,10 +345,10 @@ Plans:
   3. Connection pooling configured
   4. Discord rate limits respected (batch delays)
   5. No memory leaks under load
-**Plans**: 0 plans
+**Plans**: 1 plan in 1 wave
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 18 to break down)
+- [ ] 18-01-PLAN.md - Static performance analysis and audit report (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 5
 
@@ -449,7 +449,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 15. Security Audit | 2/2 | Complete | 2026-01-20 |
 | 16. Data Integrity Audit | 3/3 | Complete | 2026-01-20 |
 | 17. Code Quality Audit | 1/1 | Complete | 2026-01-21 |
-| 18. Performance Audit | 0/? | Not Started | - |
+| 18. Performance Audit | 0/1 | Not Started | - |
 | 19. Testing Coverage Audit | 0/? | Not Started | - |
 | 20. Accessibility Audit | 0/? | Not Started | - |
 | 21. Documentation Audit | 0/? | Not Started | - |
@@ -488,4 +488,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 16 gap closure plan added: 2026-01-21*
 *Phase 17 planned: 2026-01-21*
 *Phase 17 complete: 2026-01-21*
-*Total requirements: 45 | Total phases: 22 | Total plans: 48 (v1 + Phase 15-17)*
+*Phase 18 planned: 2026-01-21*
+*Total requirements: 45 | Total phases: 22 | Total plans: 49 (v1 + Phase 15-18)*

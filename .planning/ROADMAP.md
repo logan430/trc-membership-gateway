@@ -289,27 +289,28 @@ Plans:
 **Plans**: 2 plans in 1 wave
 
 Plans:
-- [ ] 15-01-PLAN.md - Add rate limiting to authentication endpoints (Wave 1)
-- [ ] 15-02-PLAN.md - Fix security issues and complete audit verification (Wave 1)
+- [x] 15-01-PLAN.md - Add rate limiting to authentication endpoints (Wave 1)
+- [x] 15-02-PLAN.md - Fix security issues and complete audit verification (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 3
 
 ### Phase 16: Data Integrity Audit
-**Goal**: Verify data constraints and transaction safety
+**Goal**: Verify data constraints and transaction safety through documentation audit
 **Depends on**: Phase 15
 **Category**: Audit
 **Priority**: High - prevents data corruption
 **Success Criteria** (what must be TRUE):
   1. Prisma schema has proper unique constraints
-  2. Cascade delete behavior verified for Team → Member
+  2. Cascade delete behavior verified for Team -> Member
   3. Seat claims use atomic transactions
   4. Webhook handlers are idempotent
   5. Stripe remains source of truth (DB mirrors correctly)
   6. Backup procedures documented
-**Plans**: 0 plans
+**Plans**: 2 plans in 1 wave
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 16 to break down)
+- [ ] 16-01-PLAN.md - Schema and constraint verification audit (Wave 1)
+- [ ] 16-02-PLAN.md - Transaction and idempotency verification audit (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 6
 
@@ -445,7 +446,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 13. Billing Portal | 1/1 | Complete | 2026-01-20 |
 | 14. Admin Filter Fix | 1/1 | Complete | 2026-01-20 |
 | 15. Security Audit | 2/2 | Complete | 2026-01-20 |
-| 16. Data Integrity Audit | 0/? | Not Started | - |
+| 16. Data Integrity Audit | 0/2 | Not Started | - |
 | 17. Code Quality Audit | 0/? | Not Started | - |
 | 18. Performance Audit | 0/? | Not Started | - |
 | 19. Testing Coverage Audit | 0/? | Not Started | - |
@@ -482,4 +483,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Audit phases 15-22 added: 2026-01-20*
 *Phase 15 planned: 2026-01-20*
 *Phase 15 complete: 2026-01-20*
-*Total requirements: 45 | Total phases: 22 | Total plans: 44 (v1 + Phase 15)*
+*Phase 16 planned: 2026-01-20*
+*Total requirements: 45 | Total phases: 22 | Total plans: 46 (v1 + Phase 15-16)*

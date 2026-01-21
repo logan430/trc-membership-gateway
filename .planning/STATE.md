@@ -9,13 +9,13 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 
 ## Current Position
 
-Phase: 16 of 22 (Data Integrity Audit - NOT STARTED)
-Plan: 0 of ? in current phase
-Status: Phase 15 verified and complete, ready for Phase 16
-Last activity: 2026-01-20 - Completed Phase 15 Security Audit (8/8 verified)
+Phase: 16 of 22 (Data Integrity Audit - IN PROGRESS)
+Plan: 1 of ? in current phase
+Status: Plan 16-01 complete, ready for Plan 16-02
+Last activity: 2026-01-20 - Completed 16-01 Schema and Constraint Verification Audit
 
 Progress v1: [██████████████] 100% (42/42 plans complete)
-Progress Audits: [██░░░░░░░░░░░░] 12.5% (1/8 phases complete)
+Progress Audits: [██░░░░░░░░░░░░] 12.5% (1/8 phases complete, 1 plan in Phase 16)
 
 ## Performance Metrics
 
@@ -44,9 +44,10 @@ Progress Audits: [██░░░░░░░░░░░░] 12.5% (1/8 phases 
 | 14-Admin Filter Fix | 1/1 | 3 min | 3 min |
 
 | 15-Security Audit | 2/2 | ~7 min | 3.5 min |
+| 16-Data Integrity | 1/? | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 13-01 (4 min), 14-01 (3 min), 15-01 (3 min), 15-02 (4 min)
+- Last 5 plans: 14-01 (3 min), 15-01 (3 min), 15-02 (4 min), 16-01 (4 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -178,6 +179,9 @@ Recent decisions affecting current work:
 | 15-01 | Rate limiting on auth endpoints | 5 attempts / 15 min on login/signup/magic-link/admin-login |
 | 15-02 | CORS restricts to APP_URL in production | Allow all in dev, restrict in prod |
 | 15-02 | credentials: true for CORS | Support cookie-based authentication |
+| 16-01 | Prisma default cascade behavior acceptable | SetNull/Restrict align with app requirements |
+| 16-01 | Redundant indexes acceptable | @unique creates index; explicit @@index redundant but not harmful |
+| 16-01 | All 10 unique constraints verified | Prevent duplicate Discord/email/Stripe/events |
 
 ### Pending Todos
 
@@ -221,6 +225,6 @@ All gaps identified by audit have been closed:
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Completed Phase 15 Security Audit (verified 8/8)
+Stopped at: Completed 16-01-PLAN.md (Schema and Constraint Verification Audit)
 Resume file: None
-Next: Run /gsd:plan-phase 16 to start Data Integrity Audit
+Next: Execute 16-02-PLAN.md (Transaction and Atomicity Audit)

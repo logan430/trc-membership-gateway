@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 22 of 22 (Operational Readiness)
-Plan: 1 of 4 in current phase
-Status: Plan 22-01 complete, Graceful Shutdown Implementation
-Last activity: 2026-01-21 - Completed 22-01 Graceful Shutdown Implementation
+Plan: 2 of 4 in current phase
+Status: Plan 22-02 complete, Sentry Error Monitoring
+Last activity: 2026-01-21 - Completed 22-02 Sentry Error Monitoring
 
 Progress v1: [██████████████] 100% (42/42 plans complete)
-Progress Audits: [██████████████] 100% (8/8 phases, 1/4 plans in Phase 22)
+Progress Audits: [██████████████] 100% (8/8 phases, 2/4 plans in Phase 22)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 51
+- Total plans completed: 52
 - Average duration: 4.4 min
-- Total execution time: ~240 min
+- Total execution time: ~244 min
 
 **By Phase:**
 
@@ -50,10 +50,10 @@ Progress Audits: [██████████████] 100% (8/8 phases, 
 | 19-Testing Coverage | 1/1 | 4 min | 4 min |
 | 20-Accessibility | 1/1 | 6 min | 6 min |
 | 21-Documentation | 3/3 | 9 min | 3 min |
-| 22-Operational | 1/4 | 4 min | 4 min |
+| 22-Operational | 2/4 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 20-01 (6 min), 21-01 (2 min), 21-02 (4 min), 21-03 (3 min), 22-01 (4 min)
+- Last 5 plans: 21-01 (2 min), 21-02 (4 min), 21-03 (3 min), 22-01 (4 min), 22-02 (4 min)
 - Trend: Consistent execution
 
 *Updated after each plan completion*
@@ -215,6 +215,10 @@ Recent decisions affecting current work:
 | 22-01 | 10-second app timeout, 15-second PM2 kill_timeout | PM2 needs longer timeout to allow graceful completion |
 | 22-01 | HTTP -> Discord -> Prisma shutdown order | Stop new connections first, then cleanup dependencies |
 | 22-01 | isShuttingDown flag for signal handling | Prevents race conditions from repeated signals |
+| 22-02 | SENTRY_DSN is optional | App runs without it for graceful degradation |
+| 22-02 | Sentry only in production with DSN | Conditional initialization prevents dev noise |
+| 22-02 | 10% tracesSampleRate | Cost efficiency while still capturing performance data |
+| 22-02 | start:prod script for Sentry | Uses --import flag for ESM instrumentation |
 
 ### Pending Todos
 
@@ -262,6 +266,6 @@ All gaps identified by audit have been closed:
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 22-01 Graceful Shutdown Implementation
+Stopped at: Completed 22-02 Sentry Error Monitoring
 Resume file: None
-Next: Proceed to 22-02 Sentry Error Monitoring
+Next: Proceed to 22-03 Environment Configuration Audit

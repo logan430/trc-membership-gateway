@@ -398,10 +398,12 @@ Plans:
   2. Setup instructions accurate and tested
   3. API endpoints documented
   4. Deployment guide exists
-**Plans**: 0 plans
+**Plans**: 3 plans in 1 wave
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 21 to break down)
+- [ ] 21-01-PLAN.md - README.md and .env.example completion (Wave 1)
+- [ ] 21-02-PLAN.md - API documentation (docs/API.md) (Wave 1)
+- [ ] 21-03-PLAN.md - Deployment guide and setup verification (Wave 1)
 
 **Checklist Reference:** See [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md) Section 9
 
@@ -452,7 +454,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 18. Performance Audit | 1/1 | Complete | 2026-01-21 |
 | 19. Testing Coverage Audit | 1/1 | Complete | 2026-01-21 |
 | 20. Accessibility Audit | 1/1 | Complete | 2026-01-21 |
-| 21. Documentation Audit | 0/? | Not Started | - |
+| 21. Documentation Audit | 0/3 | Not Started | - |
 | 22. Operational Readiness | 0/? | Not Started | - |
 
 ---
@@ -494,4 +496,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 19 complete: 2026-01-21*
 *Phase 20 planned: 2026-01-21*
 *Phase 20 complete: 2026-01-21*
-*Total requirements: 45 | Total phases: 22 | Total plans: 52 (v1 + Phase 15-20)*
+*Phase 21 planned: 2026-01-21*
+*Total requirements: 45 | Total phases: 22 | Total plans: 55 (v1 + Phase 15-21)*

@@ -52,6 +52,9 @@ const envSchema = z.object({
   // Admin seed (for first super admin creation)
   ADMIN_SEED_EMAIL: z.string().email().optional(),
   ADMIN_SEED_PASSWORD: z.string().min(8).optional(),
+
+  // Error Monitoring (Sentry)
+  SENTRY_DSN: z.string().optional(), // Optional - app runs without it
 }).refine(
   (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
   { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }

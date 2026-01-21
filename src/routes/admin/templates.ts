@@ -1,12 +1,13 @@
 /**
  * Admin email template management routes
- * Templates are stored in database and editable by super admins
+ * Templates are stored in database and editable by all admins
  */
 import { Router } from 'express';
 import { z } from 'zod';
 import { requireAdmin, requireSuperAdmin } from '../../admin/middleware.js';
 import { logAuditEvent, AuditAction } from '../../lib/audit.js';
 import { prisma } from '../../lib/prisma.js';
+import { DEFAULT_TEMPLATES, TEMPLATE_VARIABLES, validateVariables } from '../../email/template-fetcher.js';
 
 export const adminTemplatesRouter = Router();
 
@@ -48,253 +49,81 @@ const updateTemplateSchema = z.object({
 
 /**
  * PUT /admin/templates/:name
- * Update or create an email template (super admin only)
+ * Update or create an email template (all admins can edit)
  */
-adminTemplatesRouter.put(
-  '/:name',
-  requireAdmin,
-  requireSuperAdmin,
-  async (req, res) => {
-    const name = req.params.name as string;
-    const admin = res.locals.admin!;
+adminTemplatesRouter.put('/:name', requireAdmin, async (req, res) => {
+  const name = req.params.name as string;
+  const admin = res.locals.admin!;
 
-    try {
-      const { subject, body } = updateTemplateSchema.parse(req.body);
+  try {
+    const { subject, body } = updateTemplateSchema.parse(req.body);
 
-      // Get current template for comparison
-      const currentTemplate = await prisma.emailTemplate.findUnique({
-        where: { name },
-      });
+    // Validate variables in subject and body
+    const subjectValidation = validateVariables(name, subject);
+    const bodyValidation = validateVariables(name, body);
+    const unknownVariables = [
+      ...subjectValidation.unknownVariables,
+      ...bodyValidation.unknownVariables,
+    ];
+    // Dedupe unknown variables
+    const uniqueUnknown = [...new Set(unknownVariables)];
 
-      // Upsert template
-      const template = await prisma.emailTemplate.upsert({
-        where: { name },
-        update: {
-          subject,
-          body,
-          updatedBy: admin.id,
-        },
-        create: {
-          name,
-          subject,
-          body,
-          updatedBy: admin.id,
-        },
-      });
+    // Get current template for comparison
+    const currentTemplate = await prisma.emailTemplate.findUnique({
+      where: { name },
+    });
 
-      // Log audit event with old/new preview
-      await logAuditEvent({
-        action: AuditAction.EMAIL_TEMPLATE_UPDATED,
-        entityType: 'EmailTemplate',
-        entityId: name,
-        details: {
-          previousSubject: currentTemplate?.subject || null,
-          newSubject: subject,
-          previousBodyPreview: currentTemplate?.body.slice(0, 100) || null,
-          newBodyPreview: body.slice(0, 100),
-        },
-        performedBy: admin.id,
-      });
+    // Upsert template
+    const template = await prisma.emailTemplate.upsert({
+      where: { name },
+      update: {
+        subject,
+        body,
+        updatedBy: admin.id,
+      },
+      create: {
+        name,
+        subject,
+        body,
+        updatedBy: admin.id,
+      },
+    });
 
-      res.json({
-        success: true,
-        template,
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: 'Invalid request', details: error.issues });
-        return;
-      }
-      throw error;
+    // Log audit event with old/new preview
+    await logAuditEvent({
+      action: AuditAction.EMAIL_TEMPLATE_UPDATED,
+      entityType: 'EmailTemplate',
+      entityId: name,
+      details: {
+        previousSubject: currentTemplate?.subject || null,
+        newSubject: subject,
+        previousBodyPreview: currentTemplate?.body.slice(0, 100) || null,
+        newBodyPreview: body.slice(0, 100),
+      },
+      performedBy: admin.id,
+    });
+
+    res.json({
+      success: true,
+      template,
+      warning:
+        uniqueUnknown.length > 0
+          ? `Unknown variables detected: ${uniqueUnknown.join(', ')}`
+          : undefined,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: 'Invalid request', details: error.issues });
+      return;
     }
+    throw error;
   }
-);
-
-/**
- * Default email templates derived from hardcoded templates
- * Used for seeding
- */
-const DEFAULT_TEMPLATES = [
-  {
-    name: 'welcome',
-    subject: 'Welcome to The Revenue Council',
-    body: `Hark! Thy payment hath been received and thy journey begins.
-
-Welcome to The Revenue Council, a guild of entrepreneurs united in purpose.
-
-To claim thy rightful place in our Discord halls, visit:
-{{claimUrl}}
-
-This link shall connect thy Discord account and grant thee access to the guild.
-
-May thy membership bring prosperity and connection.
-
-The Gatekeeper
-The Revenue Council
-
----
-Questions? Reply to this email or contact support@revenuecouncil.com`,
-  },
-  {
-    name: 'claim_reminder',
-    subject: 'Thy Discord access awaits',
-    body: `Hark! A gentle reminder from The Revenue Council.
-
-Thou hast paid for membership but hast not yet claimed thy Discord access.
-
-Visit this link to connect thy Discord and join the guild:
-{{claimUrl}}
-
-The community awaits thy arrival.
-
-The Gatekeeper
-The Revenue Council`,
-  },
-  {
-    name: 'claim_reminder_cheeky',
-    subject: 'We miss thee at The Revenue Council',
-    body: `Hail, valued member of The Revenue Council!
-
-We are grateful for thy continued subscription - truly, thy support is appreciated.
-
-Yet we cannot help but notice thou hast not yet claimed thy Discord access. The halls of the guild await thy presence!
-
-Our community of entrepreneurs grows richer with each member who participates. We would be honored to have thee among us.
-
-Claim thy access: {{claimUrl}}
-
-Until we meet in the guild halls,
-
-The Gatekeeper
-The Revenue Council`,
-  },
-  {
-    name: 'payment_failure',
-    subject: 'Action needed: Payment issue with The Revenue Council',
-    body: `Hark! A message from The Treasury.
-
-A payment for thy membership with The Revenue Council hath encountered difficulties.
-
-WHAT HAPPENS NEXT:
-- Thou hast {{gracePeriodHours}} hours to resolve this matter whilst retaining full access
-- After the grace period: Thy access shall be restricted to #billing-support only
-- After 30 days in restricted state: Thy membership shall end entirely
-
-UPDATE THY PAYMENT:
-{{portalUrl}}
-
-COMMON CAUSES:
-- Expired card on file
-- Insufficient funds
-- Bank declined the transaction
-
-We urge thee to act swiftly. The Council values thy presence and wishes to see this matter resolved.
-
-Faithfully,
-The Treasury
-
----
-If thou hast questions, reply to this message.`,
-  },
-  {
-    name: 'payment_recovered',
-    subject: 'Payment received - Welcome back!',
-    body: `Huzzah! The Treasury brings glad tidings!
-
-Thy payment hath been received and thy standing with The Revenue Council remaineth intact.
-
-We thank thee for thy swift attention to this matter. Thy membership continues uninterrupted.
-
-The Council celebrates thy continued membership!
-
-Faithfully,
-The Treasury
-
----
-If thou hast questions, reply to this message.`,
-  },
-  {
-    name: 'payment_recovered_debtor',
-    subject: 'Payment received - Welcome back!',
-    body: `Huzzah! The Treasury brings most excellent tidings!
-
-Thy payment hath been received and thy full access to The Revenue Council is now restored!
-
-Thou art no longer restricted - all chambers of the guild are once again open to thee.
-
-The Council celebrates thy return! May thy continued membership bring prosperity to all.
-
-Welcome back, valued member.
-
-Faithfully,
-The Treasury
-
----
-If thou hast questions, reply to this message.`,
-  },
-  {
-    name: 'seat_invite',
-    subject: "You're invited to join {{teamName}} at The Revenue Council",
-    body: `Hail!
-
-Someone from {{teamName}} hath invited thee to join The Revenue Council.
-
-WHAT IS THE REVENUE COUNCIL?
-
-The Revenue Council is a professional community of entrepreneurs united in purpose. We gather in our Discord halls for:
-- Networking with fellow business owners
-- Referrals and collaboration opportunities
-- Peer support and knowledge sharing
-- Exclusive resources and discussions
-
-THY INVITATION
-
-{{teamName}} hath granted thee a seat. This means thy membership is covered through their company subscription.
-
-TO CLAIM THY SEAT:
-
-1. Visit: {{claimUrl}}
-2. Connect thy Discord account
-3. Join our Discord server
-4. Introduce thyself in #introductions
-
-Note: Once introduced, thou shalt have full access to the guild.
-
-Note: This invitation doth not expire. Claim it when thou art ready.
-
-We look forward to welcoming thee to the guild!
-
-The Gatekeeper
-The Revenue Council
-
----
-Questions about this invitation? Contact thy organization admin at {{teamName}}.
-Questions about The Revenue Council? Reply to this email.`,
-  },
-  {
-    name: 'reconciliation_report',
-    subject: '[TRC Reconciliation] {{issuesFound}} drift issue(s) detected',
-    body: `The Revenue Council - Reconciliation Report
-============================================
-
-{{issuesFound}} drift issue(s) detected between Stripe and Discord.
-
-{{fixStatus}}
-
-Summary:
-{{summaryText}}
-
-Run ID: {{runId}}
-
----
-This is an automated report from The Revenue Council membership system.
-To enable automatic fixes, set RECONCILIATION_AUTO_FIX=true.`,
-  },
-];
+});
 
 /**
  * POST /admin/templates/seed
  * Seed default email templates (super admin only)
+ * Uses DEFAULT_TEMPLATES from template-fetcher.ts
  */
 adminTemplatesRouter.post(
   '/seed',
@@ -403,4 +232,69 @@ adminTemplatesRouter.get('/:name/preview', requireAdmin, async (req, res) => {
     },
     sampleData,
   });
+});
+
+/**
+ * POST /admin/templates/:name/reset
+ * Reset template to default content
+ */
+adminTemplatesRouter.post('/:name/reset', requireAdmin, async (req, res) => {
+  const name = req.params.name as string;
+  const admin = res.locals.admin!;
+
+  // Find default template
+  const defaultTemplate = DEFAULT_TEMPLATES.find((t) => t.name === name);
+  if (!defaultTemplate) {
+    res.status(404).json({ error: 'No default template exists for this name' });
+    return;
+  }
+
+  // Get current for audit comparison
+  const currentTemplate = await prisma.emailTemplate.findUnique({
+    where: { name },
+  });
+
+  // Upsert with default values
+  const template = await prisma.emailTemplate.upsert({
+    where: { name },
+    update: {
+      subject: defaultTemplate.subject,
+      body: defaultTemplate.body,
+      updatedBy: admin.id,
+    },
+    create: {
+      name: defaultTemplate.name,
+      subject: defaultTemplate.subject,
+      body: defaultTemplate.body,
+      updatedBy: admin.id,
+    },
+  });
+
+  // Log audit event
+  await logAuditEvent({
+    action: AuditAction.EMAIL_TEMPLATE_RESET,
+    entityType: 'EmailTemplate',
+    entityId: name,
+    details: {
+      previousSubject: currentTemplate?.subject || null,
+      resetTo: 'default',
+    },
+    performedBy: admin.id,
+  });
+
+  res.json({
+    success: true,
+    template,
+    message: 'Template reset to default',
+  });
+});
+
+/**
+ * GET /admin/templates/:name/variables
+ * Get available variables for a template
+ */
+adminTemplatesRouter.get('/:name/variables', requireAdmin, async (req, res) => {
+  const name = req.params.name as string;
+  const variables = TEMPLATE_VARIABLES[name] || [];
+  res.json({ variables });
 });

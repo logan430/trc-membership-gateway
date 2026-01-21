@@ -136,8 +136,16 @@ publicRouter.get('/app/admin/admins', (_req: Request, res: Response): void => {
 
 /**
  * GET /app/admin/templates
- * Serve the email template editor page
+ * Serve the email template list page
  */
 publicRouter.get('/app/admin/templates', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/admin/templates.html'));
+});
+
+/**
+ * GET /app/admin/templates/:name
+ * Serve the template edit page (template name parsed client-side from URL)
+ */
+publicRouter.get('/app/admin/templates/:name', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/admin/template-edit.html'));
 });

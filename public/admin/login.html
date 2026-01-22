@@ -106,12 +106,62 @@
       submitBtn.textContent = loading ? 'Entering...' : 'Enter the Council Chamber';
     }
 
-    // Check if already logged in
+    // Parse JWT token to get payload
+    function parseAdminToken(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Attempt token refresh and redirect if successful
+    async function tryRefreshAndRedirect() {
+      try {
+        const response = await fetch('/admin/auth/refresh', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const { accessToken } = await response.json();
+          localStorage.setItem('adminAccessToken', accessToken);
+          window.location.href = '/app/admin/dashboard';
+        } else {
+          // Refresh failed, clear token and stay on login
+          localStorage.removeItem('adminAccessToken');
+        }
+      } catch (err) {
+        // Network error, clear token and stay on login
+        localStorage.removeItem('adminAccessToken');
+      }
+    }
+
+    // Check if already logged in with valid token
     function checkAuth() {
       const token = localStorage.getItem('adminAccessToken');
-      if (token) {
-        window.location.href = '/app/admin/dashboard';
+      if (!token) return; // No token, stay on login
+
+      // Parse and check expiry
+      const payload = parseAdminToken(token);
+      if (!payload || !payload.exp) {
+        localStorage.removeItem('adminAccessToken');
+        return;
       }
+
+      // Check if expired
+      if (payload.exp * 1000 < Date.now()) {
+        // Token expired, try to refresh
+        tryRefreshAndRedirect();
+        return;
+      }
+
+      // Valid token, redirect
+      window.location.href = '/app/admin/dashboard';
     }
 
     // Check on page load

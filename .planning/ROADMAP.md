@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 22: Operational Readiness** - Logging, monitoring, deployment (Audit)
 - [x] **Phase 23: Email Templates Dashboard** - Admin UI for editing email templates
 - [x] **Phase 24: Seed Data Testing** - Seed data for testing in application
-- [ ] **Phase 25: Member Self-Service Dashboard** - Full membership portal with navigation, account settings, billing details, activity timeline
+- [x] **Phase 25: Member Self-Service Dashboard** - Full membership portal with navigation, account settings, billing details, activity timeline
 
 ## Phase Details
 
@@ -484,9 +484,9 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 25-01-PLAN.md - Backend account and billing endpoints (Wave 1)
-- [ ] 25-02-PLAN.md - Token auto-refresh and admin login validation (Wave 1)
-- [ ] 25-03-PLAN.md - Member dashboard frontend with navigation, account, and billing pages (Wave 2)
+- [x] 25-01-PLAN.md - Backend account and billing endpoints (Wave 1)
+- [x] 25-02-PLAN.md - Token auto-refresh and admin login validation (Wave 1)
+- [x] 25-03-PLAN.md - Member dashboard frontend with navigation, account, and billing pages (Wave 2)
 
 ## Progress
 
@@ -519,7 +519,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 22. Operational Readiness | 4/4 | Complete | 2026-01-21 |
 | 23. Email Templates Dashboard | 2/2 | Complete | 2026-01-21 |
 | 24. Seed Data Testing | 1/1 | Complete | 2026-01-21 |
-| 25. Member Self-Service Dashboard | 0/3 | Not Started | - |
+| 25. Member Self-Service Dashboard | 3/3 | Complete | 2026-01-21 |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -573,3 +573,4 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 24 complete: 2026-01-21*
 *Phase 25 added: 2026-01-21*
 *Phase 25 planned: 2026-01-21*
+*Phase 25 complete: 2026-01-21*

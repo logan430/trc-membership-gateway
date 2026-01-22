@@ -36,6 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 22: Operational Readiness** - Logging, monitoring, deployment (Audit)
 - [x] **Phase 23: Email Templates Dashboard** - Admin UI for editing email templates
 - [x] **Phase 24: Seed Data Testing** - Seed data for testing in application
+- [ ] **Phase 25: Member Self-Service Dashboard** - Full membership portal with navigation, account settings, billing details, activity timeline
 
 ## Phase Details
 
@@ -465,6 +466,28 @@ Plans:
 Plans:
 - [x] 24-01-PLAN.md - Comprehensive seed script for all test scenarios (Wave 1)
 
+### Phase 25: Member Self-Service Dashboard
+**Goal**: Transform minimal status page into full self-managed membership portal with navigation, account settings, billing management, and session reliability
+**Depends on**: Phase 24
+**Category**: Enhancement
+**Priority**: High - Core UX improvement
+**Success Criteria** (what must be TRUE):
+  1. Dashboard has navigation header with links to Dashboard, Account, Billing sections
+  2. User can change their email address from Account settings
+  3. User can change their password from Account settings
+  4. User can view current plan, payment method (last 4 digits), and next billing date
+  5. User can view invoice/payment history
+  6. User can view activity timeline (joined, subscribed, claimed Discord, etc.)
+  7. Team owners see link to team dashboard; team members see team info
+  8. Token auto-refresh prevents session expiry during active use
+  9. Admin login validates token expiry before auto-redirect
+**Plans**: 3 plans in 2 waves
+
+Plans:
+- [ ] 25-01-PLAN.md - Backend account and billing endpoints (Wave 1)
+- [ ] 25-02-PLAN.md - Token auto-refresh and admin login validation (Wave 1)
+- [ ] 25-03-PLAN.md - Member dashboard frontend with navigation, account, and billing pages (Wave 2)
+
 ## Progress
 
 **Execution Order:**
@@ -496,6 +519,7 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 | 22. Operational Readiness | 4/4 | Complete | 2026-01-21 |
 | 23. Email Templates Dashboard | 2/2 | Complete | 2026-01-21 |
 | 24. Seed Data Testing | 1/1 | Complete | 2026-01-21 |
+| 25. Member Self-Service Dashboard | 0/3 | Not Started | - |
 
 ---
 *Roadmap created: 2025-01-18*
@@ -547,3 +571,5 @@ Phases execute in numeric order: 1 -> 2 -> ... -> 14 -> 15 -> ... -> 22
 *Phase 24 added: 2026-01-21*
 *Phase 24 planned: 2026-01-21*
 *Phase 24 complete: 2026-01-21*
+*Phase 25 added: 2026-01-21*
+*Phase 25 planned: 2026-01-21*

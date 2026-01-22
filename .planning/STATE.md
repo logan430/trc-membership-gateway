@@ -2,23 +2,20 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2025-01-18)
+See: .planning/PROJECT.md (updated 2026-01-22)
 
 **Core value:** Paid members can access the community, and we always know who everyone is.
-**Current focus:** Production Readiness - COMPLETE
+**Current focus:** v1.0 Milestone Complete - Ready for Next Milestone
 
 ## Current Position
 
-Phase: 25 of 25 (Member Self-Service Dashboard)
-Plan: 3 of 3 in current phase
-Status: **PHASE COMPLETE** - All plans complete
-Last activity: 2026-01-22 - Completed 25-03-PLAN.md (Member Dashboard Frontend)
+**Milestone:** v1.0 MVP - SHIPPED 2026-01-21
+**Status:** Milestone complete, archived to milestones/
+**Last activity:** 2026-01-22 - v1.0 milestone completion
 
-Progress v1: [##############] 100% (42/42 plans complete)
-Progress Audits: [##############] 100% (8/8 phases complete)
-Progress Enhancements: [##############] 100% (4/4 phases - ALL COMPLETE)
+**Next:** Define next milestone with `/gsd:new-milestone`
 
-**ALL ENHANCEMENTS COMPLETE**
+Progress v1.0: [##############] 100% (25 phases, 60 plans complete)
 
 ## Performance Metrics
 
@@ -64,12 +61,27 @@ Progress Enhancements: [##############] 100% (4/4 phases - ALL COMPLETE)
 
 *Updated after each plan completion*
 
+## v1.0 Milestone Summary
+
+**Delivered:** Production-ready membership gateway with dual subscription model, team management, admin system, and member portal
+
+**Key Stats:**
+- 25 phases, 60 plans executed
+- 8,947 lines of TypeScript
+- 295 files tracked
+- 3 days from start to ship (2026-01-18 → 2026-01-21)
+
+**Archives:**
+- [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) - Full phase details
+- [v1.0-REQUIREMENTS.md](milestones/v1.0-REQUIREMENTS.md) - All 45 requirements satisfied
+- [v1.0-MILESTONE-AUDIT.md](milestones/v1.0-MILESTONE-AUDIT.md) - Audit report (PASSED)
+
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+Decisions are logged in PROJECT.md Key Decisions table (15 key decisions with outcomes).
+All decisions marked ✓ Good after v1.0 milestone completion.
 
 | Phase | Decision | Rationale |
 |-------|----------|-----------|
@@ -279,37 +291,41 @@ All gaps identified by audit have been closed:
 | Phase 13 | Missing `/billing/portal` endpoint | Critical | COMPLETE |
 | Phase 14 | Admin filter parameter mismatch | Minor | COMPLETE |
 | Quick fix | Admin grant-role parameter mismatch | Minor | COMPLETE |
+| Quick fix | Missing `/app/account` and `/app/billing` routes | Critical | COMPLETE (2026-01-22) |
 
 **v1 Audit Status: PASSED (100%)**
 
-## Roadmap Evolution
+## Tracked Tech Debt (from v1.0)
 
-- 2026-01-20: Added audit phases 15-22 for production readiness
-  - Phase 15: Security Audit (Critical) - COMPLETE
-  - Phase 16: Data Integrity Audit (High) - COMPLETE
-  - Phase 17: Code Quality Audit (Medium) - COMPLETE
-  - Phase 18: Performance Audit (Medium) - COMPLETE
-  - Phase 19: Testing Coverage Audit (Medium) - COMPLETE
-  - Phase 20: Accessibility Audit (Medium) - COMPLETE
-  - Phase 21: Documentation Audit (Low) - COMPLETE
-  - Phase 22: Operational Readiness (High) - **COMPLETE**
+Items documented during milestone execution. None are production blockers.
 
-**ALL PRODUCTION READINESS AUDITS COMPLETE (2026-01-21)**
+**Testing (High Priority):**
+- 0% automated test coverage (90+ manual test cases documented)
+- Recommended: Wave 1 unit tests (10-15h) before production
 
-- 2026-01-21: Added enhancement phases 23-24
-  - Phase 23: Email Templates Dashboard - **COMPLETE** (2026-01-21)
-  - Phase 24: Seed Data Testing - **COMPLETE** (2026-01-21)
+**Accessibility (Medium Priority):**
+- 47 accessibility issues (3 critical, 21 major, 23 minor)
+- Estimated remediation: 4.5-6 hours
 
-- 2026-01-21: Added Phase 25 - Member Self-Service Dashboard
-  - Transform minimal status page into full self-managed membership portal
-  - Navigation, account settings, billing details, activity timeline, token auto-refresh
-  - **COMPLETE** (2026-01-22)
+**Dependencies (Medium Priority):**
+- 7 npm vulnerabilities in transitive dependencies
+- Monitor for upstream updates
 
-**ALL ENHANCEMENT PHASES COMPLETE (2026-01-22)**
+**Code Quality (Low Priority):**
+- 10 unused exports (script utilities, intentional)
+- 31 circular dependency chains (acceptable module patterns)
+- 6 TypeScript strict mode errors (30 min effort)
 
 ## Session Continuity
 
 Last session: 2026-01-22
-Stopped at: Completed 25-03-PLAN.md (Member Dashboard Frontend)
+Stopped at: v1.0 milestone completion
 Resume file: None
-Next: All planned phases complete. Project ready for production deployment.
+Next: `/gsd:new-milestone` to define next milestone (v1.1 or v2.0)
+
+**Recommended Next Steps:**
+1. Manual E2E testing with live Stripe/Discord services
+2. Deploy to staging environment
+3. Address critical accessibility issues (3 items, ~1h)
+4. Consider Wave 1 unit tests before production (10-15h)
+5. Define v1.1 or v2.0 requirements based on feedback

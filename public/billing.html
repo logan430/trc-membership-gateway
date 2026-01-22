@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing - The Revenue Council</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* Navigation styles */
+    .member-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      font-family: 'Cinzel', serif;
+      color: var(--cream);
+      text-decoration: none;
+      padding: 0.5rem 0;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+    }
+
+    .nav-link.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    .nav-logout {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1rem;
+      font-family: 'Cinzel', serif;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-logout:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    /* Billing page styles */
+    .billing-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-header {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .billing-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .billing-card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: var(--gold);
+    }
+
+    .billing-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .billing-row:last-child {
+      border-bottom: none;
+    }
+
+    .billing-label {
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+    }
+
+    .billing-value {
+      color: var(--cream);
+      font-weight: 600;
+    }
+
+    .billing-value.highlight {
+      color: var(--gold);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+    }
+
+    .status-badge.past_due {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+    }
+
+    .status-badge.canceled {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .card-display {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-icon {
+      font-size: 1.5rem;
+    }
+
+    .card-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-brand {
+      text-transform: capitalize;
+      color: var(--cream);
+    }
+
+    .card-number {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--gold);
+      border: none;
+      color: var(--bg-dark);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      background: var(--gold-light);
+    }
+
+    /* Invoice table */
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .invoice-table th,
+    .invoice-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .invoice-table th {
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+      font-weight: normal;
+      font-size: 0.9rem;
+    }
+
+    .invoice-table td {
+      color: var(--cream);
+    }
+
+    .invoice-link {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .invoice-link:hover {
+      text-decoration: underline;
+    }
+
+    .invoice-status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      text-transform: capitalize;
+    }
+
+    .invoice-status.paid {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+    }
+
+    .invoice-status.open {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+    }
+
+    .invoice-status.void {
+      background: rgba(156, 163, 175, 0.2);
+      color: #9ca3af;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+    }
+
+    .managed-by-team {
+      text-align: center;
+      padding: 3rem;
+    }
+
+    .managed-by-team h2 {
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .managed-by-team p {
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-subtle);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .member-nav {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .invoice-table {
+        font-size: 0.9rem;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="member-nav">
+    <div class="nav-brand">The Revenue Council</div>
+    <div class="nav-links">
+      <a href="/app/dashboard" class="nav-link">Dashboard</a>
+      <a href="/app/account" class="nav-link">Account</a>
+      <a href="/app/billing" class="nav-link active">Billing</a>
+    </div>
+    <button class="nav-logout" onclick="logout()">Logout</button>
+  </nav>
+
+  <header class="page-header">
+    <h1>Billing & Payments</h1>
+  </header>
+
+  <main class="billing-container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading billing details...</p>
+    </div>
+
+    <div id="billing-content" style="display: none;">
+      <!-- Team member view -->
+      <div id="managed-by-team" class="billing-card managed-by-team" style="display: none;">
+        <h2>Billing Managed by Team</h2>
+        <p>Your membership is part of <strong id="team-name">-</strong></p>
+        <p style="color: var(--text-muted);">Contact your team administrator for billing inquiries.</p>
+      </div>
+
+      <!-- Owner/Individual view -->
+      <div id="billing-details" style="display: none;">
+        <!-- Subscription Info -->
+        <div class="billing-card">
+          <h2>Current Subscription</h2>
+          <div class="billing-row">
+            <span class="billing-label">Plan</span>
+            <span class="billing-value" id="plan-name">-</span>
+          </div>
+          <div class="billing-row">
+            <span class="billing-label">Status</span>
+            <span id="subscription-status">-</span>
+          </div>
+          <div class="billing-row">
+            <span class="billing-label">Next Billing Date</span>
+            <span class="billing-value" id="next-billing">-</span>
+          </div>
+          <div class="billing-row" id="cancel-row" style="display: none;">
+            <span class="billing-label">Cancels At</span>
+            <span class="billing-value" style="color: #ef4444;" id="cancels-at">-</span>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="billing-card">
+          <h2>Payment Method</h2>
+          <div id="payment-method-display">
+            <div class="billing-row">
+              <div class="card-display">
+                <span class="card-icon" id="card-icon">&#128179;</span>
+                <div class="card-details">
+                  <span class="card-brand" id="card-brand">-</span>
+                  <span class="card-number" id="card-number">-</span>
+                </div>
+              </div>
+              <span class="billing-value" id="card-expiry">-</span>
+            </div>
+          </div>
+          <div id="no-payment-method" style="display: none;">
+            <p class="empty-state">No payment method on file</p>
+          </div>
+          <div style="margin-top: 1.5rem;">
+            <button class="action-button" onclick="openBillingPortal()">Manage Payment Method</button>
+          </div>
+        </div>
+
+        <!-- Invoice History -->
+        <div class="billing-card">
+          <h2>Invoice History</h2>
+          <div id="invoices-container">
+            <table class="invoice-table" id="invoice-table" style="display: none;">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Invoice</th>
+                </tr>
+              </thead>
+              <tbody id="invoice-list">
+              </tbody>
+            </table>
+            <div id="no-invoices" class="empty-state" style="display: none;">
+              No invoices yet
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p class="copyright">&copy; The Revenue Council. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Token management
+    function getAccessToken() {
+      return localStorage.getItem('accessToken');
+    }
+
+    // Token auto-refresh
+    const TOKEN_REFRESH_INTERVAL = 10 * 60 * 1000;
+
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(atob(base64));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function isTokenExpiringSoon(token) {
+      const payload = parseJwt(token);
+      if (!payload || !payload.exp) return true;
+      return (payload.exp * 1000 - Date.now()) < 2 * 60 * 1000;
+    }
+
+    async function refreshTokenIfNeeded() {
+      const token = getAccessToken();
+      if (!token || !isTokenExpiringSoon(token)) return;
+      try {
+        const response = await fetch('/auth/refresh', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const { accessToken } = await response.json();
+          localStorage.setItem('accessToken', accessToken);
+        }
+      } catch (err) {
+        console.warn('Token refresh failed:', err);
+      }
+    }
+
+    function setupTokenAutoRefresh() {
+      refreshTokenIfNeeded();
+      setInterval(refreshTokenIfNeeded, TOKEN_REFRESH_INTERVAL);
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/';
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }
+
+    // Format currency
+    function formatCurrency(amount) {
+      return '$' + amount.toFixed(2);
+    }
+
+    // Open billing portal
+    async function openBillingPortal() {
+      try {
+        const response = await fetch('/billing/portal', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getAccessToken()}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.error || 'Failed to open billing portal');
+          return;
+        }
+
+        const { portalUrl } = await response.json();
+        window.location.href = portalUrl;
+      } catch (error) {
+        alert('Failed to open billing portal. Please try again.');
+      }
+    }
+
+    // Load billing details
+    async function loadBilling() {
+      const token = getAccessToken();
+      if (!token) {
+        window.location.href = '/app/auth/login?redirect=/app/billing';
+        return;
+      }
+
+      try {
+        const response = await fetch('/billing/details', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem('accessToken');
+          window.location.href = '/app/auth/login?redirect=/app/billing';
+          return;
+        }
+
+        const data = await response.json();
+        renderBilling(data);
+      } catch (err) {
+        document.getElementById('loading').innerHTML = '<p style="color: #ef4444;">Failed to load billing details</p>';
+      }
+    }
+
+    // Render billing information
+    function renderBilling(data) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('billing-content').style.display = 'block';
+
+      // Team member view
+      if (data.managedBy === 'team') {
+        document.getElementById('managed-by-team').style.display = 'block';
+        document.getElementById('team-name').textContent = data.teamName || 'your team';
+        return;
+      }
+
+      // Owner/Individual view
+      document.getElementById('billing-details').style.display = 'block';
+
+      // Subscription info
+      if (data.subscription) {
+        document.getElementById('plan-name').textContent = data.subscription.planName || 'Subscription';
+
+        const statusSpan = document.getElementById('subscription-status');
+        const status = data.subscription.status;
+        statusSpan.innerHTML = `<span class="status-badge ${status}">${status.replace('_', ' ')}</span>`;
+
+        document.getElementById('next-billing').textContent = formatDate(data.subscription.currentPeriodEnd);
+
+        if (data.subscription.cancelAtPeriodEnd) {
+          document.getElementById('cancel-row').style.display = 'flex';
+          document.getElementById('cancels-at').textContent = formatDate(data.subscription.currentPeriodEnd);
+        }
+      } else {
+        document.getElementById('plan-name').textContent = 'No active subscription';
+        document.getElementById('subscription-status').innerHTML = '<span class="status-badge" style="background: rgba(156, 163, 175, 0.2); color: #9ca3af;">None</span>';
+        document.getElementById('next-billing').textContent = '-';
+      }
+
+      // Payment method
+      if (data.paymentMethod) {
+        document.getElementById('payment-method-display').style.display = 'block';
+        document.getElementById('no-payment-method').style.display = 'none';
+
+        const brand = data.paymentMethod.brand;
+        document.getElementById('card-brand').textContent = brand;
+        document.getElementById('card-number').textContent = '**** **** **** ' + data.paymentMethod.last4;
+        document.getElementById('card-expiry').textContent = `Expires ${data.paymentMethod.expMonth}/${data.paymentMethod.expYear}`;
+
+        // Set card icon based on brand
+        const brandIcons = {
+          visa: '&#128179;',
+          mastercard: '&#128179;',
+          amex: '&#128179;',
+          default: '&#128179;'
+        };
+        document.getElementById('card-icon').innerHTML = brandIcons[brand.toLowerCase()] || brandIcons.default;
+      } else {
+        document.getElementById('payment-method-display').style.display = 'none';
+        document.getElementById('no-payment-method').style.display = 'block';
+      }
+
+      // Invoices
+      if (data.invoices && data.invoices.length > 0) {
+        document.getElementById('invoice-table').style.display = 'table';
+        document.getElementById('no-invoices').style.display = 'none';
+
+        const invoiceList = document.getElementById('invoice-list');
+        invoiceList.innerHTML = data.invoices.map(inv => `
+          <tr>
+            <td>${formatDate(inv.date)}</td>
+            <td>${formatCurrency(inv.amount)}</td>
+            <td><span class="invoice-status ${inv.status}">${inv.status}</span></td>
+            <td>
+              ${inv.hostedUrl ? `<a href="${inv.hostedUrl}" target="_blank" class="invoice-link">View</a>` : ''}
+              ${inv.pdfUrl ? ` | <a href="${inv.pdfUrl}" target="_blank" class="invoice-link">PDF</a>` : ''}
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        document.getElementById('invoice-table').style.display = 'none';
+        document.getElementById('no-invoices').style.display = 'block';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      setupTokenAutoRefresh();
+      loadBilling();
+    });
+  </script>
+</body>
+</html>

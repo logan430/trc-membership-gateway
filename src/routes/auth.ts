@@ -21,6 +21,7 @@ import {
   fetchDiscordUser,
 } from '../auth/discord-oauth.js';
 import { hashPassword, verifyPassword } from '../lib/password.js';
+import { requireAuth, AuthenticatedRequest } from '../middleware/session.js';
 import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
@@ -38,6 +39,16 @@ const signupSchema = z.object({
 const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(1, 'Password is required'),
+});
+
+const updateEmailSchema = z.object({
+  newEmail: z.string().email('Invalid email format'),
+  currentPassword: z.string().min(1, 'Password is required'),
+});
+
+const updatePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z.string().min(8, 'Password must be at least 8 characters').max(128, 'Password too long'),
 });
 
 /**
@@ -446,4 +457,118 @@ authRouter.get('/callback', async (req: Request, res: Response): Promise<void> =
 authRouter.get('/error', (req: Request, res: Response): void => {
   const reason = req.query.reason as string | undefined;
   res.status(400).json({ error: reason ?? 'unknown_error' });
+});
+
+/**
+ * POST /auth/update-email
+ * Update authenticated member's email address
+ * Requires current password verification
+ * Updates both database and Stripe customer (if exists)
+ */
+authRouter.post('/update-email', requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const parsed = updateEmailSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0].message });
+    return;
+  }
+
+  const { newEmail, currentPassword } = parsed.data;
+
+  const member = await prisma.member.findUnique({
+    where: { id: req.memberId },
+  });
+
+  if (!member) {
+    res.status(404).json({ error: 'Member not found' });
+    return;
+  }
+
+  // Require password-based account (magic link only users cannot change email this way)
+  if (!member.passwordHash) {
+    res.status(400).json({ error: 'Password not set. Please set a password first.' });
+    return;
+  }
+
+  // Verify current password
+  const isValid = await verifyPassword(member.passwordHash, currentPassword);
+  if (!isValid) {
+    res.status(401).json({ error: 'Invalid password' });
+    return;
+  }
+
+  // Check new email not in use by another member
+  const existing = await prisma.member.findUnique({
+    where: { email: newEmail },
+  });
+  if (existing && existing.id !== member.id) {
+    res.status(409).json({ error: 'Email already in use' });
+    return;
+  }
+
+  // Update Stripe customer first (if fails, don't update DB)
+  if (member.stripeCustomerId) {
+    try {
+      await stripe.customers.update(member.stripeCustomerId, { email: newEmail });
+    } catch (stripeError) {
+      logger.error({ memberId: member.id, error: stripeError }, 'Failed to update Stripe customer email');
+      res.status(500).json({ error: 'Failed to update email' });
+      return;
+    }
+  }
+
+  // Update database
+  await prisma.member.update({
+    where: { id: member.id },
+    data: { email: newEmail },
+  });
+
+  logger.info({ memberId: member.id, oldEmail: member.email, newEmail }, 'Member email updated');
+  res.json({ success: true, email: newEmail });
+});
+
+/**
+ * POST /auth/update-password
+ * Update authenticated member's password
+ * Requires current password verification
+ */
+authRouter.post('/update-password', requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const parsed = updatePasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0].message });
+    return;
+  }
+
+  const { currentPassword, newPassword } = parsed.data;
+
+  const member = await prisma.member.findUnique({
+    where: { id: req.memberId },
+  });
+
+  if (!member) {
+    res.status(404).json({ error: 'Member not found' });
+    return;
+  }
+
+  // Magic link users without password cannot use this endpoint
+  if (!member.passwordHash) {
+    res.status(404).json({ error: 'No password set. Use magic link to set a password.' });
+    return;
+  }
+
+  // Verify current password
+  const isValid = await verifyPassword(member.passwordHash, currentPassword);
+  if (!isValid) {
+    res.status(401).json({ error: 'Invalid current password' });
+    return;
+  }
+
+  // Hash and save new password
+  const newHash = await hashPassword(newPassword);
+  await prisma.member.update({
+    where: { id: member.id },
+    data: { passwordHash: newHash },
+  });
+
+  logger.info({ memberId: member.id }, 'Member password updated');
+  res.json({ success: true });
 });

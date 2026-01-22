@@ -139,11 +139,15 @@ billingRouter.get('/details', requireAuth, async (req: AuthenticatedRequest, res
     } : null;
 
     // Build subscription info
+    // Get current_period_end from first subscription item (Stripe SDK v20+ moved it from Subscription to SubscriptionItem)
+    const firstItem = subscription?.items.data[0];
     const subscriptionInfo = subscription ? {
       status: subscription.status,
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      currentPeriodEnd: firstItem?.current_period_end
+        ? new Date(firstItem.current_period_end * 1000)
+        : null,
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
-      planName: subscription.items.data[0]?.price?.nickname || 'Subscription',
+      planName: firstItem?.price?.nickname || 'Subscription',
     } : null;
 
     // Build invoice list

@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 
 Phase: 25 of 25 (Member Self-Service Dashboard)
 Plan: 2 of 3 in current phase
-Status: **In Progress** - Plan 02 complete
-Last activity: 2026-01-22 - Completed 25-02-PLAN.md
+Status: **In Progress** - Plans 01 and 02 complete
+Last activity: 2026-01-21 - Completed 25-01-PLAN.md (Backend Account and Billing Endpoints)
 
 Progress v1: [##############] 100% (42/42 plans complete)
 Progress Audits: [##############] 100% (8/8 phases complete)
@@ -56,10 +56,10 @@ Progress Enhancements: [#############.] 93% (3/4 phases - Phase 25 in progress, 
 | 22-Operational | 4/4 | 14 min | 3.5 min |
 | 23-Email Templates | 2/2 | 7 min | 3.5 min |
 | 24-Seed Data | 1/1 | 3 min | 3 min |
-| 25-Self-Service | 2/3 | 2 min | 1 min |
+| 25-Self-Service | 2/3 | 10 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 23-01 (5 min), 23-02 (2 min), 24-01 (3 min), 25-01 (1 min), 25-02 (1 min)
+- Last 5 plans: 23-02 (2 min), 24-01 (3 min), 25-01 (8 min), 25-02 (1 min)
 - Trend: Fast execution
 
 *Updated after each plan completion*
@@ -240,6 +240,10 @@ Recent decisions affecting current work:
 | 24-01 | @test.example.com domain for test data | Easy identification and cleanup |
 | 24-01 | test_ prefix for team stripeCustomerId | Teams need alternate identifier (no email) |
 | 24-01 | Non-test admins preserved | Cleanup only affects test accounts |
+| 25-01 | Password required for email changes | Magic-link users must set password first |
+| 25-01 | Stripe-first email updates | Update Stripe, then DB - atomic failure handling |
+| 25-01 | Team members get managedBy billing response | TEAM_MEMBER seatTier gets limited billing info |
+| 25-01 | Activity timeline from member fields | Uses createdAt, updatedAt, introCompletedAt |
 | 25-02 | Token expiry check before redirect | Prevents infinite loops with expired admin tokens |
 | 25-02 | Silent refresh attempt for expired tokens | Better UX - preserves session if refresh token valid |
 
@@ -298,7 +302,7 @@ All gaps identified by audit have been closed:
 
 ## Session Continuity
 
-Last session: 2026-01-22
-Stopped at: Completed 25-02-PLAN.md (Token Auto-Refresh and Admin Login Validation)
+Last session: 2026-01-21
+Stopped at: Completed 25-01-PLAN.md (Backend Account and Billing Endpoints)
 Resume file: None
 Next: Execute 25-03-PLAN.md (Member Dashboard Enhancement)

@@ -9,6 +9,75 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
+    /* Navigation Styles */
+    .member-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      font-family: 'Cinzel', serif;
+      color: var(--cream);
+      text-decoration: none;
+      padding: 0.5rem 0;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+    }
+
+    .nav-link.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    .nav-logout {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1rem;
+      font-family: 'Cinzel', serif;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-logout:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+
+    @media (max-width: 768px) {
+      .member-nav {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 1rem;
+      }
+    }
+
     /* Dashboard Specific Styles */
     .dashboard-container {
       max-width: 800px;
@@ -297,6 +366,68 @@
       margin-left: 0.5rem;
     }
 
+    /* Timeline Section */
+    .timeline-section {
+      background: var(--bg-section);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+
+    .timeline-section h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .timeline-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .timeline-icon.joined { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+    .timeline-icon.subscribed { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+    .timeline-icon.discord_claimed { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+    .timeline-icon.introduced { background: rgba(212, 175, 55, 0.2); color: var(--gold); }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-content p {
+      margin: 0 0 0.25rem 0;
+      color: var(--cream);
+    }
+
+    .timeline-date {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-header h1 {
@@ -319,6 +450,16 @@
   </style>
 </head>
 <body>
+  <nav class="member-nav">
+    <div class="nav-brand">The Revenue Council</div>
+    <div class="nav-links">
+      <a href="/app/dashboard" class="nav-link active">Dashboard</a>
+      <a href="/app/account" class="nav-link">Account</a>
+      <a href="/app/billing" class="nav-link">Billing</a>
+    </div>
+    <button class="nav-logout" onclick="logout()">Logout</button>
+  </nav>
+
   <header class="dashboard-header">
     <h1>Your Membership</h1>
     <p class="user-email" id="user-email">Loading...</p>
@@ -365,6 +506,14 @@
         </div>
       </div>
 
+      <!-- Activity Timeline -->
+      <div class="timeline-section" id="timeline-section" style="display: none;">
+        <h3>Activity Timeline</h3>
+        <ul class="timeline-list" id="timeline-list">
+          <!-- Populated by JavaScript -->
+        </ul>
+      </div>
+
       <!-- Action Buttons -->
       <div class="action-buttons" id="action-buttons">
         <!-- Populated by JavaScript based on status -->
@@ -389,6 +538,50 @@
       return localStorage.getItem('accessToken');
     }
 
+    // Token auto-refresh
+    const TOKEN_REFRESH_INTERVAL = 10 * 60 * 1000; // 10 minutes
+    let refreshIntervalId = null;
+
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(atob(base64));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function isTokenExpiringSoon(token) {
+      const payload = parseJwt(token);
+      if (!payload || !payload.exp) return true;
+      const expiresIn = payload.exp * 1000 - Date.now();
+      return expiresIn < 2 * 60 * 1000; // Less than 2 minutes
+    }
+
+    async function refreshTokenIfNeeded() {
+      const token = getAccessToken();
+      if (!token || !isTokenExpiringSoon(token)) return;
+
+      try {
+        const response = await fetch('/auth/refresh', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const { accessToken } = await response.json();
+          localStorage.setItem('accessToken', accessToken);
+        }
+      } catch (err) {
+        console.warn('Token refresh failed:', err);
+      }
+    }
+
+    function setupTokenAutoRefresh() {
+      refreshTokenIfNeeded();
+      refreshIntervalId = setInterval(refreshTokenIfNeeded, TOKEN_REFRESH_INTERVAL);
+    }
+
     // Show error state
     function showError(message) {
       document.getElementById('loading').style.display = 'none';
@@ -411,9 +604,10 @@
     // Get tier display name
     function getTierDisplayName(tier) {
       const tierNames = {
-        INDIVIDUAL: 'Lord',
-        OWNER: 'Lord',
-        TEAM: 'Knight',
+        INDIVIDUAL: 'Individual',
+        OWNER: 'Company Owner',
+        TEAM: 'Team Member',
+        TEAM_MEMBER: 'Team Member',
       };
       return tierNames[tier] || tier;
     }
@@ -462,17 +656,20 @@
       document.getElementById('user-email').textContent = data.member.email;
 
       // Render status based on subscriptionStatus
-      renderSubscriptionStatus(data.member);
+      renderSubscriptionStatus(data.member, data.team);
 
       // Render Discord status
       renderDiscordStatus(data.member, data.claim);
 
       // Render action buttons
-      renderActionButtons(data.member, data.claim);
+      renderActionButtons(data);
+
+      // Render activity timeline
+      renderTimeline(data.timeline);
     }
 
     // Render subscription status
-    function renderSubscriptionStatus(member) {
+    function renderSubscriptionStatus(member, team) {
       const statusBadge = document.getElementById('status-badge');
       const statusDetails = document.getElementById('status-details');
       const seatTier = document.getElementById('seat-tier');
@@ -511,7 +708,12 @@
 
       // Show seat tier if applicable
       if (member.seatTier && member.subscriptionStatus === 'ACTIVE') {
-        seatTier.innerHTML = `Rank: <span class="tier-badge">${getTierDisplayName(member.seatTier)}</span>`;
+        let tierDisplay = getTierDisplayName(member.seatTier);
+        // Show team name for team members
+        if (team && member.seatTier === 'TEAM_MEMBER') {
+          tierDisplay += ' at ' + escapeHtml(team.name);
+        }
+        seatTier.innerHTML = `Rank: <span class="tier-badge">${tierDisplay}</span>`;
       } else {
         seatTier.innerHTML = '';
       }
@@ -556,7 +758,10 @@
     }
 
     // Render action buttons
-    function renderActionButtons(member, claim) {
+    function renderActionButtons(data) {
+      const member = data.member;
+      const claim = data.claim;
+      const team = data.team;
       const actionButtons = document.getElementById('action-buttons');
       const buttons = [];
 
@@ -575,8 +780,10 @@
         buttons.push(`<a href="${escapeHtml(claim.discordInviteUrl)}" target="_blank" class="action-button">Open Discord</a>`);
       }
 
-      // Logout button
-      buttons.push('<button class="action-button danger" onclick="logout()">Logout</button>');
+      // Team dashboard link for owners
+      if (team && team.isOwner) {
+        buttons.push('<a href="/app/team-dashboard" class="action-button">Team Dashboard</a>');
+      }
 
       actionButtons.innerHTML = buttons.join('');
     }
@@ -643,8 +850,38 @@
       return div.innerHTML;
     }
 
+    // Render activity timeline
+    function renderTimeline(timeline) {
+      if (!timeline || timeline.length === 0) return;
+
+      const timelineSection = document.getElementById('timeline-section');
+      const timelineList = document.getElementById('timeline-list');
+
+      const icons = {
+        joined: '&#9733;',      // star
+        subscribed: '&#10003;', // checkmark
+        discord_claimed: '&#9819;', // chess piece
+        introduced: '&#9829;'   // heart
+      };
+
+      timelineList.innerHTML = timeline.map(item => `
+        <li class="timeline-item">
+          <div class="timeline-icon ${item.type}">${icons[item.type] || '&#8226;'}</div>
+          <div class="timeline-content">
+            <p>${escapeHtml(item.description)}</p>
+            <span class="timeline-date">${formatDate(item.date)}</span>
+          </div>
+        </li>
+      `).join('');
+
+      timelineSection.style.display = 'block';
+    }
+
     // Initialize on load
-    document.addEventListener('DOMContentLoaded', loadDashboard);
+    document.addEventListener('DOMContentLoaded', () => {
+      setupTokenAutoRefresh();
+      loadDashboard();
+    });
   </script>
 </body>
 </html>

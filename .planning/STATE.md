@@ -9,23 +9,23 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 
 ## Current Position
 
-Phase: 24 of 24 (Seed Data Testing)
-Plan: 1 of 1 in current phase
-Status: **Phase Complete** - Seed Data Testing complete
-Last activity: 2026-01-21 - Completed 24-01 Comprehensive Seed Script
+Phase: 25 of 25 (Member Self-Service Dashboard)
+Plan: 2 of 3 in current phase
+Status: **In Progress** - Plan 02 complete
+Last activity: 2026-01-22 - Completed 25-02-PLAN.md
 
 Progress v1: [##############] 100% (42/42 plans complete)
 Progress Audits: [##############] 100% (8/8 phases complete)
-Progress Enhancements: [##############] 100% (3/3 plans in Phases 23-24)
+Progress Enhancements: [#############.] 93% (3/4 phases - Phase 25 in progress, 2/3 plans)
 
-**ALL PHASES COMPLETE (24/24)**
+**Next Plan:** 25-03 - Member Dashboard Enhancement
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 57
-- Average duration: 4.3 min
-- Total execution time: ~260 min
+- Total plans completed: 59
+- Average duration: 4.2 min
+- Total execution time: ~262 min
 
 **By Phase:**
 
@@ -56,9 +56,10 @@ Progress Enhancements: [##############] 100% (3/3 plans in Phases 23-24)
 | 22-Operational | 4/4 | 14 min | 3.5 min |
 | 23-Email Templates | 2/2 | 7 min | 3.5 min |
 | 24-Seed Data | 1/1 | 3 min | 3 min |
+| 25-Self-Service | 2/3 | 2 min | 1 min |
 
 **Recent Trend:**
-- Last 5 plans: 22-04 (3 min), 23-01 (5 min), 23-02 (2 min), 24-01 (3 min)
+- Last 5 plans: 23-01 (5 min), 23-02 (2 min), 24-01 (3 min), 25-01 (1 min), 25-02 (1 min)
 - Trend: Fast execution
 
 *Updated after each plan completion*
@@ -239,6 +240,8 @@ Recent decisions affecting current work:
 | 24-01 | @test.example.com domain for test data | Easy identification and cleanup |
 | 24-01 | test_ prefix for team stripeCustomerId | Teams need alternate identifier (no email) |
 | 24-01 | Non-test admins preserved | Cleanup only affects test accounts |
+| 25-02 | Token expiry check before redirect | Prevents infinite loops with expired admin tokens |
+| 25-02 | Silent refresh attempt for expired tokens | Better UX - preserves session if refresh token valid |
 
 ### Pending Todos
 
@@ -289,11 +292,13 @@ All gaps identified by audit have been closed:
   - Phase 23: Email Templates Dashboard - **COMPLETE** (2026-01-21)
   - Phase 24: Seed Data Testing - **COMPLETE** (2026-01-21)
 
-**ALL 24 PHASES COMPLETE**
+- 2026-01-21: Added Phase 25 - Member Self-Service Dashboard
+  - Transform minimal status page into full self-managed membership portal
+  - Navigation, account settings, billing details, activity timeline, token auto-refresh
 
 ## Session Continuity
 
-Last session: 2026-01-21
-Stopped at: Completed 24-01 Comprehensive Seed Script
+Last session: 2026-01-22
+Stopped at: Completed 25-02-PLAN.md (Token Auto-Refresh and Admin Login Validation)
 Resume file: None
-Next: All phases complete - ready for production deployment
+Next: Execute 25-03-PLAN.md (Member Dashboard Enhancement)

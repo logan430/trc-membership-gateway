@@ -6,6 +6,7 @@ import { logger } from '../../index.js';
 import { prisma } from '../../lib/prisma.js';
 import { ROLE_CONFIG } from '../../config/discord.js';
 import { swapRoleAsync } from '../../lib/role-assignment.js';
+import { awardIntroPoints } from '../../points/service.js';
 
 /** Minimum character count for a valid introduction */
 export const MIN_INTRO_LENGTH = 100;
@@ -184,6 +185,15 @@ async function promoteAfterIntro(
       introMessageId: messageId,
     },
   });
+
+  // Award intro points (idempotent - safe if somehow called multiple times)
+  const pointsResult = await awardIntroPoints(member.id);
+  if (pointsResult.awarded) {
+    logger.debug(
+      { memberId: member.id, points: pointsResult.points },
+      'Intro points awarded'
+    );
+  }
 
   // Send welcome DM
   await sendWelcomeDM(guildMember.user, targetRole);

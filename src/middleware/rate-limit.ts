@@ -47,3 +47,23 @@ export const adminAuthLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+/**
+ * Rate limiter for file uploads
+ * SEC-07: 5 files per hour per admin
+ *
+ * Note: This limiter should be applied AFTER requireAdmin middleware
+ * so res.locals.admin is populated for the key generator.
+ */
+export const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // 5 files per hour per admin
+  message: { error: 'Upload limit reached. You can upload up to 5 files per hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req, res) => {
+    // Key by admin ID from authenticated session (set by requireAdmin middleware)
+    const adminId = res.locals?.admin?.id || req.ip || 'anonymous';
+    return `upload:${adminId}`;
+  },
+});

@@ -45,6 +45,13 @@ Plans:
 
 **Requirements:** GAME-01, GAME-02, GAME-03, GAME-04, GAME-05, GAME-06, GAME-07, GAME-08
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — Create PointConfig schema, config service with caching, admin API
+- [ ] 27-02-PLAN.md — Create idempotent points service layer, integrate intro points
+- [ ] 27-03-PLAN.md — Create member and admin points API endpoints
+
 **Success Criteria:**
 1. Member earns +50 points for benchmark submission, +5 for resource download, +1 per 100 Discord XP, +25 for introduction completion
 2. Member can view point history showing all transactions with timestamps and reasons
@@ -160,8 +167,8 @@ Plans:
 
 | Phase | Status | Plans | Complete |
 |-------|--------|-------|----------|
-| 26 - Database Schema Extension | ✓ Complete | 3 | 10/10 requirements |
-| 27 - Points System Backend | Pending | 0 | 0/8 requirements |
+| 26 - Database Schema Extension | Complete | 3 | 10/10 requirements |
+| 27 - Points System Backend | Planned | 3 | 0/8 requirements |
 | 28 - Benchmarking System | Pending | 0 | 0/15 requirements |
 | 29 - Resource Library & File Storage | Pending | 0 | 0/22 requirements |
 | 30 - MEE6 Discord Integration | Pending | 0 | 0/11 requirements |
@@ -174,4 +181,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-22 (Phase 26 complete)*
+*Last updated: 2026-01-23 (Phase 27 planned)*

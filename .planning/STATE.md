@@ -27,17 +27,18 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 26 - Database Schema Extension (COMPLETE)
-**Current Plan:** 3 of 3 complete
-**Status:** Phase complete - ready for Phase 27
+**Current Phase:** 27 - Points System Backend
+**Current Plan:** 1 of 3 complete
+**Status:** In progress
 
 **Phase Goal:**
-Extend production database with new tables for v2.0 features using zero-downtime migrations.
+Build points system backend with configurable values, transaction recording, and public API endpoints.
 
 **Progress:**
 ```
 Phase 26: [████████████████████] 3/3 plans (Complete!)
-v2.0:     [███░░░░░░░░░░░░░░░░░] 3/~16 plans
+Phase 27: [███████░░░░░░░░░░░░░] 1/3 plans
+v2.0:     [████░░░░░░░░░░░░░░░░] 4/~16 plans
 ```
 
 ---
@@ -47,7 +48,7 @@ v2.0:     [███░░░░░░░░░░░░░░░░░] 3/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: 10 requirements (10%) - Phase 26 complete
+- Completed: ~12 requirements (12%) - Phase 26 + 27-01 complete
 - In progress: 0
 - Blocked: 0
 
@@ -55,6 +56,7 @@ v2.0:     [███░░░░░░░░░░░░░░░░░] 3/~16 p
 - v1.0 shipped: 25 phases, 60 plans, 114 commits (Oct 2025 - Jan 2026)
 - v2.0 started: 2026-01-22
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
+- Plan 27-01 completed: 2026-01-23 (6 minutes)
 
 ---
 
@@ -76,6 +78,8 @@ v2.0:     [███░░░░░░░░░░░░░░░░░] 3/~16 p
 | Single-statement index migrations | Prisma skips transaction, enables CONCURRENTLY | 26-02 |
 | AFTER INSERT trigger timing | Ensures PointTransaction committed before Member update | 26-03 |
 | lastActiveAt only for positive points | Admin deductions shouldn't count as member activity | 26-03 |
+| FeatureFlag caching pattern for PointConfig | Consistent with existing patterns, 60s TTL | 27-01 |
+| admin_adjustment not configurable | Admin adjustments use arbitrary values, not config | 27-01 |
 
 ### Research Insights
 
@@ -106,11 +110,13 @@ v2.0:     [███░░░░░░░░░░░░░░░░░] 3/~16 p
 - [x] Write zero-downtime migration scripts (Plan 02)
 - [x] Create points trigger and verify schema (Plan 03)
 - [x] Apply migrations to database
-- [ ] Plan Phase 27: Benchmarking APIs
+- [x] Create PointConfig model and admin API (Plan 27-01)
+- [ ] Build point transaction service (Plan 27-02)
+- [ ] Create public points API endpoints (Plan 27-03)
 
 ### Known Blockers
 
-None - ready for Phase 27.
+None - continuing Phase 27.
 
 ### Questions for User
 
@@ -123,26 +129,26 @@ None - ready for Phase 27.
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 26-03: Trigger creation and schema verification
-- Created points trigger migration (20260123015834_add_points_trigger)
-- Applied all 20 migrations to database
-- Created verification scripts (verify-v2-schema.ts, test-points-trigger.ts, test-gin-index.ts)
-- All 10 DB requirements verified passing
-- Commits: a0d1242, 2df4335
+- Completed Plan 27-01: Point Configuration Model and Admin API
+- Created PointConfig model with migration
+- Built config service with 60s caching (matches FeatureFlag pattern)
+- Created admin API for GET/PUT/POST point configs
+- Seeded 4 default point configs on startup
+- Commits: 08dd86f, 4f2e8ef, b9a1b1c
 
-**Next session:** Phase 27
-- Research benchmarking API patterns
-- Create plan for benchmark submission endpoints
-- Build k-anonymity aggregation for reports
+**Next session:** Continue Phase 27
+- Plan 27-02: Point transaction service
+- Plan 27-03: Public points API endpoints
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
 - Research findings (stack choices, architecture patterns, critical pitfalls)
 - Phase dependencies (backend -> frontend, points system -> gamification)
-- Migration files at: prisma/migrations/0_init/ through 20260123015834_add_points_trigger/
-- Verification scripts at: scripts/verify-v2-schema.ts, scripts/test-points-trigger.ts, scripts/test-gin-index.ts
+- Migration files at: prisma/migrations/0_init/ through 20260123044437_add_point_config/
+- Point system files at: src/points/types.ts, src/points/config.ts
+- Admin API at: src/routes/admin/points-config.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 26-03-PLAN.md (Phase 26 complete)*
+*Last updated: 2026-01-23 - Completed 27-01-PLAN.md*

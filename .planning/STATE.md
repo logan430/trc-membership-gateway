@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 27 - Points System Backend
-**Current Plan:** 1 of 3 complete
+**Current Plan:** 2 of 3 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -37,8 +37,8 @@ Build points system backend with configurable values, transaction recording, and
 **Progress:**
 ```
 Phase 26: [████████████████████] 3/3 plans (Complete!)
-Phase 27: [███████░░░░░░░░░░░░░] 1/3 plans
-v2.0:     [████░░░░░░░░░░░░░░░░] 4/~16 plans
+Phase 27: [█████████████░░░░░░░] 2/3 plans
+v2.0:     [█████░░░░░░░░░░░░░░░] 5/~16 plans
 ```
 
 ---
@@ -48,7 +48,7 @@ v2.0:     [████░░░░░░░░░░░░░░░░] 4/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~12 requirements (12%) - Phase 26 + 27-01 complete
+- Completed: ~15 requirements (15%) - Phase 26 + 27-01/02 complete
 - In progress: 0
 - Blocked: 0
 
@@ -57,6 +57,7 @@ v2.0:     [████░░░░░░░░░░░░░░░░] 4/~16 p
 - v2.0 started: 2026-01-22
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
 - Plan 27-01 completed: 2026-01-23 (6 minutes)
+- Plan 27-02 completed: 2026-01-23 (7 minutes)
 
 ---
 
@@ -80,6 +81,8 @@ v2.0:     [████░░░░░░░░░░░░░░░░] 4/~16 p
 | lastActiveAt only for positive points | Admin deductions shouldn't count as member activity | 26-03 |
 | FeatureFlag caching pattern for PointConfig | Consistent with existing patterns, 60s TTL | 27-01 |
 | admin_adjustment not configurable | Admin adjustments use arbitrary values, not config | 27-01 |
+| Metadata-based idempotency | JSONB path queries for flexible duplicate detection | 27-02 |
+| Fire-and-forget DM for admin adjustments | Consistent with existing patterns, DM failure non-blocking | 27-02 |
 
 ### Research Insights
 
@@ -111,7 +114,7 @@ v2.0:     [████░░░░░░░░░░░░░░░░] 4/~16 p
 - [x] Create points trigger and verify schema (Plan 03)
 - [x] Apply migrations to database
 - [x] Create PointConfig model and admin API (Plan 27-01)
-- [ ] Build point transaction service (Plan 27-02)
+- [x] Build point transaction service (Plan 27-02)
 - [ ] Create public points API endpoints (Plan 27-03)
 
 ### Known Blockers
@@ -129,15 +132,13 @@ None - continuing Phase 27.
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 27-01: Point Configuration Model and Admin API
-- Created PointConfig model with migration
-- Built config service with 60s caching (matches FeatureFlag pattern)
-- Created admin API for GET/PUT/POST point configs
-- Seeded 4 default point configs on startup
-- Commits: 08dd86f, 4f2e8ef, b9a1b1c
+- Completed Plan 27-02: Point Transaction Service
+- Created idempotent points service with 5 award functions
+- Added POINTS_ADJUSTED audit action
+- Integrated intro points into introduction handler
+- Commits: 138155f, 7edd331, 5146aea
 
 **Next session:** Continue Phase 27
-- Plan 27-02: Point transaction service
 - Plan 27-03: Public points API endpoints
 
 **Context preserved:**
@@ -145,10 +146,10 @@ None - continuing Phase 27.
 - Research findings (stack choices, architecture patterns, critical pitfalls)
 - Phase dependencies (backend -> frontend, points system -> gamification)
 - Migration files at: prisma/migrations/0_init/ through 20260123044437_add_point_config/
-- Point system files at: src/points/types.ts, src/points/config.ts
+- Point system files at: src/points/types.ts, src/points/config.ts, src/points/service.ts
 - Admin API at: src/routes/admin/points-config.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 27-01-PLAN.md*
+*Last updated: 2026-01-23 - Completed 27-02-PLAN.md*

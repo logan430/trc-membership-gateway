@@ -27,12 +27,12 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 29 - Resource Library
-**Current Plan:** 4 of 4 complete
-**Status:** Phase complete
+**Current Phase:** 30 - MEE6 Discord Integration
+**Current Plan:** 1 of 4 complete
+**Status:** In progress
 
 **Phase Goal:**
-Build admin-curated file library with secure storage, file validation, and member download tracking.
+Background synchronization of Discord activity (via MEE6 XP) into the points system, plus streak tracking for engagement consistency.
 
 **Progress:**
 ```
@@ -40,7 +40,8 @@ Phase 26: [####################] 3/3 plans (Complete!)
 Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
-v2.0:     [################....] 13/~17 plans
+Phase 30: [#####...............] 1/4 plans
+v2.0:     [################....] 14/~17 plans
 ```
 
 ---
@@ -108,6 +109,9 @@ v2.0:     [################....] 13/~17 plans
 | Static routes before :id routes | Express route ordering for /analytics, /tags, /recommended | 29-04 |
 | Metadata in JSON form field | Atomic upload with file + metadata in single multipart request | 29-04 |
 | Download returns URL not stream | POST /download returns signed URL; client handles redirect | 29-04 |
+| MEE6 401 as AbortError | Leaderboard not public is config issue, not transient | 30-01 |
+| 2-second delay between page fetches | Conservative rate limiting for unofficial API | 30-01 |
+| MEE6_SYNC_ENABLED default false | Master toggle off by default until explicitly enabled | 30-01 |
 
 ### Research Insights
 
@@ -156,10 +160,11 @@ v2.0:     [################....] 13/~17 plans
 - [x] Build storage service layer (Plan 29-02)
 - [x] Create resource service layer (Plan 29-03)
 - [x] Create resource API endpoints (Plan 29-04)
+- [x] Create MEE6 API client module (Plan 30-01)
 
 ### Known Blockers
 
-None - Phase 29 (Resource Library) complete. Ready for Phase 30 (Gamification).
+None - Plan 30-01 complete. Ready for Plan 30-02 (MEE6 sync job).
 
 ### Questions for User
 
@@ -172,15 +177,16 @@ None - Phase 29 (Resource Library) complete. Ready for Phase 30 (Gamification).
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 29-04: Resource API Endpoints (Phase 29 complete!)
-- Created admin resource API routes at src/routes/admin/resources.ts
-- Created member resource API routes at src/routes/resources.ts
-- Mounted routes in src/index.ts
-- Commits: f5ccec4, e44ba36, 6bb9050
+- Completed Plan 30-01: MEE6 API Client
+- Created MEE6 types and Zod schemas at src/mee6/types.ts
+- Created MEE6 API client with p-retry at src/mee6/client.ts
+- Added MEE6_SYNC_ENABLED and MEE6_GUILD_ID to env.ts
+- Commits: 3c37bad, 0f27110, dfe44a9, 297724e
 
-**Next session:** Phase 30 - Gamification System
-- Badges, achievements, leaderboards
-- Points integration with gamification events
+**Next session:** Plan 30-02 - MEE6 Sync Job
+- Background job to sync XP data every 15 minutes
+- XP-to-points conversion with delta tracking
+- Alert admin after 3+ consecutive failures
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -198,8 +204,9 @@ None - Phase 29 (Resource Library) complete. Ready for Phase 30 (Gamification).
 - Resource types at: src/resources/types.ts
 - Resource service at: src/resources/service.ts
 - Resource API at: src/routes/resources.ts, src/routes/admin/resources.ts
+- MEE6 client at: src/mee6/types.ts, src/mee6/client.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 29-04-PLAN.md (Phase 29 complete!)*
+*Last updated: 2026-01-23 - Completed 30-01-PLAN.md*

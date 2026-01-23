@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 28 - Benchmarking System
-**Current Plan:** 1 of 3 complete
+**Current Plan:** 2 of 3 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -38,8 +38,8 @@ Build benchmarking backend with types, validation, service layer, and API endpoi
 ```
 Phase 26: [████████████████████] 3/3 plans (Complete!)
 Phase 27: [████████████████████] 3/3 plans (Complete!)
-Phase 28: [███████░░░░░░░░░░░░░] 1/3 plans (In progress)
-v2.0:     [████████░░░░░░░░░░░░] 7/~16 plans
+Phase 28: [█████████████░░░░░░░] 2/3 plans (In progress)
+v2.0:     [█████████░░░░░░░░░░░] 8/~16 plans
 ```
 
 ---
@@ -49,7 +49,7 @@ v2.0:     [████████░░░░░░░░░░░░] 7/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~20 requirements (20%) - Phases 26-27 + 28-01 complete
+- Completed: ~25 requirements (25%) - Phases 26-27 + 28-01/02 complete
 - In progress: Phase 28
 - Blocked: 0
 
@@ -59,6 +59,7 @@ v2.0:     [████████░░░░░░░░░░░░] 7/~16 p
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
 - Phase 27 completed: 2026-01-23 (3 plans, ~18 minutes total)
 - Plan 28-01 completed: 2026-01-23 (~3 minutes)
+- Plan 28-02 completed: 2026-01-23 (~5 minutes)
 
 ---
 
@@ -88,6 +89,9 @@ v2.0:     [████████░░░░░░░░░░░░] 7/~16 p
 | Points summary floors at zero for display | Negative total possible but shows as 0 to member | 27-03 |
 | Zod schemas per category | API-layer validation before database write | 28-01 |
 | K_ANONYMITY_THRESHOLD = 5 | Per BENCH-06 requirement, hide results until 5+ submissions | 28-01 |
+| PostgreSQL percentile_cont() for aggregates | Native DB aggregate functions for accuracy and performance | 28-02 |
+| Segment filtering via BUSINESS category | Cross-category filtering without Member schema changes | 28-02 |
+| 3-sigma outlier detection | Flag values > 3 stddev from median as potential outliers | 28-02 |
 
 ### Research Insights
 
@@ -122,12 +126,12 @@ v2.0:     [████████░░░░░░░░░░░░] 7/~16 p
 - [x] Build point transaction service (Plan 27-02)
 - [x] Create public points API endpoints (Plan 27-03)
 - [x] Create benchmark types and schemas (Plan 28-01)
-- [ ] Build benchmark service layer (Plan 28-02)
+- [x] Build benchmark service layer (Plan 28-02)
 - [ ] Create benchmark API endpoints (Plan 28-03)
 
 ### Known Blockers
 
-None - Plan 28-01 complete, ready for 28-02.
+None - Plan 28-02 complete, ready for 28-03.
 
 ### Questions for User
 
@@ -140,15 +144,15 @@ None - Plan 28-01 complete, ready for 28-02.
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 28-01: Benchmark Types and Schemas
-- Created TypeScript interfaces for 4 categories
-- Created Zod validation schemas with percentage constraints
-- Exported K_ANONYMITY_THRESHOLD = 5 constant
-- Commits: 1bd493b, c15cd63
+- Completed Plan 28-02: Benchmark Service Layer
+- Created src/benchmarks/service.ts with 424 lines
+- Implemented submitBenchmark, getMySubmissions, getAggregates, detectOutliers
+- Added segment filtering with cross-category BUSINESS matching
+- Commit: 43525fa
 
-**Next session:** Plan 28-02 - Benchmark Service
-- Build service layer for submit, update, and aggregate calculations
-- Integrate with points system for +50 points on submission
+**Next session:** Plan 28-03 - Benchmark API
+- Create Express routes for benchmark submission and retrieval
+- Mount routes on /api/benchmarks with member auth
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -159,8 +163,9 @@ None - Plan 28-01 complete, ready for 28-02.
 - Points API at: src/routes/points.ts, src/routes/admin/points.ts
 - Admin config API at: src/routes/admin/points-config.ts
 - Benchmark types at: src/benchmarks/types.ts, src/benchmarks/schemas.ts
+- Benchmark service at: src/benchmarks/service.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 28-01-PLAN.md*
+*Last updated: 2026-01-23 - Completed 28-02-PLAN.md*

@@ -28,8 +28,8 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 29 - Resource Library
-**Current Plan:** 3 of 4 complete
-**Status:** In progress
+**Current Plan:** 4 of 4 complete
+**Status:** Phase complete
 
 **Phase Goal:**
 Build admin-curated file library with secure storage, file validation, and member download tracking.
@@ -39,8 +39,8 @@ Build admin-curated file library with secure storage, file validation, and membe
 Phase 26: [####################] 3/3 plans (Complete!)
 Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
-Phase 29: [################....] 3/4 plans (In Progress)
-v2.0:     [#############.......] 12/~17 plans
+Phase 29: [####################] 4/4 plans (Complete!)
+v2.0:     [################....] 13/~17 plans
 ```
 
 ---
@@ -50,8 +50,8 @@ v2.0:     [#############.......] 12/~17 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: 45 requirements (~45%) - Phases 26-28 complete, 29-01, 29-02, 29-03 complete
-- In progress: Phase 29 (Resource Library)
+- Completed: ~50 requirements (~50%) - Phases 26-29 complete
+- In progress: None (Phase 29 complete)
 - Blocked: 0
 
 **Recent velocity:**
@@ -60,9 +60,7 @@ v2.0:     [#############.......] 12/~17 plans
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
 - Phase 27 completed: 2026-01-23 (3 plans, ~18 minutes total)
 - Phase 28 completed: 2026-01-23 (3 plans, ~14 minutes total)
-- Plan 29-01 completed: 2026-01-23 (7 minutes)
-- Plan 29-02 completed: 2026-01-23 (8 minutes)
-- Plan 29-03 completed: 2026-01-23 (3 minutes)
+- Phase 29 completed: 2026-01-23 (4 plans, ~23 minutes total)
 
 ---
 
@@ -107,6 +105,9 @@ v2.0:     [#############.......] 12/~17 plans
 | MAX_VERSIONS_TO_KEEP = 5 | Version retention limit, auto-prune older versions | 29-03 |
 | Featured-first sorting | Member listings sort featured DESC before createdAt DESC | 29-03 |
 | Top 3 tags from last 10 downloads | Recommendations engine tag frequency calculation | 29-03 |
+| Static routes before :id routes | Express route ordering for /analytics, /tags, /recommended | 29-04 |
+| Metadata in JSON form field | Atomic upload with file + metadata in single multipart request | 29-04 |
+| Download returns URL not stream | POST /download returns signed URL; client handles redirect | 29-04 |
 
 ### Research Insights
 
@@ -154,11 +155,11 @@ v2.0:     [#############.......] 12/~17 plans
 - [x] Create file validation service (Plan 29-01)
 - [x] Build storage service layer (Plan 29-02)
 - [x] Create resource service layer (Plan 29-03)
-- [ ] Create resource API endpoints (Plan 29-04)
+- [x] Create resource API endpoints (Plan 29-04)
 
 ### Known Blockers
 
-None - Plan 29-03 complete, ready for Plan 29-04 (Resource API Endpoints).
+None - Phase 29 (Resource Library) complete. Ready for Phase 30 (Gamification).
 
 ### Questions for User
 
@@ -171,16 +172,15 @@ None - Plan 29-03 complete, ready for Plan 29-04 (Resource API Endpoints).
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 29-03: Resource Service Layer
-- Added resource audit actions to src/lib/audit.ts (RESOURCE_CREATED, RESOURCE_UPDATED, etc.)
-- Created src/resources/service.ts with complete CRUD, versioning, analytics, recommendations
-- Commits: 1f025f6, b8d2b49
+- Completed Plan 29-04: Resource API Endpoints (Phase 29 complete!)
+- Created admin resource API routes at src/routes/admin/resources.ts
+- Created member resource API routes at src/routes/resources.ts
+- Mounted routes in src/index.ts
+- Commits: f5ccec4, e44ba36, 6bb9050
 
-**Next session:** Plan 29-04 - Resource API Endpoints
-- Create admin CRUD routes for resources
-- Create member browse/download routes
-- Implement download tracking
-- Wire up service layer to API routes
+**Next session:** Phase 30 - Gamification System
+- Badges, achievements, leaderboards
+- Points integration with gamification events
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -197,8 +197,9 @@ None - Plan 29-03 complete, ready for Plan 29-04 (Resource API Endpoints).
 - Storage services at: src/storage/upload.ts, src/storage/download.ts, src/storage/malware-scan.ts
 - Resource types at: src/resources/types.ts
 - Resource service at: src/resources/service.ts
+- Resource API at: src/routes/resources.ts, src/routes/admin/resources.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 29-03-PLAN.md*
+*Last updated: 2026-01-23 - Completed 29-04-PLAN.md (Phase 29 complete!)*

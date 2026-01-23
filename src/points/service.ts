@@ -198,6 +198,9 @@ export async function awardIntroPoints(memberId: string): Promise<AwardResult> {
  * Award points for Discord activity
  * Points calculated as: floor(xpDelta / 100) * pointValue
  * Idempotency via syncId to prevent duplicate sync processing
+ *
+ * Per CONTEXT.md: Deduct points proportionally when XP decreases
+ * (admin removes XP = member loses points)
  */
 export async function awardDiscordPoints(
   memberId: string,
@@ -214,11 +217,19 @@ export async function awardDiscordPoints(
   const pointsPerUnit = await getPointValue(PointAction.DISCORD_ACTIVITY);
 
   // Calculate points: floor(xpDelta / 100) * pointValue
-  const units = Math.floor(xpDelta / 100);
-  const points = units * pointsPerUnit;
+  // For negative deltas: floor(|xpDelta| / 100) * pointsPerUnit * -1
+  let points: number;
+  if (xpDelta >= 0) {
+    const units = Math.floor(xpDelta / 100);
+    points = units * pointsPerUnit;
+  } else {
+    // Negative delta: calculate deduction
+    const units = Math.floor(Math.abs(xpDelta) / 100);
+    points = units * pointsPerUnit * -1;
+  }
 
-  // If calculated points <= 0, return early (no award for small deltas)
-  if (points <= 0) {
+  // If calculated points == 0, return early (delta too small for any points)
+  if (points === 0) {
     logger.debug(
       { memberId, xpDelta, syncId, points },
       'Discord XP delta too small for points'
@@ -265,10 +276,18 @@ export async function awardDiscordPoints(
     },
   });
 
-  logger.info(
-    { memberId, xpDelta, syncId, points },
-    'Discord activity points awarded'
-  );
+  // Log appropriately based on positive or negative points
+  if (points > 0) {
+    logger.info(
+      { memberId, xpDelta, syncId, points },
+      'Discord activity points awarded'
+    );
+  } else {
+    logger.info(
+      { memberId, xpDelta, syncId, points },
+      'Discord activity points deducted (XP decreased)'
+    );
+  }
 
   return { awarded: true, points };
 }

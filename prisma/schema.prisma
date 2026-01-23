@@ -44,12 +44,10 @@ enum BenchmarkCategory {
   OPERATIONAL
 }
 
-enum ResourceCategory {
-  COLD_EMAIL
-  SALES_GTM
-  CUSTOMER_SERVICE
-  OPERATIONS
-  AGENCY_GROWTH
+enum ResourceStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
 }
 
 enum ResourceType {
@@ -314,25 +312,62 @@ model BenchmarkSubmission {
   @@index([data(ops: JsonbPathOps)], type: Gin) // DB-08: GIN index for JSONB queries
 }
 
+// DB-02: ResourceTag (admin-managed tag list)
+model ResourceTag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  createdBy String? // Admin ID who created the tag
+
+  @@index([name])
+}
+
 // DB-02: Resource
 model Resource {
-  id            String           @id @default(cuid())
-  title         String
-  description   String
-  category      ResourceCategory
-  type          ResourceType
-  fileUrl       String // Supabase Storage path
-  thumbnailUrl  String?
-  isFeatured    Boolean          @default(false)
-  downloadCount Int              @default(0) // Denormalized for fast sorting
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  id             String         @id @default(cuid())
+  title          String
+  description    String
+  type           ResourceType
+  tags           String[]       @default([]) // Flat tags array
+  status         ResourceStatus @default(DRAFT)
+  publishAt      DateTime? // For scheduled publishing
+  storagePath    String? // Supabase Storage path (not URL)
+  thumbnailUrl   String?
+  isFeatured     Boolean        @default(false)
+  downloadCount  Int            @default(0) // Denormalized for fast sorting
+  uploadedBy     String? // Admin ID who uploaded (internal tracking)
+  author         String? // Public attribution
+  fileSize       Int?
+  mimeType       String?
+  deletedAt      DateTime? // Soft delete
+  currentVersion Int            @default(1)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   downloads ResourceDownload[]
+  versions  ResourceVersion[]
 
-  @@index([category])
   @@index([type])
   @@index([isFeatured])
+  @@index([status])
+  @@index([tags], type: Gin) // GIN index for fast array queries
+}
+
+// DB-02: ResourceVersion (version history)
+model ResourceVersion {
+  id          String   @id @default(cuid())
+  resourceId  String
+  version     Int
+  storagePath String
+  fileSize    Int?
+  changelog   String? // Optional version notes
+  uploadedBy  String
+  createdAt   DateTime @default(now())
+
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([resourceId, version])
+  @@index([resourceId])
 }
 
 // DB-03: ResourceDownload

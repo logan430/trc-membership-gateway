@@ -21,6 +21,13 @@ Transform The Revenue Council from access gateway to intelligence platform by ad
 
 **Requirements:** DB-01, DB-02, DB-03, DB-04, DB-05, DB-06, DB-07, DB-08, DB-09, DB-10
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 26-01-PLAN.md — Define v2.0 schema and initialize migrations
+- [ ] 26-02-PLAN.md — Edit migrations for zero-downtime patterns
+- [ ] 26-03-PLAN.md — Create trigger, run migrations, verify schema
+
 **Success Criteria:**
 1. BenchmarkSubmission table stores flexible JSONB data for 4 benchmark categories (compensation, infrastructure, business, operational)
 2. Resource and ResourceDownload tables track file metadata and download events
@@ -153,7 +160,7 @@ Transform The Revenue Council from access gateway to intelligence platform by ad
 
 | Phase | Status | Plans | Complete |
 |-------|--------|-------|----------|
-| 26 - Database Schema Extension | Pending | 0 | 0/10 requirements |
+| 26 - Database Schema Extension | Planned | 3 | 0/10 requirements |
 | 27 - Points System Backend | Pending | 0 | 0/8 requirements |
 | 28 - Benchmarking System | Pending | 0 | 0/15 requirements |
 | 29 - Resource Library & File Storage | Pending | 0 | 0/22 requirements |
@@ -167,4 +174,4 @@ Transform The Revenue Council from access gateway to intelligence platform by ad
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-22 (initial creation)*
+*Last updated: 2026-01-22 (Phase 26 planned)*

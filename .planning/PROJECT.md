@@ -27,7 +27,22 @@ A Stripe-backed membership gateway that controls access to The Revenue Council D
 
 ### Active
 
-(None - milestone complete, define new requirements for next milestone)
+**Current Milestone: v2.0 Community Intelligence Platform**
+
+**Goal:** Transform from access gateway to intelligence platform by adding benchmarking, resource library, and gamification - giving admins actionable industry data while increasing member engagement and retention.
+
+**Target features:**
+- Anonymous peer benchmarking across 4 categories (compensation, infrastructure, business, operational)
+- Curated resource library with download tracking (templates, SOPs, playbooks, courses, videos)
+- Gamification system with points and leaderboard (benchmark submissions, resource downloads, Discord activity)
+- Admin analytics dashboard for industry insights and member patterns
+- Enhanced member dashboard with React-based UI (port from Chris's Next.js app)
+
+**Success criteria:**
+- 50%+ benchmark participation rate (rich industry data collected)
+- Admin dashboard reveals actionable patterns for community decisions
+- Active resource engagement (members download and use library content)
+- Measurable retention improvement (decreased churn via engagement features)
 
 ### Out of Scope
 
@@ -95,4 +110,4 @@ Members are typically referred or driven via ads/social media. The Discord doesn
 | Seed data for testing | Comprehensive test scenarios | ✓ Good - Fast development iteration |
 
 ---
-*Last updated: 2026-01-22 after v1.0 milestone completion*
+*Last updated: 2026-01-22 after v2.0 milestone initialization*

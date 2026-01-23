@@ -247,12 +247,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RES-13 | Phase 29 | Complete |
 | RES-14 | Phase 29 | Complete |
 | RES-15 | Phase 29 | Complete |
-| DISCORD-01 | Phase 30 | Pending |
-| DISCORD-02 | Phase 30 | Pending |
-| DISCORD-03 | Phase 30 | Pending |
-| DISCORD-04 | Phase 30 | Pending |
-| DISCORD-05 | Phase 30 | Pending |
-| DISCORD-06 | Phase 30 | Pending |
+| DISCORD-01 | Phase 30 | Complete |
+| DISCORD-02 | Phase 30 | Complete |
+| DISCORD-03 | Phase 30 | Complete |
+| DISCORD-04 | Phase 30 | Complete |
+| DISCORD-05 | Phase 30 | Complete |
+| DISCORD-06 | Phase 30 | Deferred (no backfill by design) |
 | UI-01 | Phase 32 | Pending |
 | UI-02 | Phase 32 | Pending |
 | UI-03 | Phase 32 | Pending |
@@ -284,11 +284,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-05 | Phase 29 | Complete |
 | SEC-06 | Phase 29 | Complete |
 | SEC-07 | Phase 29 | Complete |
-| JOBS-01 | Phase 30 | Pending |
-| JOBS-02 | Phase 30 | Pending |
-| JOBS-03 | Phase 30 | Pending |
-| JOBS-04 | Phase 30 | Pending |
-| JOBS-05 | Phase 30 | Pending |
+| JOBS-01 | Phase 30 | Complete |
+| JOBS-02 | Phase 30 | Complete |
+| JOBS-03 | Phase 32 | Pending |
+| JOBS-04 | Phase 30 | Complete |
+| JOBS-05 | Phase 30 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 101 total
@@ -297,4 +297,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-23 after Phase 29 completion*
+*Last updated: 2026-01-23 after Phase 30 completion*

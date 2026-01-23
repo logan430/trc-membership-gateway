@@ -69,6 +69,13 @@ Plans:
 
 **Requirements:** BENCH-01, BENCH-02, BENCH-03, BENCH-04, BENCH-05, BENCH-06, BENCH-07, BENCH-08, BENCH-09, BENCH-10, BENCH-11, BENCH-12, BENCH-13, BENCH-14, BENCH-15
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Create benchmark types and Zod validation schemas
+- [ ] 28-02-PLAN.md — Create benchmark service layer with aggregates and outlier detection
+- [ ] 28-03-PLAN.md — Create member and admin benchmark API endpoints
+
 **Success Criteria:**
 1. Member can submit benchmarks in 4 categories with JSONB validation schemas (compensation, infrastructure, business metrics, operational)
 2. Benchmark results hidden until 5+ submissions received in category (k-anonymity threshold)
@@ -169,7 +176,7 @@ Plans:
 |-------|--------|-------|----------|
 | 26 - Database Schema Extension | Complete | 3 | 10/10 requirements |
 | 27 - Points System Backend | Complete | 3 | 8/8 requirements |
-| 28 - Benchmarking System | Pending | 0 | 0/15 requirements |
+| 28 - Benchmarking System | Planned | 3 | 0/15 requirements |
 | 29 - Resource Library & File Storage | Pending | 0 | 0/22 requirements |
 | 30 - MEE6 Discord Integration | Pending | 0 | 0/11 requirements |
 | 31 - Next.js Frontend Setup | Pending | 0 | 0/4 requirements |
@@ -181,4 +188,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 (Phase 27 complete)*
+*Last updated: 2026-01-23 (Phase 28 planned)*

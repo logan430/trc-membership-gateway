@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 30 - MEE6 Discord Integration
-**Current Plan:** 2 of 4 complete
+**Current Plan:** 3 of 4 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -40,8 +40,8 @@ Phase 26: [####################] 3/3 plans (Complete!)
 Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
-Phase 30: [##########..........] 2/4 plans
-v2.0:     [################....] 15/~17 plans
+Phase 30: [###############.....] 3/4 plans
+v2.0:     [################....] 16/~17 plans
 ```
 
 ---
@@ -51,8 +51,8 @@ v2.0:     [################....] 15/~17 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~50 requirements (~50%) - Phases 26-29 complete
-- In progress: None (Phase 29 complete)
+- Completed: ~55 requirements (~55%) - Phases 26-29 complete, 30 nearly done
+- In progress: Plan 30-04 (final verification)
 - Blocked: 0
 
 **Recent velocity:**
@@ -115,6 +115,9 @@ v2.0:     [################....] 15/~17 plans
 | First sync xpDelta = null | Distinguishes baseline from zero-change sync | 30-02 |
 | Negative XP = proportional deduction | Admin XP removal deducts member points | 30-02 |
 | lastActiveAt on positive points only | Deductions shouldn't count as member activity | 30-02 |
+| Weekday-only streaks | Mon-Fri required, weekends automatic grace days | 30-03 |
+| Jobs stop before HTTP in shutdown | Ensure jobs don't trigger work during connection teardown | 30-03 |
+| Batch streak updates (100/tx) | Prevent memory issues with large member counts | 30-03 |
 
 ### Research Insights
 
@@ -128,6 +131,7 @@ v2.0:     [################....] 15/~17 plans
 - @supabase/supabase-js for Storage client
 - file-type library for magic number validation
 - multer for multipart file uploads
+- node-cron for background job scheduling
 
 **Architecture approach:**
 - Express (port 4000) proxies /dashboard/* to Next.js (port 3000)
@@ -136,6 +140,7 @@ v2.0:     [################....] 15/~17 plans
 - Zero-downtime migration patterns (concurrent indexes, NOT VALID FKs)
 - Magic number validation prevents extension spoofing
 - Optional malware scanning via ClamAV daemon
+- Centralized job scheduler with graceful shutdown
 
 **Critical pitfalls identified:**
 - Production database migration downtime (Phase 26 establishes patterns)
@@ -167,10 +172,13 @@ v2.0:     [################....] 15/~17 plans
 - [x] Create job types for sync statistics (Plan 30-02)
 - [x] Extend points service for negative XP deltas (Plan 30-02)
 - [x] Create MEE6 XP sync function (Plan 30-02)
+- [x] Create streak calculation function (Plan 30-03)
+- [x] Create job scheduler with graceful shutdown (Plan 30-03)
+- [x] Integrate jobs into main app (Plan 30-03)
 
 ### Known Blockers
 
-None - Plan 30-02 complete. Ready for Plan 30-03 (streak calculation).
+None - Plan 30-03 complete. Ready for Plan 30-04 (phase verification).
 
 ### Questions for User
 
@@ -183,16 +191,15 @@ None - Plan 30-02 complete. Ready for Plan 30-03 (streak calculation).
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 30-02: MEE6 Sync Job
-- Created job types at src/jobs/types.ts
-- Extended points service for negative deltas in src/points/service.ts
-- Created MEE6 sync function at src/jobs/mee6-sync.ts
-- Commits: 49e5bc0, d814dca, ffbec99
+- Completed Plan 30-03: Streak Calculation Job
+- Created streak calculator at src/jobs/streak-calculator.ts
+- Created job scheduler at src/jobs/index.ts
+- Integrated jobs into main app with graceful shutdown
+- Commits: acc18f1, 4324429, eff8dc0
 
-**Next session:** Plan 30-03 - Streak Calculation
-- Daily job to calculate and update member engagement streaks
-- Weekday-only streak tracking (Mon-Fri required, weekends grace)
-- Runs at 00:05 UTC
+**Next session:** Plan 30-04 - Phase Verification
+- Final verification that all Phase 30 requirements are met
+- JOBS-01 through JOBS-05 validation
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -213,8 +220,10 @@ None - Plan 30-02 complete. Ready for Plan 30-03 (streak calculation).
 - MEE6 client at: src/mee6/types.ts, src/mee6/client.ts
 - Job types at: src/jobs/types.ts
 - MEE6 sync job at: src/jobs/mee6-sync.ts
+- Streak calculator at: src/jobs/streak-calculator.ts
+- Job scheduler at: src/jobs/index.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 30-02-PLAN.md*
+*Last updated: 2026-01-23 - Completed 30-03-PLAN.md*

@@ -23,14 +23,47 @@ enum SubscriptionStatus {
 }
 
 enum SeatTier {
-  INDIVIDUAL    // Individual subscription (no team)
-  OWNER         // Company owner seat (access to owners-only channels)
-  TEAM_MEMBER   // Company team seat (standard member access)
+  INDIVIDUAL // Individual subscription (no team)
+  OWNER // Company owner seat (access to owners-only channels)
+  TEAM_MEMBER // Company team seat (standard member access)
 }
 
 enum AdminRole {
-  ADMIN        // Member management only
-  SUPER_ADMIN  // Full access including admin management + system config
+  ADMIN // Member management only
+  SUPER_ADMIN // Full access including admin management + system config
+}
+
+// ============================================
+// V2.0 ENUMS
+// ============================================
+
+enum BenchmarkCategory {
+  COMPENSATION
+  INFRASTRUCTURE
+  BUSINESS
+  OPERATIONAL
+}
+
+enum ResourceCategory {
+  COLD_EMAIL
+  SALES_GTM
+  CUSTOMER_SERVICE
+  OPERATIONS
+  AGENCY_GROWTH
+}
+
+enum ResourceType {
+  TEMPLATE
+  SOP
+  PLAYBOOK
+  COURSE
+  VIDEO
+}
+
+enum DiscordActivityType {
+  MESSAGE
+  REACTION_GIVEN
+  REACTION_RECEIVED
 }
 
 // ============================================
@@ -38,107 +71,119 @@ enum AdminRole {
 // ============================================
 
 model Member {
-  id                  String             @id @default(cuid())
+  id String @id @default(cuid())
 
   // Discord identity (linked via OAuth)
-  discordId           String?            @unique
-  discordUsername     String?
-  discordAvatar       String?
+  discordId       String? @unique
+  discordUsername String?
+  discordAvatar   String?
 
   // Stripe identity
-  stripeCustomerId    String?            @unique
-  email               String?            @unique
+  stripeCustomerId String? @unique
+  email            String? @unique
 
   // Authentication (null for magic-link-only users)
-  passwordHash        String?
+  passwordHash String?
 
   // CRM-ready fields (captured during intro or checkout)
-  firstName           String?
-  lastName            String?
-  company             String?
-  jobTitle            String?
-  linkedInUrl         String?
-  referralSource      String?
+  firstName      String?
+  lastName       String?
+  company        String?
+  jobTitle       String?
+  linkedInUrl    String?
+  referralSource String?
 
   // Subscription state (cached from Stripe webhooks)
-  subscriptionStatus  SubscriptionStatus @default(NONE)
-  seatTier            SeatTier?
-  currentPeriodEnd    DateTime?
+  subscriptionStatus SubscriptionStatus @default(NONE)
+  seatTier           SeatTier?
+  currentPeriodEnd   DateTime?
 
   // Onboarding state
-  introCompleted      Boolean            @default(false)
-  introCompletedAt    DateTime?
-  introMessageId      String?            // Discord message ID of introduction
-  lastGuidanceDmAt    DateTime?          // Rate-limiting for too-short intro guidance DMs
+  introCompleted   Boolean   @default(false)
+  introCompletedAt DateTime?
+  introMessageId   String? // Discord message ID of introduction
+  lastGuidanceDmAt DateTime? // Rate-limiting for too-short intro guidance DMs
 
   // Team membership (for company seats)
-  team                Team?              @relation(fields: [teamId], references: [id])
-  teamId              String?
-  isTeamAdmin         Boolean            @default(false)
-  isPrimaryOwner      Boolean            @default(false)  // Cannot be revoked by other org members
+  team           Team?   @relation(fields: [teamId], references: [id])
+  teamId         String?
+  isTeamAdmin    Boolean @default(false)
+  isPrimaryOwner Boolean @default(false) // Cannot be revoked by other org members
 
   // Billing failure tracking
-  paymentFailedAt           DateTime?  // When first payment failure detected
-  gracePeriodEndsAt         DateTime?  // 48 hours after paymentFailedAt
-  debtorStateEndsAt         DateTime?  // 30 days after entering debtor state
-  previousRole              String?    // 'Knight' or 'Lord' for restoration
-  isInDebtorState           Boolean    @default(false)
-  sentBillingNotifications  String[]   @default([])  // Track which notifications sent
+  paymentFailedAt          DateTime? // When first payment failure detected
+  gracePeriodEndsAt        DateTime? // 48 hours after paymentFailedAt
+  debtorStateEndsAt        DateTime? // 30 days after entering debtor state
+  previousRole             String? // 'Knight' or 'Lord' for restoration
+  isInDebtorState          Boolean   @default(false)
+  sentBillingNotifications String[]  @default([]) // Track which notifications sent
 
   // Audit timestamps
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Gamification (v2.0 - DB-06)
+  totalPoints   Int       @default(0)
+  currentStreak Int       @default(0)
+  lastActiveAt  DateTime?
+
+  // Relationships (v2.0)
+  benchmarkSubmissions BenchmarkSubmission[]
+  resourceDownloads    ResourceDownload[]
+  pointTransactions    PointTransaction[]
+  discordActivities    DiscordActivity[]
 
   @@index([teamId])
   @@index([subscriptionStatus])
+  @@index([totalPoints(sort: Desc)]) // Leaderboard queries
 }
 
 model Team {
-  id                    String             @id @default(cuid())
-  name                  String
+  id   String @id @default(cuid())
+  name String
 
   // Stripe billing (team subscription)
-  stripeCustomerId      String             @unique
-  stripeSubscriptionId  String?            @unique
-  subscriptionStatus    SubscriptionStatus @default(NONE)
+  stripeCustomerId     String             @unique
+  stripeSubscriptionId String?            @unique
+  subscriptionStatus   SubscriptionStatus @default(NONE)
 
   // Seat allocation
-  ownerSeatCount        Int                @default(0)  // Paid owner seats
-  teamSeatCount         Int                @default(0)  // Paid team seats
+  ownerSeatCount Int @default(0) // Paid owner seats
+  teamSeatCount  Int @default(0) // Paid team seats
 
   // Relationships
-  members               Member[]
-  pendingInvites        PendingInvite[]
+  members        Member[]
+  pendingInvites PendingInvite[]
 
   // Billing failure tracking
-  paymentFailedAt       DateTime?  // When first payment failure detected
-  gracePeriodEndsAt     DateTime?  // 48 hours after paymentFailedAt
-  debtorStateEndsAt     DateTime?  // 30 days after entering debtor state
+  paymentFailedAt   DateTime? // When first payment failure detected
+  gracePeriodEndsAt DateTime? // 48 hours after paymentFailedAt
+  debtorStateEndsAt DateTime? // 30 days after entering debtor state
 
   // Audit timestamps
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PendingInvite {
-  id          String    @id @default(cuid())
+  id String @id @default(cuid())
 
   // Team relationship
-  team        Team      @relation(fields: [teamId], references: [id])
-  teamId      String
+  team   Team   @relation(fields: [teamId], references: [id])
+  teamId String
 
   // Invite details
-  seatTier    SeatTier  // OWNER or TEAM_MEMBER
-  token       String    @unique
-  createdBy   String    // Member ID who created the invite
-  inviteeEmail String?  // Optional: email to send invite to (admin can still share link manually)
+  seatTier     SeatTier // OWNER or TEAM_MEMBER
+  token        String   @unique
+  createdBy    String // Member ID who created the invite
+  inviteeEmail String? // Optional: email to send invite to (admin can still share link manually)
 
   // Tracking
-  acceptedAt  DateTime?
-  acceptedBy  String?   // Member ID who accepted
+  acceptedAt DateTime?
+  acceptedBy String? // Member ID who accepted
 
   // Audit timestamps
-  createdAt   DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   @@index([teamId])
   @@index([token])
@@ -150,10 +195,10 @@ model PendingInvite {
 
 model StripeEvent {
   id          String   @id @default(cuid())
-  eventId     String   @unique  // Stripe event ID for idempotency
-  type        String             // e.g., "checkout.session.completed"
+  eventId     String   @unique // Stripe event ID for idempotency
+  type        String // e.g., "checkout.session.completed"
   processedAt DateTime @default(now())
-  payload     Json?              // Optional: store full event for debugging
+  payload     Json? // Optional: store full event for debugging
 
   @@index([eventId])
   @@index([type])
@@ -162,11 +207,11 @@ model StripeEvent {
 
 model AuditLog {
   id          String   @id @default(cuid())
-  action      String             // e.g., "ROLE_ASSIGNED", "SUBSCRIPTION_CREATED"
-  entityType  String             // e.g., "Member", "Team"
+  action      String // e.g., "ROLE_ASSIGNED", "SUBSCRIPTION_CREATED"
+  entityType  String // e.g., "Member", "Team"
   entityId    String
   details     Json?
-  performedBy String?            // Member ID or "system"
+  performedBy String? // Member ID or "system"
   createdAt   DateTime @default(now())
 
   @@index([entityType, entityId])
@@ -175,23 +220,23 @@ model AuditLog {
 }
 
 model ReconciliationRun {
-  id                String   @id @default(cuid())
-  startedAt         DateTime @default(now())
-  completedAt       DateTime?
+  id          String    @id @default(cuid())
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
 
   // Counts
-  membersChecked    Int      @default(0)
-  teamsChecked      Int      @default(0)
-  issuesFound       Int      @default(0)
-  issuesFixed       Int      @default(0)
+  membersChecked Int @default(0)
+  teamsChecked   Int @default(0)
+  issuesFound    Int @default(0)
+  issuesFixed    Int @default(0)
 
   // Mode
-  autoFixEnabled    Boolean  @default(false)
-  isVerificationRun Boolean  @default(false)
-  triggeredBy       String   // 'scheduled' | 'manual' | 'verification'
+  autoFixEnabled    Boolean @default(false)
+  isVerificationRun Boolean @default(false)
+  triggeredBy       String // 'scheduled' | 'manual' | 'verification'
 
   // Results stored as JSON
-  issues            Json     @default("[]")
+  issues Json @default("[]")
 
   @@index([startedAt])
 }
@@ -208,7 +253,7 @@ model Admin {
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  createdBy    String?   // Admin ID who created this admin, null for seed admin
+  createdBy    String? // Admin ID who created this admin, null for seed admin
 
   @@index([email])
 }
@@ -218,18 +263,109 @@ model FeatureFlag {
   key         String   @unique
   enabled     Boolean  @default(false)
   description String?
-  category    String   @default("general")  // general, billing, discord, email
+  category    String   @default("general") // general, billing, discord, email
   updatedAt   DateTime @updatedAt
-  updatedBy   String?  // Admin ID
+  updatedBy   String? // Admin ID
 
   @@index([key])
 }
 
 model EmailTemplate {
   id        String   @id @default(cuid())
-  name      String   @unique  // e.g., "welcome", "claim_reminder", "payment_failure"
+  name      String   @unique // e.g., "welcome", "claim_reminder", "payment_failure"
   subject   String
-  body      String   // Plain text with {{variable}} placeholders
+  body      String // Plain text with {{variable}} placeholders
   updatedAt DateTime @updatedAt
-  updatedBy String?  // Admin ID
+  updatedBy String? // Admin ID
+}
+
+// ============================================
+// V2.0 MODELS
+// ============================================
+
+// DB-01: BenchmarkSubmission
+model BenchmarkSubmission {
+  id          String            @id @default(cuid())
+  memberId    String
+  category    BenchmarkCategory
+  data        Json // JSONB for flexible schema per category
+  isValid     Boolean           @default(true)
+  submittedAt DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, category]) // One submission per category per member
+  @@index([category])
+  @@index([memberId])
+  @@index([data(ops: JsonbPathOps)], type: Gin) // DB-08: GIN index for JSONB queries
+}
+
+// DB-02: Resource
+model Resource {
+  id            String           @id @default(cuid())
+  title         String
+  description   String
+  category      ResourceCategory
+  type          ResourceType
+  fileUrl       String // Supabase Storage path
+  thumbnailUrl  String?
+  isFeatured    Boolean          @default(false)
+  downloadCount Int              @default(0) // Denormalized for fast sorting
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  downloads ResourceDownload[]
+
+  @@index([category])
+  @@index([type])
+  @@index([isFeatured])
+}
+
+// DB-03: ResourceDownload
+model ResourceDownload {
+  id           String   @id @default(cuid())
+  memberId     String
+  resourceId   String
+  downloadedAt DateTime @default(now())
+
+  member   Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([resourceId])
+  @@index([downloadedAt])
+}
+
+// DB-04: PointTransaction (immutable ledger)
+model PointTransaction {
+  id        String   @id @default(cuid())
+  memberId  String
+  action    String // "benchmark_submission", "resource_download", "discord_activity", "intro_completed", "admin_adjustment"
+  points    Int // Can be negative for admin adjustments
+  metadata  Json? // Context: { category: "COMPENSATION" }, { resourceId: "..." }, { reason: "..." }
+  createdAt DateTime @default(now())
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// DB-05: DiscordActivity
+model DiscordActivity {
+  id           String              @id @default(cuid())
+  memberId     String
+  discordId    String
+  activityType DiscordActivityType
+  xpDelta      Int? // MEE6 XP gained since last sync
+  xpTotal      Int? // Total MEE6 XP at sync time
+  syncedAt     DateTime            @default(now())
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([discordId])
+  @@index([syncedAt])
 }

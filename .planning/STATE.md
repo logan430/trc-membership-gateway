@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 29 - Resource Library
-**Current Plan:** 2 of 3 complete
+**Current Plan:** 3 of 4 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -39,8 +39,8 @@ Build admin-curated file library with secure storage, file validation, and membe
 Phase 26: [####################] 3/3 plans (Complete!)
 Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
-Phase 29: [##############......] 2/3 plans (In Progress)
-v2.0:     [############........] 11/~16 plans
+Phase 29: [################....] 3/4 plans (In Progress)
+v2.0:     [#############.......] 12/~17 plans
 ```
 
 ---
@@ -50,7 +50,7 @@ v2.0:     [############........] 11/~16 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: 40 requirements (~40%) - Phases 26-28 complete, 29-01, 29-02 complete
+- Completed: 45 requirements (~45%) - Phases 26-28 complete, 29-01, 29-02, 29-03 complete
 - In progress: Phase 29 (Resource Library)
 - Blocked: 0
 
@@ -62,6 +62,7 @@ v2.0:     [############........] 11/~16 plans
 - Phase 28 completed: 2026-01-23 (3 plans, ~14 minutes total)
 - Plan 29-01 completed: 2026-01-23 (7 minutes)
 - Plan 29-02 completed: 2026-01-23 (8 minutes)
+- Plan 29-03 completed: 2026-01-23 (3 minutes)
 
 ---
 
@@ -103,6 +104,9 @@ v2.0:     [############........] 11/~16 plans
 | Fail-open on malware scan errors | Uploads proceed if scanner fails, can be changed to fail-closed | 29-02 |
 | Admin ID rate limit keying | Rate limiter uses res.locals.admin.id after authentication | 29-02 |
 | Storage path organization | uploads/{adminId}/{timestamp}-{sanitized-filename} pattern | 29-02 |
+| MAX_VERSIONS_TO_KEEP = 5 | Version retention limit, auto-prune older versions | 29-03 |
+| Featured-first sorting | Member listings sort featured DESC before createdAt DESC | 29-03 |
+| Top 3 tags from last 10 downloads | Recommendations engine tag frequency calculation | 29-03 |
 
 ### Research Insights
 
@@ -149,11 +153,12 @@ v2.0:     [############........] 11/~16 plans
 - [x] Add Supabase Storage client (Plan 29-01)
 - [x] Create file validation service (Plan 29-01)
 - [x] Build storage service layer (Plan 29-02)
-- [ ] Create resource API endpoints (Plan 29-03)
+- [x] Create resource service layer (Plan 29-03)
+- [ ] Create resource API endpoints (Plan 29-04)
 
 ### Known Blockers
 
-None - Plan 29-02 complete, ready for Plan 29-03 (Resource API Endpoints).
+None - Plan 29-03 complete, ready for Plan 29-04 (Resource API Endpoints).
 
 ### Questions for User
 
@@ -166,21 +171,16 @@ None - Plan 29-02 complete, ready for Plan 29-03 (Resource API Endpoints).
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 29-02: Storage Service Layer
-- Created src/storage/types.ts (MAX_FILE_SIZE, SIGNED_URL_EXPIRY, UploadResult, etc.)
-- Created src/storage/upload.ts (uploadMiddleware, uploadToStorage)
-- Created src/storage/download.ts (generateSignedUrl)
-- Created src/storage/malware-scan.ts (scanForMalware, isMalwareScanEnabled)
-- Created src/resources/types.ts (ResourceWithDetails, CreateResourceInput, filters)
-- Added uploadLimiter to src/middleware/rate-limit.ts
-- Installed multer and @types/multer
-- Commits: 52953c1, a7adcf5, 8d52b45
+- Completed Plan 29-03: Resource Service Layer
+- Added resource audit actions to src/lib/audit.ts (RESOURCE_CREATED, RESOURCE_UPDATED, etc.)
+- Created src/resources/service.ts with complete CRUD, versioning, analytics, recommendations
+- Commits: 1f025f6, b8d2b49
 
-**Next session:** Plan 29-03 - Resource API Endpoints
+**Next session:** Plan 29-04 - Resource API Endpoints
 - Create admin CRUD routes for resources
 - Create member browse/download routes
 - Implement download tracking
-- Wire up storage services to API layer
+- Wire up service layer to API routes
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -196,8 +196,9 @@ None - Plan 29-02 complete, ready for Plan 29-03 (Resource API Endpoints).
 - Resource library infra at: src/lib/supabase.ts, src/lib/file-validation.ts
 - Storage services at: src/storage/upload.ts, src/storage/download.ts, src/storage/malware-scan.ts
 - Resource types at: src/resources/types.ts
+- Resource service at: src/resources/service.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 29-02-PLAN.md*
+*Last updated: 2026-01-23 - Completed 29-03-PLAN.md*

@@ -93,6 +93,14 @@ Plans:
 
 **Requirements:** RES-01, RES-02, RES-03, RES-04, RES-05, RES-06, RES-07, RES-08, RES-09, RES-10, RES-11, RES-12, RES-13, RES-14, RES-15, SEC-01, SEC-02, SEC-03, SEC-04, SEC-05, SEC-06, SEC-07
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 29-01-PLAN.md — Schema migration and infrastructure setup (Supabase client, file validation)
+- [ ] 29-02-PLAN.md — Storage service layer (upload/download, rate limiting, types)
+- [ ] 29-03-PLAN.md — Resource service layer (CRUD, versioning, analytics, points integration)
+- [ ] 29-04-PLAN.md — API routes (admin management, member browse/download)
+
 **Success Criteria:**
 1. Admin can upload files (PDF, DOCX, XLSX, MP4, ZIP) with magic number validation and 100MB size limit
 2. Files stored in Supabase Storage with signed URLs (1-hour expiration) and malware scanning before storage
@@ -177,7 +185,7 @@ Plans:
 | 26 - Database Schema Extension | Complete | 3 | 10/10 requirements |
 | 27 - Points System Backend | Complete | 3 | 8/8 requirements |
 | 28 - Benchmarking System | Complete | 3 | 14/14 requirements |
-| 29 - Resource Library & File Storage | Pending | 0 | 0/22 requirements |
+| 29 - Resource Library & File Storage | Planned | 4 | 0/22 requirements |
 | 30 - MEE6 Discord Integration | Pending | 0 | 0/11 requirements |
 | 31 - Next.js Frontend Setup | Pending | 0 | 0/4 requirements |
 | 32 - Member Dashboard Pages | Pending | 0 | 0/21 requirements |
@@ -188,4 +196,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 (Phase 28 complete)*
+*Last updated: 2026-01-23 (Phase 29 planned)*

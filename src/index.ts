@@ -25,6 +25,8 @@ import { adminAuditRouter } from './routes/admin/audit.js';
 import { adminTemplatesRouter } from './routes/admin/templates.js';
 import { adminAdminsRouter } from './routes/admin/admins.js';
 import { adminPointsConfigRouter } from './routes/admin/points-config.js';
+import { adminPointsRouter } from './routes/admin/points.js';
+import { pointsRouter } from './routes/points.js';
 import { startBot, discordClient } from './bot/client.js';
 import { prisma } from './lib/prisma.js';
 import { seedDefaultPointConfigs } from './points/config.js';
@@ -101,6 +103,10 @@ app.use('/api/admin/audit', adminAuditRouter);
 app.use('/api/admin/templates', adminTemplatesRouter);
 app.use('/api/admin/admins', adminAdminsRouter);
 app.use('/api/admin/points-config', adminPointsConfigRouter);
+app.use('/api/admin/members', adminPointsRouter);
+
+// Points routes (member-facing)
+app.use('/api/points', pointsRouter);
 
 // Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);

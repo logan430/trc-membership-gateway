@@ -27,19 +27,20 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 28 - Benchmarking System
-**Current Plan:** 3 of 3 complete
-**Status:** Phase complete
+**Current Phase:** 29 - Resource Library
+**Current Plan:** 1 of 3 complete
+**Status:** In progress
 
 **Phase Goal:**
-Build benchmarking backend with types, validation, service layer, and API endpoints for anonymous peer comparison.
+Build admin-curated file library with secure storage, file validation, and member download tracking.
 
 **Progress:**
 ```
-Phase 26: [████████████████████] 3/3 plans (Complete!)
-Phase 27: [████████████████████] 3/3 plans (Complete!)
-Phase 28: [████████████████████] 3/3 plans (Complete!)
-v2.0:     [██████████░░░░░░░░░░] 9/~16 plans
+Phase 26: [####################] 3/3 plans (Complete!)
+Phase 27: [####################] 3/3 plans (Complete!)
+Phase 28: [####################] 3/3 plans (Complete!)
+Phase 29: [#######.............] 1/3 plans (In Progress)
+v2.0:     [###########.........] 10/~16 plans
 ```
 
 ---
@@ -49,8 +50,8 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: 32 requirements (32%) - Phases 26-28 complete
-- In progress: Ready for Phase 29
+- Completed: 35 requirements (~35%) - Phases 26-28 complete, 29-01 complete
+- In progress: Phase 29 (Resource Library)
 - Blocked: 0
 
 **Recent velocity:**
@@ -59,6 +60,7 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
 - Phase 27 completed: 2026-01-23 (3 plans, ~18 minutes total)
 - Phase 28 completed: 2026-01-23 (3 plans, ~14 minutes total)
+- Plan 29-01 completed: 2026-01-23 (7 minutes)
 
 ---
 
@@ -93,6 +95,9 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 | 3-sigma outlier detection | Flag values > 3 stddev from median as potential outliers | 28-02 |
 | Zod v4 record() requires two args | Use z.record(z.string(), z.unknown()) for flexible object | 28-03 |
 | BENCH-08 moved to Phase 32 | Frontend visualization requires React components | 28 |
+| Flat tags over categories | Removed ResourceCategory enum, using String[] tags with GIN index | 29-01 |
+| storagePath replaces fileUrl | Storage path pattern for Supabase Storage integration | 29-01 |
+| DOCX/XLSX detected as ZIP is valid | Office Open XML files are ZIP archives internally | 29-01 |
 
 ### Research Insights
 
@@ -103,18 +108,22 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 - PostgreSQL JSONB + GIN indexes for flexible benchmark schemas
 - Supabase Storage for file management (already in infrastructure)
 - MEE6 API integration for Discord activity ($11.95/mo)
+- @supabase/supabase-js for Storage client
+- file-type library for magic number validation
 
 **Architecture approach:**
 - Express (port 4000) proxies /dashboard/* to Next.js (port 3000)
 - Denormalized points with immutable ledger (fast reads, audit trail)
 - Signed URLs for file access (bypass Express, leverage Supabase CDN)
 - Zero-downtime migration patterns (concurrent indexes, NOT VALID FKs)
+- Magic number validation prevents extension spoofing
 
 **Critical pitfalls identified:**
 - Production database migration downtime (Phase 26 establishes patterns)
 - K-anonymity violations (< 5 benchmark responses never shown)
 - MEE6 API reliability (unofficial API, need error handling)
 - File upload security (magic number validation, malware scanning)
+- DOCX/XLSX detected as ZIP (handled in validation logic)
 
 ### Active Todos
 
@@ -129,10 +138,15 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 - [x] Create benchmark types and schemas (Plan 28-01)
 - [x] Build benchmark service layer (Plan 28-02)
 - [x] Create benchmark API endpoints (Plan 28-03)
+- [x] Create resource library schema migration (Plan 29-01)
+- [x] Add Supabase Storage client (Plan 29-01)
+- [x] Create file validation service (Plan 29-01)
+- [ ] Build storage service layer (Plan 29-02)
+- [ ] Create resource API endpoints (Plan 29-03)
 
 ### Known Blockers
 
-None - Phase 28 complete, ready for Phase 29 (Resource Library).
+None - Plan 29-01 complete, ready for Plan 29-02 (Storage Service Layer).
 
 ### Questions for User
 
@@ -145,30 +159,33 @@ None - Phase 28 complete, ready for Phase 29 (Resource Library).
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 28-03: Benchmark API Endpoints
-- Created src/routes/benchmarks.ts (member endpoints)
-- Created src/routes/admin/benchmarks.ts (admin moderation endpoints)
-- Added BENCHMARK_REVIEWED audit action
-- Mounted routes in Express app
-- Commits: 6d70975, d51ffc0, 4acc2ba
+- Completed Plan 29-01: Resource Library Schema and Infrastructure
+- Created prisma/migrations/20260123183355_resource_library_schema/migration.sql
+- Created src/lib/supabase.ts (Supabase Storage client)
+- Created src/lib/file-validation.ts (magic number validation)
+- Updated prisma/schema.prisma (ResourceStatus, ResourceTag, Resource, ResourceVersion)
+- Fixed pre-existing TypeScript errors in discord-oauth.ts, claim.ts, team-dashboard.ts
+- Commits: 627a6ef, 7e71ff9, 14cc729
 
-**Next session:** Phase 29 - Resource Library
-- Research resource library requirements
-- Plan file storage, categorization, and access control
+**Next session:** Plan 29-02 - Storage Service Layer
+- Build upload/download services using Supabase Storage
+- Implement signed URL generation
+- Add Multer middleware for multipart uploads
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
 - Research findings (stack choices, architecture patterns, critical pitfalls)
 - Phase dependencies (backend -> frontend, points system -> gamification)
-- Migration files at: prisma/migrations/0_init/ through 20260123044437_add_point_config/
+- Migration files at: prisma/migrations/0_init/ through 20260123183355_resource_library_schema/
 - Point system files at: src/points/types.ts, src/points/config.ts, src/points/service.ts
 - Points API at: src/routes/points.ts, src/routes/admin/points.ts
 - Admin config API at: src/routes/admin/points-config.ts
 - Benchmark types at: src/benchmarks/types.ts, src/benchmarks/schemas.ts
 - Benchmark service at: src/benchmarks/service.ts
 - Benchmark API at: src/routes/benchmarks.ts, src/routes/admin/benchmarks.ts
+- Resource library infra at: src/lib/supabase.ts, src/lib/file-validation.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 28-03-PLAN.md (Phase 28 complete)*
+*Last updated: 2026-01-23 - Completed 29-01-PLAN.md*

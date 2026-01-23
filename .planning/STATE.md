@@ -117,6 +117,7 @@ v2.0:     [███████░░░░░░░░░░░░░] 6/~16 p
 - [x] Create PointConfig model and admin API (Plan 27-01)
 - [x] Build point transaction service (Plan 27-02)
 - [x] Create public points API endpoints (Plan 27-03)
+- [ ] Plan Phase 28: Benchmarking System
 
 ### Known Blockers
 

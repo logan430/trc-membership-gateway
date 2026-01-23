@@ -202,14 +202,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DB-08 | Phase 26 | Complete |
 | DB-09 | Phase 26 | Complete |
 | DB-10 | Phase 26 | Complete |
-| GAME-01 | Phase 27 | Pending |
-| GAME-02 | Phase 27 | Pending |
-| GAME-03 | Phase 27 | Pending |
-| GAME-04 | Phase 27 | Pending |
-| GAME-05 | Phase 27 | Pending |
-| GAME-06 | Phase 27 | Pending |
-| GAME-07 | Phase 27 | Pending |
-| GAME-08 | Phase 27 | Pending |
+| GAME-01 | Phase 27 | Complete |
+| GAME-02 | Phase 27 | Complete |
+| GAME-03 | Phase 27 | Complete |
+| GAME-04 | Phase 27 | Complete |
+| GAME-05 | Phase 27 | Complete |
+| GAME-06 | Phase 27 | Complete |
+| GAME-07 | Phase 27 | Complete |
+| GAME-08 | Phase 27 | Complete |
 | GAME-09 | Phase 32 | Pending |
 | GAME-10 | Phase 32 | Pending |
 | GAME-11 | Phase 32 | Pending |
@@ -297,4 +297,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-22 after Phase 26 completion*
+*Last updated: 2026-01-23 after Phase 27 completion*

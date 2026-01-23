@@ -270,6 +270,19 @@ model FeatureFlag {
   @@index([key])
 }
 
+model PointConfig {
+  id          String   @id @default(cuid())
+  action      String   @unique // "benchmark_submission", "resource_download", etc.
+  points      Int // Point value for this action
+  enabled     Boolean  @default(true) // Toggle per action
+  label       String // Human-readable: "Benchmark Submission"
+  description String? // Optional admin notes
+  updatedAt   DateTime @updatedAt
+  updatedBy   String? // Admin ID who last updated
+
+  @@index([action])
+}
+
 model EmailTemplate {
   id        String   @id @default(cuid())
   name      String   @unique // e.g., "welcome", "claim_reminder", "payment_failure"

@@ -22,6 +22,9 @@ export const AuditAction = {
 
   // Bulk actions
   BULK_ACTION_PERFORMED: 'BULK_ACTION_PERFORMED',
+
+  // Points actions
+  POINTS_ADJUSTED: 'POINTS_ADJUSTED',
 } as const;
 
 export type AuditActionType = (typeof AuditAction)[keyof typeof AuditAction];

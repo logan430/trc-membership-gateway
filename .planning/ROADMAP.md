@@ -96,10 +96,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 29-01-PLAN.md — Schema migration and infrastructure setup (Supabase client, file validation)
-- [ ] 29-02-PLAN.md — Storage service layer (upload/download, rate limiting, types)
-- [ ] 29-03-PLAN.md — Resource service layer (CRUD, versioning, analytics, points integration)
-- [ ] 29-04-PLAN.md — API routes (admin management, member browse/download)
+- [x] 29-01-PLAN.md — Schema migration and infrastructure setup (Supabase client, file validation)
+- [x] 29-02-PLAN.md — Storage service layer (upload/download, rate limiting, types)
+- [x] 29-03-PLAN.md — Resource service layer (CRUD, versioning, analytics, points integration)
+- [x] 29-04-PLAN.md — API routes (admin management, member browse/download)
 
 **Success Criteria:**
 1. Admin can upload files (PDF, DOCX, XLSX, MP4, ZIP) with magic number validation and 100MB size limit
@@ -185,15 +185,15 @@ Plans:
 | 26 - Database Schema Extension | Complete | 3 | 10/10 requirements |
 | 27 - Points System Backend | Complete | 3 | 8/8 requirements |
 | 28 - Benchmarking System | Complete | 3 | 14/14 requirements |
-| 29 - Resource Library & File Storage | Planned | 4 | 0/22 requirements |
+| 29 - Resource Library & File Storage | Complete | 4 | 22/22 requirements |
 | 30 - MEE6 Discord Integration | Pending | 0 | 0/11 requirements |
 | 31 - Next.js Frontend Setup | Pending | 0 | 0/4 requirements |
 | 32 - Member Dashboard Pages | Pending | 0 | 0/21 requirements |
 | 33 - Admin Analytics Dashboard | Pending | 0 | 0/10 requirements |
 
-**Overall Progress:** 32/101 requirements (32%)
+**Overall Progress:** 54/101 requirements (53%)
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 (Phase 29 planned)*
+*Last updated: 2026-01-23 (Phase 29 complete)*

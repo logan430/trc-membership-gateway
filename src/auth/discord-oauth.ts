@@ -26,9 +26,10 @@ export interface DiscordUser {
  * Uses authorization code grant flow (not implicit)
  */
 export function generateAuthUrl(state: string): string {
+  const redirectUri = env.DISCORD_REDIRECT_URI ?? `${env.APP_URL}/auth/callback`;
   const params = new URLSearchParams({
     client_id: env.DISCORD_CLIENT_ID,
-    redirect_uri: env.DISCORD_REDIRECT_URI,
+    redirect_uri: redirectUri,
     response_type: 'code',
     scope: 'identify', // No email - comes from Stripe per CONTEXT.md
     state,
@@ -42,6 +43,7 @@ export function generateAuthUrl(state: string): string {
  * CRITICAL: Must use application/x-www-form-urlencoded per RESEARCH.md
  */
 export async function exchangeCode(code: string): Promise<DiscordTokenResponse> {
+  const redirectUri = env.DISCORD_REDIRECT_URI ?? `${env.APP_URL}/auth/callback`;
   const response = await fetch(`${DISCORD_API_BASE}/oauth2/token`, {
     method: 'POST',
     headers: {
@@ -52,7 +54,7 @@ export async function exchangeCode(code: string): Promise<DiscordTokenResponse> 
       client_secret: env.DISCORD_CLIENT_SECRET,
       grant_type: 'authorization_code',
       code,
-      redirect_uri: env.DISCORD_REDIRECT_URI,
+      redirect_uri: redirectUri,
     }),
   });
 

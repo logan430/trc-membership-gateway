@@ -137,8 +137,9 @@ claimRouter.get('/callback', async (req: Request, res: Response): Promise<void> 
       'Discord claim successful, redirecting to invite'
     );
 
-    // Redirect to Discord invite
-    res.redirect(env.DISCORD_INVITE_URL);
+    // Redirect to Discord invite or dashboard if invite URL not configured
+    const inviteUrl = env.DISCORD_INVITE_URL ?? '/dashboard';
+    res.redirect(inviteUrl);
   } catch (error) {
     logger.error({ error, memberId }, 'Discord claim callback failed');
     res.redirect('/dashboard?claim=error&reason=oauth_failed');

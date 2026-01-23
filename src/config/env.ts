@@ -55,6 +55,10 @@ const envSchema = z.object({
 
   // Error Monitoring (Sentry)
   SENTRY_DSN: z.string().optional(), // Optional - app runs without it
+
+  // Supabase Storage (for resource library)
+  SUPABASE_URL: z.string().url().optional(), // Optional until storage operations used
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(), // Service role key for server-side operations
 }).refine(
   (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
   { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }

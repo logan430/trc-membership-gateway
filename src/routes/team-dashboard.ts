@@ -127,7 +127,9 @@ teamDashboardRouter.get('/dashboard', requireAuth, async (req: AuthenticatedRequ
  * Only accessible by team owners, cannot revoke primary owner or self.
  */
 teamDashboardRouter.delete('/members/:memberId', requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  const { memberId: targetMemberId } = req.params;
+  const targetMemberId = Array.isArray(req.params.memberId)
+    ? req.params.memberId[0]
+    : req.params.memberId;
 
   // Get requester
   const requester = await prisma.member.findUnique({

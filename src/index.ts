@@ -36,6 +36,7 @@ import { prisma } from './lib/prisma.js';
 import { seedDefaultPointConfigs } from './points/config.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
+import { startJobScheduler, stopJobScheduler } from './jobs/index.js';
 import { authLimiter, signupLimiter, magicLinkLimiter, adminAuthLimiter } from './middleware/rate-limit.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -195,16 +196,20 @@ async function gracefulShutdown(signal: string): Promise<void> {
   }, SHUTDOWN_TIMEOUT);
 
   try {
-    // 1. Stop accepting new HTTP connections
+    // 1. Stop background jobs
+    stopJobScheduler();
+    logger.info('Background jobs stopped');
+
+    // 2. Stop accepting new HTTP connections
     server.close(() => {
       logger.info('HTTP server closed');
     });
 
-    // 2. Disconnect Discord bot
+    // 3. Disconnect Discord bot
     discordClient.destroy();
     logger.info('Discord client disconnected');
 
-    // 3. Close Prisma database connections
+    // 4. Close Prisma database connections
     await prisma.$disconnect();
     logger.info('Database connections closed');
 
@@ -240,6 +245,8 @@ const server = app.listen(env.PORT, () => {
       startBillingScheduler();
       // Start reconciliation scheduler after bot is ready
       startReconciliationScheduler();
+      // Start job scheduler (MEE6 sync, streak calculation)
+      startJobScheduler();
     })
     .catch((error) => {
       logger.error({ error: error instanceof Error ? { message: error.message, stack: error.stack } : error }, 'Failed to start Discord bot');

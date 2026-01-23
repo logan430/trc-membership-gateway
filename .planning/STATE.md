@@ -27,18 +27,19 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 27 - Points System Backend
-**Current Plan:** 3 of 3 complete
-**Status:** Phase complete
+**Current Phase:** 28 - Benchmarking System
+**Current Plan:** 1 of 3 complete
+**Status:** In progress
 
 **Phase Goal:**
-Build points system backend with configurable values, transaction recording, and public API endpoints.
+Build benchmarking backend with types, validation, service layer, and API endpoints for anonymous peer comparison.
 
 **Progress:**
 ```
 Phase 26: [████████████████████] 3/3 plans (Complete!)
 Phase 27: [████████████████████] 3/3 plans (Complete!)
-v2.0:     [███████░░░░░░░░░░░░░] 6/~16 plans
+Phase 28: [███████░░░░░░░░░░░░░] 1/3 plans (In progress)
+v2.0:     [████████░░░░░░░░░░░░] 7/~16 plans
 ```
 
 ---
@@ -48,8 +49,8 @@ v2.0:     [███████░░░░░░░░░░░░░] 6/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~18 requirements (18%) - Phases 26-27 complete
-- In progress: 0
+- Completed: ~20 requirements (20%) - Phases 26-27 + 28-01 complete
+- In progress: Phase 28
 - Blocked: 0
 
 **Recent velocity:**
@@ -57,6 +58,7 @@ v2.0:     [███████░░░░░░░░░░░░░] 6/~16 p
 - v2.0 started: 2026-01-22
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
 - Phase 27 completed: 2026-01-23 (3 plans, ~18 minutes total)
+- Plan 28-01 completed: 2026-01-23 (~3 minutes)
 
 ---
 
@@ -84,6 +86,8 @@ v2.0:     [███████░░░░░░░░░░░░░] 6/~16 p
 | Fire-and-forget DM for admin adjustments | Consistent with existing patterns, DM failure non-blocking | 27-02 |
 | Admin adjustments hidden from member history | Preserves the 'earned' feeling per CONTEXT.md | 27-03 |
 | Points summary floors at zero for display | Negative total possible but shows as 0 to member | 27-03 |
+| Zod schemas per category | API-layer validation before database write | 28-01 |
+| K_ANONYMITY_THRESHOLD = 5 | Per BENCH-06 requirement, hide results until 5+ submissions | 28-01 |
 
 ### Research Insights
 
@@ -117,11 +121,13 @@ v2.0:     [███████░░░░░░░░░░░░░] 6/~16 p
 - [x] Create PointConfig model and admin API (Plan 27-01)
 - [x] Build point transaction service (Plan 27-02)
 - [x] Create public points API endpoints (Plan 27-03)
-- [ ] Plan Phase 28: Benchmarking System
+- [x] Create benchmark types and schemas (Plan 28-01)
+- [ ] Build benchmark service layer (Plan 28-02)
+- [ ] Create benchmark API endpoints (Plan 28-03)
 
 ### Known Blockers
 
-None - Phase 27 complete, ready for Phase 28.
+None - Plan 28-01 complete, ready for 28-02.
 
 ### Questions for User
 
@@ -134,15 +140,15 @@ None - Phase 27 complete, ready for Phase 28.
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 27-03: Public Points API Endpoints
-- Created member points API (history, values, summary)
-- Created admin points API (adjust, history)
-- Mounted routes in Express app
-- Commits: ced57fe, 127eb2f, 87e4571
+- Completed Plan 28-01: Benchmark Types and Schemas
+- Created TypeScript interfaces for 4 categories
+- Created Zod validation schemas with percentage constraints
+- Exported K_ANONYMITY_THRESHOLD = 5 constant
+- Commits: 1bd493b, c15cd63
 
-**Next session:** Phase 28 - Benchmark System
-- Plan phases for benchmark submission and visualization
-- Build on points system foundation
+**Next session:** Plan 28-02 - Benchmark Service
+- Build service layer for submit, update, and aggregate calculations
+- Integrate with points system for +50 points on submission
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -152,8 +158,9 @@ None - Phase 27 complete, ready for Phase 28.
 - Point system files at: src/points/types.ts, src/points/config.ts, src/points/service.ts
 - Points API at: src/routes/points.ts, src/routes/admin/points.ts
 - Admin config API at: src/routes/admin/points-config.ts
+- Benchmark types at: src/benchmarks/types.ts, src/benchmarks/schemas.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 27-03-PLAN.md (Phase 27 complete)*
+*Last updated: 2026-01-23 - Completed 28-01-PLAN.md*

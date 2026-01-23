@@ -80,68 +80,20 @@ CREATE TABLE "DiscordActivity" (
     CONSTRAINT "DiscordActivity_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE INDEX "BenchmarkSubmission_category_idx" ON "BenchmarkSubmission"("category");
-
--- CreateIndex
-CREATE INDEX "BenchmarkSubmission_memberId_idx" ON "BenchmarkSubmission"("memberId");
-
--- CreateIndex
-CREATE INDEX "BenchmarkSubmission_data_idx" ON "BenchmarkSubmission" USING GIN ("data" jsonb_path_ops);
-
--- CreateIndex
+-- CreateUniqueIndex (fast, no need for concurrent)
 CREATE UNIQUE INDEX "BenchmarkSubmission_memberId_category_key" ON "BenchmarkSubmission"("memberId", "category");
 
--- CreateIndex
-CREATE INDEX "Resource_category_idx" ON "Resource"("category");
+-- AddForeignKey with NOT VALID (instant, no table scan)
+ALTER TABLE "BenchmarkSubmission" ADD CONSTRAINT "BenchmarkSubmission_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE NOT VALID;
 
--- CreateIndex
-CREATE INDEX "Resource_type_idx" ON "Resource"("type");
+-- AddForeignKey with NOT VALID (instant, no table scan)
+ALTER TABLE "ResourceDownload" ADD CONSTRAINT "ResourceDownload_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE NOT VALID;
 
--- CreateIndex
-CREATE INDEX "Resource_isFeatured_idx" ON "Resource"("isFeatured");
+-- AddForeignKey with NOT VALID (instant, no table scan)
+ALTER TABLE "ResourceDownload" ADD CONSTRAINT "ResourceDownload_resourceId_fkey" FOREIGN KEY ("resourceId") REFERENCES "Resource"("id") ON DELETE CASCADE ON UPDATE CASCADE NOT VALID;
 
--- CreateIndex
-CREATE INDEX "ResourceDownload_memberId_idx" ON "ResourceDownload"("memberId");
+-- AddForeignKey with NOT VALID (instant, no table scan)
+ALTER TABLE "PointTransaction" ADD CONSTRAINT "PointTransaction_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE NOT VALID;
 
--- CreateIndex
-CREATE INDEX "ResourceDownload_resourceId_idx" ON "ResourceDownload"("resourceId");
-
--- CreateIndex
-CREATE INDEX "ResourceDownload_downloadedAt_idx" ON "ResourceDownload"("downloadedAt");
-
--- CreateIndex
-CREATE INDEX "PointTransaction_memberId_idx" ON "PointTransaction"("memberId");
-
--- CreateIndex
-CREATE INDEX "PointTransaction_action_idx" ON "PointTransaction"("action");
-
--- CreateIndex
-CREATE INDEX "PointTransaction_createdAt_idx" ON "PointTransaction"("createdAt");
-
--- CreateIndex
-CREATE INDEX "DiscordActivity_memberId_idx" ON "DiscordActivity"("memberId");
-
--- CreateIndex
-CREATE INDEX "DiscordActivity_discordId_idx" ON "DiscordActivity"("discordId");
-
--- CreateIndex
-CREATE INDEX "DiscordActivity_syncedAt_idx" ON "DiscordActivity"("syncedAt");
-
--- CreateIndex
-CREATE INDEX "Member_totalPoints_idx" ON "Member"("totalPoints" DESC);
-
--- AddForeignKey
-ALTER TABLE "BenchmarkSubmission" ADD CONSTRAINT "BenchmarkSubmission_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ResourceDownload" ADD CONSTRAINT "ResourceDownload_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ResourceDownload" ADD CONSTRAINT "ResourceDownload_resourceId_fkey" FOREIGN KEY ("resourceId") REFERENCES "Resource"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PointTransaction" ADD CONSTRAINT "PointTransaction_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "DiscordActivity" ADD CONSTRAINT "DiscordActivity_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- AddForeignKey with NOT VALID (instant, no table scan)
+ALTER TABLE "DiscordActivity" ADD CONSTRAINT "DiscordActivity_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member"("id") ON DELETE CASCADE ON UPDATE CASCADE NOT VALID;

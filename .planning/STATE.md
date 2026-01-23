@@ -49,7 +49,7 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~28 requirements (28%) - Phases 26-28 complete
+- Completed: 32 requirements (32%) - Phases 26-28 complete
 - In progress: Ready for Phase 29
 - Blocked: 0
 
@@ -92,6 +92,7 @@ v2.0:     [██████████░░░░░░░░░░] 9/~16 p
 | Segment filtering via BUSINESS category | Cross-category filtering without Member schema changes | 28-02 |
 | 3-sigma outlier detection | Flag values > 3 stddev from median as potential outliers | 28-02 |
 | Zod v4 record() requires two args | Use z.record(z.string(), z.unknown()) for flexible object | 28-03 |
+| BENCH-08 moved to Phase 32 | Frontend visualization requires React components | 28 |
 
 ### Research Insights
 

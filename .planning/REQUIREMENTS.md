@@ -217,21 +217,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GAME-13 | Phase 32 | Pending |
 | GAME-14 | Phase 32 | Pending |
 | GAME-15 | Phase 32 | Pending |
-| BENCH-01 | Phase 28 | Pending |
-| BENCH-02 | Phase 28 | Pending |
-| BENCH-03 | Phase 28 | Pending |
-| BENCH-04 | Phase 28 | Pending |
-| BENCH-05 | Phase 28 | Pending |
-| BENCH-06 | Phase 28 | Pending |
-| BENCH-07 | Phase 28 | Pending |
-| BENCH-08 | Phase 28 | Pending |
-| BENCH-09 | Phase 28 | Pending |
-| BENCH-10 | Phase 28 | Pending |
-| BENCH-11 | Phase 28 | Pending |
-| BENCH-12 | Phase 28 | Pending |
-| BENCH-13 | Phase 28 | Pending |
-| BENCH-14 | Phase 28 | Pending |
-| BENCH-15 | Phase 28 | Pending |
+| BENCH-01 | Phase 28 | Complete |
+| BENCH-02 | Phase 28 | Complete |
+| BENCH-03 | Phase 28 | Complete |
+| BENCH-04 | Phase 28 | Complete |
+| BENCH-05 | Phase 28 | Complete |
+| BENCH-06 | Phase 28 | Complete |
+| BENCH-07 | Phase 28 | Complete |
+| BENCH-08 | Phase 32 | Pending |
+| BENCH-09 | Phase 28 | Complete |
+| BENCH-10 | Phase 28 | Complete |
+| BENCH-11 | Phase 28 | Complete |
+| BENCH-12 | Phase 28 | Complete |
+| BENCH-13 | Phase 28 | Complete |
+| BENCH-14 | Phase 28 | Complete |
+| BENCH-15 | Phase 28 | Complete |
 | RES-01 | Phase 29 | Pending |
 | RES-02 | Phase 29 | Pending |
 | RES-03 | Phase 29 | Pending |
@@ -297,4 +297,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-23 after Phase 27 completion*
+*Last updated: 2026-01-23 after Phase 28 completion*

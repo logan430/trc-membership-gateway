@@ -24,8 +24,10 @@ import { adminConfigRouter } from './routes/admin/config.js';
 import { adminAuditRouter } from './routes/admin/audit.js';
 import { adminTemplatesRouter } from './routes/admin/templates.js';
 import { adminAdminsRouter } from './routes/admin/admins.js';
+import { adminPointsConfigRouter } from './routes/admin/points-config.js';
 import { startBot, discordClient } from './bot/client.js';
 import { prisma } from './lib/prisma.js';
+import { seedDefaultPointConfigs } from './points/config.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
 import { authLimiter, signupLimiter, magicLinkLimiter, adminAuthLimiter } from './middleware/rate-limit.js';
@@ -98,6 +100,7 @@ app.use('/api/admin/config', adminConfigRouter);
 app.use('/api/admin/audit', adminAuditRouter);
 app.use('/api/admin/templates', adminTemplatesRouter);
 app.use('/api/admin/admins', adminAdminsRouter);
+app.use('/api/admin/points-config', adminPointsConfigRouter);
 
 // Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);
@@ -206,6 +209,11 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 // Start server
 const server = app.listen(env.PORT, () => {
   logger.info({ port: env.PORT, env: env.NODE_ENV }, 'Server started');
+
+  // Seed default point configs (idempotent - uses skipDuplicates)
+  seedDefaultPointConfigs()
+    .then(() => logger.info('Default point configs seeded'))
+    .catch((error) => logger.error({ error }, 'Failed to seed point configs'));
 
   // Start Discord bot after HTTP server is ready
   startBot()

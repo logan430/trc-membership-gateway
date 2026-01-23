@@ -188,13 +188,113 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (Populated by roadmapper) | | |
+| AUTH-01 | Phase 31 | Pending |
+| AUTH-02 | Phase 31 | Pending |
+| AUTH-03 | Phase 31 | Pending |
+| AUTH-04 | Phase 31 | Pending |
+| DB-01 | Phase 26 | Pending |
+| DB-02 | Phase 26 | Pending |
+| DB-03 | Phase 26 | Pending |
+| DB-04 | Phase 26 | Pending |
+| DB-05 | Phase 26 | Pending |
+| DB-06 | Phase 26 | Pending |
+| DB-07 | Phase 26 | Pending |
+| DB-08 | Phase 26 | Pending |
+| DB-09 | Phase 26 | Pending |
+| DB-10 | Phase 26 | Pending |
+| GAME-01 | Phase 27 | Pending |
+| GAME-02 | Phase 27 | Pending |
+| GAME-03 | Phase 27 | Pending |
+| GAME-04 | Phase 27 | Pending |
+| GAME-05 | Phase 27 | Pending |
+| GAME-06 | Phase 27 | Pending |
+| GAME-07 | Phase 27 | Pending |
+| GAME-08 | Phase 27 | Pending |
+| GAME-09 | Phase 32 | Pending |
+| GAME-10 | Phase 32 | Pending |
+| GAME-11 | Phase 32 | Pending |
+| GAME-12 | Phase 32 | Pending |
+| GAME-13 | Phase 32 | Pending |
+| GAME-14 | Phase 32 | Pending |
+| GAME-15 | Phase 32 | Pending |
+| BENCH-01 | Phase 28 | Pending |
+| BENCH-02 | Phase 28 | Pending |
+| BENCH-03 | Phase 28 | Pending |
+| BENCH-04 | Phase 28 | Pending |
+| BENCH-05 | Phase 28 | Pending |
+| BENCH-06 | Phase 28 | Pending |
+| BENCH-07 | Phase 28 | Pending |
+| BENCH-08 | Phase 28 | Pending |
+| BENCH-09 | Phase 28 | Pending |
+| BENCH-10 | Phase 28 | Pending |
+| BENCH-11 | Phase 28 | Pending |
+| BENCH-12 | Phase 28 | Pending |
+| BENCH-13 | Phase 28 | Pending |
+| BENCH-14 | Phase 28 | Pending |
+| BENCH-15 | Phase 28 | Pending |
+| RES-01 | Phase 29 | Pending |
+| RES-02 | Phase 29 | Pending |
+| RES-03 | Phase 29 | Pending |
+| RES-04 | Phase 29 | Pending |
+| RES-05 | Phase 29 | Pending |
+| RES-06 | Phase 29 | Pending |
+| RES-07 | Phase 29 | Pending |
+| RES-08 | Phase 29 | Pending |
+| RES-09 | Phase 29 | Pending |
+| RES-10 | Phase 29 | Pending |
+| RES-11 | Phase 29 | Pending |
+| RES-12 | Phase 29 | Pending |
+| RES-13 | Phase 29 | Pending |
+| RES-14 | Phase 29 | Pending |
+| RES-15 | Phase 29 | Pending |
+| DISCORD-01 | Phase 30 | Pending |
+| DISCORD-02 | Phase 30 | Pending |
+| DISCORD-03 | Phase 30 | Pending |
+| DISCORD-04 | Phase 30 | Pending |
+| DISCORD-05 | Phase 30 | Pending |
+| DISCORD-06 | Phase 30 | Pending |
+| UI-01 | Phase 32 | Pending |
+| UI-02 | Phase 32 | Pending |
+| UI-03 | Phase 32 | Pending |
+| UI-04 | Phase 32 | Pending |
+| UI-05 | Phase 32 | Pending |
+| UI-06 | Phase 32 | Pending |
+| UI-07 | Phase 32 | Pending |
+| UI-08 | Phase 32 | Pending |
+| UI-09 | Phase 32 | Pending |
+| UI-10 | Phase 32 | Pending |
+| UI-11 | Phase 32 | Pending |
+| UI-12 | Phase 32 | Pending |
+| UI-13 | Phase 32 | Pending |
+| UI-14 | Phase 32 | Pending |
+| ANALYTICS-01 | Phase 33 | Pending |
+| ANALYTICS-02 | Phase 33 | Pending |
+| ANALYTICS-03 | Phase 33 | Pending |
+| ANALYTICS-04 | Phase 33 | Pending |
+| ANALYTICS-05 | Phase 33 | Pending |
+| ANALYTICS-06 | Phase 33 | Pending |
+| ANALYTICS-07 | Phase 33 | Pending |
+| ANALYTICS-08 | Phase 33 | Pending |
+| ANALYTICS-09 | Phase 33 | Pending |
+| ANALYTICS-10 | Phase 33 | Pending |
+| SEC-01 | Phase 29 | Pending |
+| SEC-02 | Phase 29 | Pending |
+| SEC-03 | Phase 29 | Pending |
+| SEC-04 | Phase 29 | Pending |
+| SEC-05 | Phase 29 | Pending |
+| SEC-06 | Phase 29 | Pending |
+| SEC-07 | Phase 29 | Pending |
+| JOBS-01 | Phase 30 | Pending |
+| JOBS-02 | Phase 30 | Pending |
+| JOBS-03 | Phase 30 | Pending |
+| JOBS-04 | Phase 30 | Pending |
+| JOBS-05 | Phase 30 | Pending |
 
 **Coverage:**
-- v2.0 requirements: TBD total
-- Mapped to phases: TBD
-- Unmapped: TBD ⚠️
+- v2.0 requirements: 101 total
+- Mapped to phases: 101 (100% ✓)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-22 after initial definition*
+*Last updated: 2026-01-22 after v2.0 roadmap creation*

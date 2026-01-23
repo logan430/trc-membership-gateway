@@ -59,6 +59,11 @@ const envSchema = z.object({
   // Supabase Storage (for resource library)
   SUPABASE_URL: z.string().url().optional(), // Optional until storage operations used
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(), // Service role key for server-side operations
+
+  // Malware Scanning (optional - requires ClamAV daemon)
+  ENABLE_MALWARE_SCAN: z.enum(['true', 'false']).optional().default('false'),
+  CLAMAV_HOST: z.string().optional(), // e.g., 'localhost' or '127.0.0.1'
+  CLAMAV_PORT: z.coerce.number().optional().default(3310),
 }).refine(
   (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
   { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }

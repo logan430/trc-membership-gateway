@@ -28,11 +28,18 @@ export const AuditAction = {
 
   // Benchmark actions
   BENCHMARK_REVIEWED: 'BENCHMARK_REVIEWED',
+
+  // Resource actions
+  RESOURCE_CREATED: 'RESOURCE_CREATED',
+  RESOURCE_UPDATED: 'RESOURCE_UPDATED',
+  RESOURCE_VERSION_UPLOADED: 'RESOURCE_VERSION_UPLOADED',
+  RESOURCE_DELETED: 'RESOURCE_DELETED',
+  RESOURCE_RESTORED: 'RESOURCE_RESTORED',
 } as const;
 
 export type AuditActionType = (typeof AuditAction)[keyof typeof AuditAction];
 
-export type EntityType = 'Admin' | 'Member' | 'Team' | 'FeatureFlag' | 'EmailTemplate';
+export type EntityType = 'Admin' | 'Member' | 'Team' | 'FeatureFlag' | 'EmailTemplate' | 'Resource';
 
 /**
  * Log an audit event to the database

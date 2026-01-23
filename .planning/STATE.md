@@ -28,8 +28,8 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 27 - Points System Backend
-**Current Plan:** 2 of 3 complete
-**Status:** In progress
+**Current Plan:** 3 of 3 complete
+**Status:** Phase complete
 
 **Phase Goal:**
 Build points system backend with configurable values, transaction recording, and public API endpoints.
@@ -37,8 +37,8 @@ Build points system backend with configurable values, transaction recording, and
 **Progress:**
 ```
 Phase 26: [████████████████████] 3/3 plans (Complete!)
-Phase 27: [█████████████░░░░░░░] 2/3 plans
-v2.0:     [█████░░░░░░░░░░░░░░░] 5/~16 plans
+Phase 27: [████████████████████] 3/3 plans (Complete!)
+v2.0:     [███████░░░░░░░░░░░░░] 6/~16 plans
 ```
 
 ---
@@ -48,7 +48,7 @@ v2.0:     [█████░░░░░░░░░░░░░░░] 5/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~15 requirements (15%) - Phase 26 + 27-01/02 complete
+- Completed: ~18 requirements (18%) - Phases 26-27 complete
 - In progress: 0
 - Blocked: 0
 
@@ -56,8 +56,7 @@ v2.0:     [█████░░░░░░░░░░░░░░░] 5/~16 p
 - v1.0 shipped: 25 phases, 60 plans, 114 commits (Oct 2025 - Jan 2026)
 - v2.0 started: 2026-01-22
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
-- Plan 27-01 completed: 2026-01-23 (6 minutes)
-- Plan 27-02 completed: 2026-01-23 (7 minutes)
+- Phase 27 completed: 2026-01-23 (3 plans, ~18 minutes total)
 
 ---
 
@@ -83,6 +82,8 @@ v2.0:     [█████░░░░░░░░░░░░░░░] 5/~16 p
 | admin_adjustment not configurable | Admin adjustments use arbitrary values, not config | 27-01 |
 | Metadata-based idempotency | JSONB path queries for flexible duplicate detection | 27-02 |
 | Fire-and-forget DM for admin adjustments | Consistent with existing patterns, DM failure non-blocking | 27-02 |
+| Admin adjustments hidden from member history | Preserves the 'earned' feeling per CONTEXT.md | 27-03 |
+| Points summary floors at zero for display | Negative total possible but shows as 0 to member | 27-03 |
 
 ### Research Insights
 
@@ -115,11 +116,11 @@ v2.0:     [█████░░░░░░░░░░░░░░░] 5/~16 p
 - [x] Apply migrations to database
 - [x] Create PointConfig model and admin API (Plan 27-01)
 - [x] Build point transaction service (Plan 27-02)
-- [ ] Create public points API endpoints (Plan 27-03)
+- [x] Create public points API endpoints (Plan 27-03)
 
 ### Known Blockers
 
-None - continuing Phase 27.
+None - Phase 27 complete, ready for Phase 28.
 
 ### Questions for User
 
@@ -132,14 +133,15 @@ None - continuing Phase 27.
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 27-02: Point Transaction Service
-- Created idempotent points service with 5 award functions
-- Added POINTS_ADJUSTED audit action
-- Integrated intro points into introduction handler
-- Commits: 138155f, 7edd331, 5146aea
+- Completed Plan 27-03: Public Points API Endpoints
+- Created member points API (history, values, summary)
+- Created admin points API (adjust, history)
+- Mounted routes in Express app
+- Commits: ced57fe, 127eb2f, 87e4571
 
-**Next session:** Continue Phase 27
-- Plan 27-03: Public points API endpoints
+**Next session:** Phase 28 - Benchmark System
+- Plan phases for benchmark submission and visualization
+- Build on points system foundation
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -147,9 +149,10 @@ None - continuing Phase 27.
 - Phase dependencies (backend -> frontend, points system -> gamification)
 - Migration files at: prisma/migrations/0_init/ through 20260123044437_add_point_config/
 - Point system files at: src/points/types.ts, src/points/config.ts, src/points/service.ts
-- Admin API at: src/routes/admin/points-config.ts
+- Points API at: src/routes/points.ts, src/routes/admin/points.ts
+- Admin config API at: src/routes/admin/points-config.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 27-02-PLAN.md*
+*Last updated: 2026-01-23 - Completed 27-03-PLAN.md (Phase 27 complete)*

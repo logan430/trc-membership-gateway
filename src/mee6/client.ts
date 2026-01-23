@@ -92,7 +92,7 @@ export async function fetchLeaderboardPage(
         });
 
         logger.error(
-          { error: parseResult.error.errors, guildId: effectiveGuildId, page },
+          { error: parseResult.error.issues, guildId: effectiveGuildId, page },
           'MEE6 API response validation failed'
         );
 
@@ -112,7 +112,6 @@ export async function fetchLeaderboardPage(
             page,
             attempt: error.attemptNumber,
             retriesLeft: error.retriesLeft,
-            error: error.message,
           },
           'MEE6 API retry'
         );

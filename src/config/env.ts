@@ -64,6 +64,10 @@ const envSchema = z.object({
   ENABLE_MALWARE_SCAN: z.enum(['true', 'false']).optional().default('false'),
   CLAMAV_HOST: z.string().optional(), // e.g., 'localhost' or '127.0.0.1'
   CLAMAV_PORT: z.coerce.number().optional().default(3310),
+
+  // MEE6 Integration
+  MEE6_SYNC_ENABLED: z.enum(['true', 'false']).default('false'), // Master toggle for XP sync
+  MEE6_GUILD_ID: z.string().optional(), // Override guild ID for MEE6 (defaults to DISCORD_GUILD_ID)
 }).refine(
   (data) => data.EMAIL_PROVIDER !== 'resend' || data.RESEND_API_KEY,
   { message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend', path: ['RESEND_API_KEY'] }

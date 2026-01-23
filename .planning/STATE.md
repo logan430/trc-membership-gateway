@@ -28,8 +28,8 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 28 - Benchmarking System
-**Current Plan:** 2 of 3 complete
-**Status:** In progress
+**Current Plan:** 3 of 3 complete
+**Status:** Phase complete
 
 **Phase Goal:**
 Build benchmarking backend with types, validation, service layer, and API endpoints for anonymous peer comparison.
@@ -38,8 +38,8 @@ Build benchmarking backend with types, validation, service layer, and API endpoi
 ```
 Phase 26: [████████████████████] 3/3 plans (Complete!)
 Phase 27: [████████████████████] 3/3 plans (Complete!)
-Phase 28: [█████████████░░░░░░░] 2/3 plans (In progress)
-v2.0:     [█████████░░░░░░░░░░░] 8/~16 plans
+Phase 28: [████████████████████] 3/3 plans (Complete!)
+v2.0:     [██████████░░░░░░░░░░] 9/~16 plans
 ```
 
 ---
@@ -49,8 +49,8 @@ v2.0:     [█████████░░░░░░░░░░░] 8/~16 p
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~25 requirements (25%) - Phases 26-27 + 28-01/02 complete
-- In progress: Phase 28
+- Completed: ~28 requirements (28%) - Phases 26-28 complete
+- In progress: Ready for Phase 29
 - Blocked: 0
 
 **Recent velocity:**
@@ -58,8 +58,7 @@ v2.0:     [█████████░░░░░░░░░░░] 8/~16 p
 - v2.0 started: 2026-01-22
 - Phase 26 completed: 2026-01-23 (3 plans, ~20 minutes total)
 - Phase 27 completed: 2026-01-23 (3 plans, ~18 minutes total)
-- Plan 28-01 completed: 2026-01-23 (~3 minutes)
-- Plan 28-02 completed: 2026-01-23 (~5 minutes)
+- Phase 28 completed: 2026-01-23 (3 plans, ~14 minutes total)
 
 ---
 
@@ -92,6 +91,7 @@ v2.0:     [█████████░░░░░░░░░░░] 8/~16 p
 | PostgreSQL percentile_cont() for aggregates | Native DB aggregate functions for accuracy and performance | 28-02 |
 | Segment filtering via BUSINESS category | Cross-category filtering without Member schema changes | 28-02 |
 | 3-sigma outlier detection | Flag values > 3 stddev from median as potential outliers | 28-02 |
+| Zod v4 record() requires two args | Use z.record(z.string(), z.unknown()) for flexible object | 28-03 |
 
 ### Research Insights
 
@@ -127,11 +127,11 @@ v2.0:     [█████████░░░░░░░░░░░] 8/~16 p
 - [x] Create public points API endpoints (Plan 27-03)
 - [x] Create benchmark types and schemas (Plan 28-01)
 - [x] Build benchmark service layer (Plan 28-02)
-- [ ] Create benchmark API endpoints (Plan 28-03)
+- [x] Create benchmark API endpoints (Plan 28-03)
 
 ### Known Blockers
 
-None - Plan 28-02 complete, ready for 28-03.
+None - Phase 28 complete, ready for Phase 29 (Resource Library).
 
 ### Questions for User
 
@@ -144,15 +144,16 @@ None - Plan 28-02 complete, ready for 28-03.
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 28-02: Benchmark Service Layer
-- Created src/benchmarks/service.ts with 424 lines
-- Implemented submitBenchmark, getMySubmissions, getAggregates, detectOutliers
-- Added segment filtering with cross-category BUSINESS matching
-- Commit: 43525fa
+- Completed Plan 28-03: Benchmark API Endpoints
+- Created src/routes/benchmarks.ts (member endpoints)
+- Created src/routes/admin/benchmarks.ts (admin moderation endpoints)
+- Added BENCHMARK_REVIEWED audit action
+- Mounted routes in Express app
+- Commits: 6d70975, d51ffc0, 4acc2ba
 
-**Next session:** Plan 28-03 - Benchmark API
-- Create Express routes for benchmark submission and retrieval
-- Mount routes on /api/benchmarks with member auth
+**Next session:** Phase 29 - Resource Library
+- Research resource library requirements
+- Plan file storage, categorization, and access control
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -164,8 +165,9 @@ None - Plan 28-02 complete, ready for 28-03.
 - Admin config API at: src/routes/admin/points-config.ts
 - Benchmark types at: src/benchmarks/types.ts, src/benchmarks/schemas.ts
 - Benchmark service at: src/benchmarks/service.ts
+- Benchmark API at: src/routes/benchmarks.ts, src/routes/admin/benchmarks.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 28-02-PLAN.md*
+*Last updated: 2026-01-23 - Completed 28-03-PLAN.md (Phase 28 complete)*

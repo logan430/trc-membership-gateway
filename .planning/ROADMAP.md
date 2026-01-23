@@ -118,11 +118,18 @@ Plans:
 
 **Requirements:** DISCORD-01, DISCORD-02, DISCORD-03, DISCORD-04, DISCORD-05, DISCORD-06, JOBS-01, JOBS-02, JOBS-03, JOBS-04, JOBS-05
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 30-01-PLAN.md — Create MEE6 API client with types, Zod schemas, and env config
+- [ ] 30-02-PLAN.md — Create MEE6 sync job with XP delta calculation and points integration
+- [ ] 30-03-PLAN.md — Create streak calculator and job scheduler with graceful shutdown
+
 **Success Criteria:**
 1. Background job syncs MEE6 XP data every 15 minutes via node-cron
 2. XP delta calculated (current XP - last recorded XP) and points awarded at 1 point per 100 XP
-3. Historical XP backfilled for existing members on first sync (prevents losing past activity)
-4. Streak calculation runs daily at 00:05 UTC (consecutive days with point-earning actions)
+3. First sync creates baseline (no historical backfill points per CONTEXT.md decision)
+4. Streak calculation runs daily at 00:05 UTC (consecutive weekdays with point-earning actions)
 5. All background jobs log errors to Sentry and shut down gracefully on SIGTERM
 
 ---
@@ -186,7 +193,7 @@ Plans:
 | 27 - Points System Backend | Complete | 3 | 8/8 requirements |
 | 28 - Benchmarking System | Complete | 3 | 14/14 requirements |
 | 29 - Resource Library & File Storage | Complete | 4 | 22/22 requirements |
-| 30 - MEE6 Discord Integration | Pending | 0 | 0/11 requirements |
+| 30 - MEE6 Discord Integration | Planned | 3 | 0/11 requirements |
 | 31 - Next.js Frontend Setup | Pending | 0 | 0/4 requirements |
 | 32 - Member Dashboard Pages | Pending | 0 | 0/21 requirements |
 | 33 - Admin Analytics Dashboard | Pending | 0 | 0/10 requirements |
@@ -196,4 +203,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 (Phase 29 complete)*
+*Last updated: 2026-01-23 (Phase 30 planned)*

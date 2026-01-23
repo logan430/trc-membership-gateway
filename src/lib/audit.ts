@@ -25,6 +25,9 @@ export const AuditAction = {
 
   // Points actions
   POINTS_ADJUSTED: 'POINTS_ADJUSTED',
+
+  // Benchmark actions
+  BENCHMARK_REVIEWED: 'BENCHMARK_REVIEWED',
 } as const;
 
 export type AuditActionType = (typeof AuditAction)[keyof typeof AuditAction];

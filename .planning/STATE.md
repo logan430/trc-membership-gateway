@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 30 - MEE6 Discord Integration
-**Current Plan:** 1 of 4 complete
+**Current Plan:** 2 of 4 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -40,8 +40,8 @@ Phase 26: [####################] 3/3 plans (Complete!)
 Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
-Phase 30: [#####...............] 1/4 plans
-v2.0:     [################....] 14/~17 plans
+Phase 30: [##########..........] 2/4 plans
+v2.0:     [################....] 15/~17 plans
 ```
 
 ---
@@ -112,6 +112,9 @@ v2.0:     [################....] 14/~17 plans
 | MEE6 401 as AbortError | Leaderboard not public is config issue, not transient | 30-01 |
 | 2-second delay between page fetches | Conservative rate limiting for unofficial API | 30-01 |
 | MEE6_SYNC_ENABLED default false | Master toggle off by default until explicitly enabled | 30-01 |
+| First sync xpDelta = null | Distinguishes baseline from zero-change sync | 30-02 |
+| Negative XP = proportional deduction | Admin XP removal deducts member points | 30-02 |
+| lastActiveAt on positive points only | Deductions shouldn't count as member activity | 30-02 |
 
 ### Research Insights
 
@@ -161,10 +164,13 @@ v2.0:     [################....] 14/~17 plans
 - [x] Create resource service layer (Plan 29-03)
 - [x] Create resource API endpoints (Plan 29-04)
 - [x] Create MEE6 API client module (Plan 30-01)
+- [x] Create job types for sync statistics (Plan 30-02)
+- [x] Extend points service for negative XP deltas (Plan 30-02)
+- [x] Create MEE6 XP sync function (Plan 30-02)
 
 ### Known Blockers
 
-None - Plan 30-01 complete. Ready for Plan 30-02 (MEE6 sync job).
+None - Plan 30-02 complete. Ready for Plan 30-03 (streak calculation).
 
 ### Questions for User
 
@@ -177,16 +183,16 @@ None - Plan 30-01 complete. Ready for Plan 30-02 (MEE6 sync job).
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Plan 30-01: MEE6 API Client
-- Created MEE6 types and Zod schemas at src/mee6/types.ts
-- Created MEE6 API client with p-retry at src/mee6/client.ts
-- Added MEE6_SYNC_ENABLED and MEE6_GUILD_ID to env.ts
-- Commits: 3c37bad, 0f27110, dfe44a9, 297724e
+- Completed Plan 30-02: MEE6 Sync Job
+- Created job types at src/jobs/types.ts
+- Extended points service for negative deltas in src/points/service.ts
+- Created MEE6 sync function at src/jobs/mee6-sync.ts
+- Commits: 49e5bc0, d814dca, ffbec99
 
-**Next session:** Plan 30-02 - MEE6 Sync Job
-- Background job to sync XP data every 15 minutes
-- XP-to-points conversion with delta tracking
-- Alert admin after 3+ consecutive failures
+**Next session:** Plan 30-03 - Streak Calculation
+- Daily job to calculate and update member engagement streaks
+- Weekday-only streak tracking (Mon-Fri required, weekends grace)
+- Runs at 00:05 UTC
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -205,8 +211,10 @@ None - Plan 30-01 complete. Ready for Plan 30-02 (MEE6 sync job).
 - Resource service at: src/resources/service.ts
 - Resource API at: src/routes/resources.ts, src/routes/admin/resources.ts
 - MEE6 client at: src/mee6/types.ts, src/mee6/client.ts
+- Job types at: src/jobs/types.ts
+- MEE6 sync job at: src/jobs/mee6-sync.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Completed 30-01-PLAN.md*
+*Last updated: 2026-01-23 - Completed 30-02-PLAN.md*

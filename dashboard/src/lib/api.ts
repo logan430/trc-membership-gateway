@@ -289,5 +289,6 @@ export const api = {
   points: pointsApi,
   benchmarks: benchmarksApi,
   resources: resourcesApi,
+  leaderboard: leaderboardApi,
   member: memberApi,
 };

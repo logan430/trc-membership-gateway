@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 32 - Member Dashboard Pages
-**Current Plan:** 4 of 5 complete
+**Current Plan:** 5 of 7 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -42,8 +42,8 @@ Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
-Phase 32: [################....] 4/5 plans (In progress)
-v2.0:     [###################.] 25/~26 plans
+Phase 32: [##############......] 5/7 plans (In progress)
+v2.0:     [###################.] 26/~28 plans
 ```
 
 ---
@@ -53,8 +53,8 @@ v2.0:     [###################.] 25/~26 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~68 requirements (~67%) - Phases 26-31 complete
-- In progress: None (Phase 31 complete)
+- Completed: ~75 requirements (~74%) - Phases 26-31 complete, 32 in progress
+- In progress: Phase 32 (5/7 plans)
 - Blocked: 0
 
 **Recent velocity:**
@@ -147,6 +147,8 @@ v2.0:     [###################.] 25/~26 plans
 | Conversational wizard flow | One question per screen per CONTEXT.md - feel like conversation | 32-03 |
 | Horizontal bar chart for comparisons | Easy visual comparison, compact on mobile | 32-04 |
 | Suspense for searchParams | Required to avoid hydration errors with client-side params in Next.js 15 | 32-04 |
+| Monthly points via raw SQL | Prisma doesn't support conditional sums in groupBy | 32-05 |
+| Privacy filter in both queries | Consistent leaderboardVisible enforcement for top 25 and rank | 32-05 |
 
 ### Research Insights
 
@@ -209,11 +211,13 @@ v2.0:     [###################.] 25/~26 plans
 - [x] Create resources page with browser UI (Plan 32-02)
 - [x] Create benchmarks page with submission forms (Plan 32-03)
 - [x] Create benchmark results page with charts (Plan 32-04)
-- [ ] Create profile page (Plan 32-05)
+- [x] Create leaderboard page (Plan 32-05)
+- [ ] Create profile page (Plan 32-06)
+- [ ] Create settings page (Plan 32-07)
 
 ### Known Blockers
 
-None - Plan 32-04 complete. Benchmark results page with Recharts visualizations and k-anonymity gate.
+None - Plan 32-05 complete. Leaderboard page with period toggle and rank pinning functional.
 
 ### Questions for User
 
@@ -226,12 +230,12 @@ None - Plan 32-04 complete. Benchmark results page with Recharts visualizations 
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 32-04: Benchmark Results Page
-- Added AggregatesResponse interface and useAggregates hook
-- Created ComparisonBar, MetricComparisonCard, and KAnonymityGate components
-- Created /dashboard/benchmarks/results page with charts and filters
+- Completed Plan 32-05: Leaderboard Page
+- Created /api/leaderboard endpoint with period filter and privacy support
+- Built LeaderboardTable, RankBadge, PeriodTabs, ResetCountdown components
+- Created /dashboard/leaderboard page with supportive messaging
 
-**Next session:** Plan 32-05 (Profile Page)
+**Next session:** Plan 32-06 (Profile Page)
 - Create member profile page
 - Account settings and preferences
 - Activity summary
@@ -257,6 +261,7 @@ None - Plan 32-04 complete. Benchmark results page with Recharts visualizations 
 - MEE6 sync job at: src/jobs/mee6-sync.ts
 - Streak calculator at: src/jobs/streak-calculator.ts
 - Job scheduler at: src/jobs/index.ts
+- Leaderboard API at: src/routes/leaderboard.ts
 - Next.js app at: dashboard/package.json, dashboard/src/app/
 - Tailwind theme at: dashboard/src/app/globals.css
 - Auth lib at: dashboard/src/lib/auth.ts
@@ -267,16 +272,19 @@ None - Plan 32-04 complete. Benchmark results page with Recharts visualizations 
 - Points hooks at: dashboard/src/hooks/usePoints.ts
 - Benchmark hooks at: dashboard/src/hooks/useBenchmarks.ts
 - Resource hooks at: dashboard/src/hooks/useResources.ts
+- Leaderboard hooks at: dashboard/src/hooks/useLeaderboard.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 - Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
 - Benchmark components at: dashboard/src/components/benchmarks/ (CategoryCard, ConversationalWizard, ComparisonBar, MetricComparisonCard, KAnonymityGate)
 - Resource components at: dashboard/src/components/resources/ (ResourceCard, ResourceListItem, ResourceFilters, ResourcePreviewModal)
+- Leaderboard components at: dashboard/src/components/leaderboard/ (LeaderboardTable, RankBadge, PeriodTabs, ResetCountdown)
 - Dashboard shell at: dashboard/src/app/dashboard/ (layout.tsx, page.tsx)
 - Benchmarks page at: dashboard/src/app/dashboard/benchmarks/page.tsx
 - Benchmark results at: dashboard/src/app/dashboard/benchmarks/results/page.tsx
 - Resources page at: dashboard/src/app/dashboard/resources/page.tsx
+- Leaderboard page at: dashboard/src/app/dashboard/leaderboard/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 32-04 (Benchmark Results Page) complete*
+*Last updated: 2026-01-24 - Plan 32-05 (Leaderboard Page) complete*

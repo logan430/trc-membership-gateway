@@ -1,5 +1,8 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui';
+'use client';
+
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, PageLoader } from '@/components/ui';
 import { Coins, Trophy, BarChart3, FolderOpen, Flame } from 'lucide-react';
+import { usePointsSummary, usePointsHistory } from '@/hooks/usePoints';
 
 /**
  * Dashboard Overview Page
@@ -8,8 +11,27 @@ import { Coins, Trophy, BarChart3, FolderOpen, Flame } from 'lucide-react';
  * - Welcome message
  * - Quick stats (gold, rank, streak)
  * - Quick action cards
+ * - Recent activity from points history
  */
 export default function DashboardOverview() {
+  const { data: summaryData, isLoading: summaryLoading, error: summaryError } = usePointsSummary();
+  const { data: historyData, isLoading: historyLoading, error: historyError } = usePointsHistory(5);
+
+  const isLoading = summaryLoading || historyLoading;
+  const error = summaryError || historyError;
+
+  if (isLoading) {
+    return <PageLoader />;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-destructive">Failed to load dashboard data. Please try again.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -27,20 +49,20 @@ export default function DashboardOverview() {
         <StatCard
           icon={<Coins className="text-gold" size={24} />}
           label="Gold Earned"
-          value="150"
-          subtext="+25 this week"
+          value={summaryData?.totalPoints.toLocaleString() ?? '0'}
+          subtext="Total earned"
         />
         <StatCard
           icon={<Trophy className="text-gold-dark" size={24} />}
           label="Guild Rank"
-          value="#42"
-          subtext="Top 15%"
+          value="#--"
+          subtext="Coming soon"
         />
         <StatCard
           icon={<Flame className="text-orange-500" size={24} />}
           label="Current Streak"
-          value="7 days"
-          subtext="Keep it going!"
+          value={`${summaryData?.currentStreak ?? 0} days`}
+          subtext={summaryData?.currentStreak ? 'Keep it going!' : 'Start your streak!'}
         />
       </div>
 
@@ -65,34 +87,61 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* Recent Activity Placeholder */}
+      {/* Recent Activity */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Activity</CardTitle>
           <CardDescription>Your latest actions in the guild</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <ActivityItem
-              action="Earned gold from Discord activity"
-              points="+12"
-              time="2 hours ago"
-            />
-            <ActivityItem
-              action="Downloaded 'Revenue Operations Playbook'"
-              points="+5"
-              time="Yesterday"
-            />
-            <ActivityItem
-              action="Submitted compensation benchmark"
-              points="+50"
-              time="3 days ago"
-            />
-          </div>
+          {historyData?.transactions.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-4 text-center">
+              No activity yet. Start earning gold!
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {historyData?.transactions.map((transaction) => (
+                <ActivityItem
+                  key={transaction.id}
+                  action={transaction.actionLabel}
+                  points={formatPoints(transaction.points)}
+                  time={formatRelativeTime(transaction.createdAt)}
+                />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
+}
+
+/**
+ * Format points with + prefix for positive values
+ */
+function formatPoints(points: number): string {
+  if (points > 0) return `+${points}`;
+  return String(points);
+}
+
+/**
+ * Format a date string to relative time (e.g., "2 hours ago")
+ */
+function formatRelativeTime(date: string): string {
+  const now = new Date();
+  const then = new Date(date);
+  const diffMs = now.getTime() - then.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMinutes < 1) return 'Just now';
+  if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${diffDays >= 14 ? 's' : ''} ago`;
+  return then.toLocaleDateString();
 }
 
 interface StatCardProps {

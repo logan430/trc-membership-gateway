@@ -109,16 +109,16 @@ pointsRouter.get('/values', requireAuth, async (_req, res) => {
 
 /**
  * GET /api/points/summary
- * Get total points and breakdown by action type for authenticated member
+ * Get total points, streak, and breakdown by action type for authenticated member
  * Excludes admin_adjustment from breakdown (hidden from member view)
  */
 pointsRouter.get('/summary', requireAuth, async (req: AuthenticatedRequest, res) => {
   const memberId = req.memberId!;
 
-  // Get member's total points
+  // Get member's total points and streak
   const member = await prisma.member.findUnique({
     where: { id: memberId },
-    select: { totalPoints: true },
+    select: { totalPoints: true, currentStreak: true },
   });
 
   if (!member) {
@@ -145,6 +145,7 @@ pointsRouter.get('/summary', requireAuth, async (req: AuthenticatedRequest, res)
 
   res.json({
     totalPoints: Math.max(0, member.totalPoints), // Floor at zero for display
+    currentStreak: member.currentStreak,
     breakdown: mappedBreakdown,
   });
 });

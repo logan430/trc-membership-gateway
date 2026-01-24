@@ -59,12 +59,14 @@ export async function verifyToken(
 }
 
 // Cookie configuration for refresh token
+// path: '/' enables access from both Express and Next.js dashboard
+// sameSite: 'lax' allows cookie on same-site navigation while still preventing CSRF on POST
 export const REFRESH_COOKIE_NAME = 'trc_refresh';
 
 export const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
-  sameSite: 'strict' as const,
-  path: '/auth/refresh',
+  sameSite: 'lax' as const,
+  path: '/',
   maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
 };

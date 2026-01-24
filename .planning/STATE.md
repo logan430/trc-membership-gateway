@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 32 - Member Dashboard Pages
-**Current Plan:** 1 of 5 complete
+**Current Plan:** 3 of 5 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -42,8 +42,8 @@ Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
-Phase 32: [####................] 1/5 plans (In progress)
-v2.0:     [###################.] 22/~26 plans
+Phase 32: [############........] 3/5 plans (In progress)
+v2.0:     [###################.] 24/~26 plans
 ```
 
 ---
@@ -139,6 +139,12 @@ v2.0:     [###################.] 22/~26 plans
 | QueryClient via useState | SSR safety - prevents server state leakage to client | 32-01 |
 | currentStreak in points summary | Dashboard needs streak data; avoids separate API call | 32-01 |
 | Cursor-based pagination for history | Matches backend API pattern for consistent UX | 32-01 |
+| @tanstack/react-query for data fetching | Caching, mutation support, consistent patterns | 32-02 |
+| Modal overlay for resource preview | Keeps browsing flow uninterrupted per CONTEXT.md | 32-02 |
+| Debounced search (300ms) | Reduces API calls while user types | 32-02 |
+| Question sets match backend schemas | Ensures submitted data validates against Zod schemas | 32-03 |
+| zod@3 for forms over zod@4 | Better compatibility with react-hook-form resolvers | 32-03 |
+| Conversational wizard flow | One question per screen per CONTEXT.md - feel like conversation | 32-03 |
 
 ### Research Insights
 
@@ -198,14 +204,14 @@ v2.0:     [###################.] 22/~26 plans
 - [x] Integrate jobs into main app (Plan 30-03)
 - [x] Install React Query and create provider setup (Plan 32-01)
 - [x] Create points hooks and connect overview page (Plan 32-01)
-- [ ] Create benchmarks page with submission forms (Plan 32-02)
-- [ ] Create resources page with listings (Plan 32-03)
+- [x] Create resources page with browser UI (Plan 32-02)
+- [x] Create benchmarks page with submission forms (Plan 32-03)
 - [ ] Create leaderboard page (Plan 32-04)
 - [ ] Create profile page (Plan 32-05)
 
 ### Known Blockers
 
-None - Plan 32-01 complete. React Query infrastructure in place for remaining dashboard pages.
+None - Plan 32-03 complete. Benchmark submission page functional with conversational wizard.
 
 ### Questions for User
 
@@ -218,15 +224,16 @@ None - Plan 32-01 complete. React Query infrastructure in place for remaining da
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 32-01: Overview Data Integration
-- Installed React Query and configured providers
-- Created points hooks (usePointsSummary, usePointsHistory)
-- Connected overview page to real API data
-- Added currentStreak to points summary endpoint
+- Completed Plan 32-03: Benchmark Submission Page
+- Installed react-hook-form and zod@3 for form management
+- Created useBenchmarks hooks (useMySubmissions, useSubmitBenchmark)
+- Built CategoryCard and ConversationalWizard components
+- Created /dashboard/benchmarks page with 4 categories (31 total questions)
 
-**Next session:** Plan 32-02 (Benchmarks Page)
-- Create benchmark submission forms
-- Display benchmark results with charts
+**Next session:** Plan 32-04 (Leaderboard Page)
+- Create leaderboard with monthly rankings
+- Show member's position highlighted
+- Privacy opt-out toggle
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -257,11 +264,14 @@ None - Plan 32-01 complete. React Query infrastructure in place for remaining da
 - Query configuration at: dashboard/src/lib/queries.ts
 - Providers at: dashboard/src/app/providers.tsx
 - Points hooks at: dashboard/src/hooks/usePoints.ts
+- Benchmark hooks at: dashboard/src/hooks/useBenchmarks.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 - Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
+- Benchmark components at: dashboard/src/components/benchmarks/ (CategoryCard, ConversationalWizard)
 - Dashboard shell at: dashboard/src/app/dashboard/ (layout.tsx, page.tsx)
+- Benchmarks page at: dashboard/src/app/dashboard/benchmarks/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 32-01 (Overview Data Integration) complete*
+*Last updated: 2026-01-24 - Plan 32-03 (Benchmark Submission Page) complete*

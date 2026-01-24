@@ -27,12 +27,12 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 31 - Next.js Frontend Setup
-**Current Plan:** 5 of 5 complete (Phase complete!)
-**Status:** Phase complete
+**Current Phase:** 32 - Member Dashboard Pages
+**Current Plan:** 1 of 5 complete
+**Status:** In progress
 
 **Phase Goal:**
-React-based member dashboard foundation with Express proxy and shared JWT authentication.
+Connect dashboard pages to backend APIs with real-time data display.
 
 **Progress:**
 ```
@@ -42,7 +42,8 @@ Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
-v2.0:     [###################.] 21/~22 plans
+Phase 32: [####................] 1/5 plans (In progress)
+v2.0:     [###################.] 22/~26 plans
 ```
 
 ---
@@ -135,6 +136,9 @@ v2.0:     [###################.] 21/~22 plans
 | Barrel export pattern for UI | Clean imports via @/components/ui | 31-04 |
 | Gold count hardcoded placeholder | Data from API integration in Phase 32 | 31-05 |
 | Static activity items | Placeholders until Phase 32 API integration | 31-05 |
+| QueryClient via useState | SSR safety - prevents server state leakage to client | 32-01 |
+| currentStreak in points summary | Dashboard needs streak data; avoids separate API call | 32-01 |
+| Cursor-based pagination for history | Matches backend API pattern for consistent UX | 32-01 |
 
 ### Research Insights
 
@@ -192,10 +196,16 @@ v2.0:     [###################.] 21/~22 plans
 - [x] Create streak calculation function (Plan 30-03)
 - [x] Create job scheduler with graceful shutdown (Plan 30-03)
 - [x] Integrate jobs into main app (Plan 30-03)
+- [x] Install React Query and create provider setup (Plan 32-01)
+- [x] Create points hooks and connect overview page (Plan 32-01)
+- [ ] Create benchmarks page with submission forms (Plan 32-02)
+- [ ] Create resources page with listings (Plan 32-03)
+- [ ] Create leaderboard page (Plan 32-04)
+- [ ] Create profile page (Plan 32-05)
 
 ### Known Blockers
 
-None - Phase 31 complete. Dashboard shell with sidebar navigation ready for Phase 32 integration.
+None - Plan 32-01 complete. React Query infrastructure in place for remaining dashboard pages.
 
 ### Questions for User
 
@@ -208,15 +218,15 @@ None - Phase 31 complete. Dashboard shell with sidebar navigation ready for Phas
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 31-05: Dashboard Shell Layout
-- Created Sidebar with "The Realm" and "My Keep" navigation sections
-- Created Header with mobile menu, notifications, user avatar
-- Created dashboard layout with responsive sidebar
-- Created overview page with stat cards and activity section
+- Completed Plan 32-01: Overview Data Integration
+- Installed React Query and configured providers
+- Created points hooks (usePointsSummary, usePointsHistory)
+- Connected overview page to real API data
+- Added currentStreak to points summary endpoint
 
-**Next session:** Phase 32 (Frontend Integration)
-- Connect dashboard to backend APIs
-- Integrate real member data
+**Next session:** Plan 32-02 (Benchmarks Page)
+- Create benchmark submission forms
+- Display benchmark results with charts
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -244,6 +254,9 @@ None - Phase 31 complete. Dashboard shell with sidebar navigation ready for Phas
 - Auth lib at: dashboard/src/lib/auth.ts
 - Auth middleware at: dashboard/src/middleware.ts
 - API client at: dashboard/src/lib/api.ts
+- Query configuration at: dashboard/src/lib/queries.ts
+- Providers at: dashboard/src/app/providers.tsx
+- Points hooks at: dashboard/src/hooks/usePoints.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 - Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
 - Dashboard shell at: dashboard/src/app/dashboard/ (layout.tsx, page.tsx)
@@ -251,4 +264,4 @@ None - Phase 31 complete. Dashboard shell with sidebar navigation ready for Phas
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 31-05 (Dashboard Shell Layout) complete - Phase 31 complete!*
+*Last updated: 2026-01-24 - Plan 32-01 (Overview Data Integration) complete*

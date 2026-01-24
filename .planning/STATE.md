@@ -27,12 +27,12 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 32 - Member Dashboard Pages
-**Current Plan:** 7 of 7 complete
-**Status:** Phase complete
+**Current Phase:** 33 - Admin Analytics Dashboard
+**Current Plan:** 1 of 3 complete
+**Status:** In progress
 
 **Phase Goal:**
-Connect dashboard pages to backend APIs with real-time data display.
+Admin analytics dashboard with member overview, engagement metrics, benchmark insights, and churn prediction.
 
 **Progress:**
 ```
@@ -43,7 +43,8 @@ Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
 Phase 32: [####################] 7/7 plans (Complete!)
-v2.0:     [####################] 28/28 plans
+Phase 33: [######              ] 1/3 plans (In progress)
+v2.0:     [###################-] 29/31 plans
 ```
 
 ---
@@ -53,8 +54,8 @@ v2.0:     [####################] 28/28 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~89 requirements (~88%) - Phases 26-32 complete
-- In progress: None (Phase 32 complete)
+- Completed: ~92 requirements (~91%) - Phases 26-32 + 33-01 complete
+- In progress: Phase 33 (Admin Analytics)
 - Blocked: 0
 
 **Recent velocity:**
@@ -153,6 +154,10 @@ v2.0:     [####################] 28/28 plans
 | Profile uses dashboard API | Dashboard already returns member info - no extra call needed | 32-06 |
 | Invoice amount already in dollars | Backend billing.ts divides by 100 before sending | 32-07 |
 | View Results shows after submission | No point showing results link before submitting data | 32-07 |
+| MRR placeholder $50/month | Placeholder until Stripe webhook caching implemented | 33-01 |
+| Cohort retention limit 12 months | Reasonable historical view without excessive data | 33-01 |
+| Multi-factor churn scoring | Inactivity (0-40) + engagement (0-30) + payment (0-30) | 33-01 |
+| At-risk batch size 500 | Prevent memory issues with large member counts | 33-01 |
 
 ### Research Insights
 
@@ -221,10 +226,15 @@ v2.0:     [####################] 28/28 plans
 - [x] Create billing page with subscription and invoices (Plan 32-07)
 - [x] Update layout with real data from hooks (Plan 32-07)
 - [x] Add View Results navigation on benchmarks page (Plan 32-07)
+- [x] Create analytics type definitions (Plan 33-01)
+- [x] Create member and engagement analytics services (Plan 33-01)
+- [x] Create benchmark, resource, and churn analytics services (Plan 33-01)
+- [ ] Create analytics API endpoints (Plan 33-02)
+- [ ] Create admin analytics dashboard UI (Plan 33-03)
 
 ### Known Blockers
 
-None - Phase 32 complete. All dashboard pages with API integration functional.
+None - Phase 33 in progress.
 
 ### Questions for User
 
@@ -237,16 +247,15 @@ None - Phase 32 complete. All dashboard pages with API integration functional.
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 32-07: Billing Page and Final Navigation
-- Created /dashboard/billing with subscription and invoice display
-- Layout now uses real data from hooks (gold count, member name)
-- Added View Results navigation from benchmarks page
-- Phase 32 complete - all dashboard pages functional
+- Completed Plan 33-01: Analytics Service Layer
+- Created src/analytics/ with 6 service files
+- Member overview, engagement trends, benchmark stats
+- Resource analytics, cohort retention, churn prediction
 
-**Next session:** Phase 33 (Admin Analytics Dashboard)
-- Admin member overview dashboard
-- Engagement metrics and time-series charts
-- Industry insights and export functionality
+**Next session:** Plan 33-02 (Analytics API Endpoints)
+- Create admin routes at /api/admin/analytics/*
+- Wire up service functions to HTTP endpoints
+- Add date range parsing and export functionality
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -297,8 +306,14 @@ None - Phase 32 complete. All dashboard pages with API integration functional.
 - Account page at: dashboard/src/app/dashboard/account/page.tsx
 - Billing hooks at: dashboard/src/hooks/useBilling.ts
 - Billing page at: dashboard/src/app/dashboard/billing/page.tsx
+- Analytics types at: src/analytics/types.ts
+- Member analytics at: src/analytics/member-analytics.ts
+- Engagement analytics at: src/analytics/engagement-analytics.ts
+- Benchmark analytics at: src/analytics/benchmark-analytics.ts
+- Resource analytics at: src/analytics/resource-analytics.ts
+- Churn prediction at: src/analytics/churn-prediction.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Phase 32 (Member Dashboard Pages) complete*
+*Last updated: 2026-01-24 - Completed 33-01-PLAN.md (Analytics Service Layer)*

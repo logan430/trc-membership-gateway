@@ -1,6 +1,6 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-01-23
+**Updated:** 2026-01-24
 **Milestone:** v2.0 Community Intelligence Platform
 **Mode:** YOLO
 
@@ -120,6 +120,10 @@ v2.0:     [##################..] 18/~21 plans
 | Weekday-only streaks | Mon-Fri required, weekends automatic grace days | 30-03 |
 | Jobs stop before HTTP in shutdown | Ensure jobs don't trigger work during connection teardown | 30-03 |
 | Batch streak updates (100/tx) | Prevent memory issues with large member counts | 30-03 |
+| Manual setup over create-next-app | Avoid unnecessary files and boilerplate | 31-01 |
+| outputFileTracingRoot for monorepo | Resolves lockfile detection warning | 31-01 |
+| @theme inline for Tailwind v4 | CSS-first theme variable registration | 31-01 |
+| Hard-edge pixel shadows | No blur per CONTEXT.md medieval aesthetic | 31-01 |
 | sameSite 'lax' for cross-app auth | Allows cookie on same-site navigation, prevents CSRF on POST | 31-02 |
 | Cookie path '/' for cross-app access | Next.js middleware can read refresh token | 31-02 |
 | Proxy enabled conditionally | Only when NEXT_APP_URL set or in development mode | 31-02 |
@@ -195,16 +199,17 @@ None - Phase 31 in progress. Express proxy infrastructure complete, ready for Ne
 
 ## Session Continuity
 
-**Last session:** 2026-01-23
-- Completed Plan 31-02: Express Proxy for Next.js Dashboard
-- Installed http-proxy-middleware for proxying to Next.js
-- Mounted proxy before dashboardRouter in src/index.ts
-- Updated cookie path to '/' and sameSite to 'lax' for cross-app auth
-- Express builds successfully with proxy configuration
+**Last session:** 2026-01-24
+- Completed Plan 31-01: Next.js Frontend Setup
+- Created Next.js 15 app in dashboard/ subdirectory
+- Configured Tailwind v4 with CSS-first @theme inline
+- Created medieval pixel theme with gold/parchment palette
+- Added pixel-shadow and hover-lift utility classes
+- App boots successfully on port 3000
 
-**Next session:** Plan 31-03 - Next.js Auth Middleware
-- Implement Next.js middleware for JWT token verification
-- Create auth context and protected routes
+**Next session:** Plan 31-03 or continue with remaining 31-02 tasks
+- Next.js auth middleware for JWT token verification
+- Dashboard shell layout with sidebar navigation
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -227,8 +232,10 @@ None - Phase 31 in progress. Express proxy infrastructure complete, ready for Ne
 - MEE6 sync job at: src/jobs/mee6-sync.ts
 - Streak calculator at: src/jobs/streak-calculator.ts
 - Job scheduler at: src/jobs/index.ts
+- Next.js app at: dashboard/package.json, dashboard/src/app/
+- Tailwind theme at: dashboard/src/app/globals.css
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Plan 31-02 (Express Proxy for Next.js) complete*
+*Last updated: 2026-01-24 - Plan 31-01 (Next.js Frontend Setup) complete*

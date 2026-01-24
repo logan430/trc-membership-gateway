@@ -29,6 +29,7 @@ import { adminPointsConfigRouter } from './routes/admin/points-config.js';
 import { adminPointsRouter } from './routes/admin/points.js';
 import { adminBenchmarksRouter } from './routes/admin/benchmarks.js';
 import { adminResourcesRouter } from './routes/admin/resources.js';
+import { adminAnalyticsRouter } from './routes/admin/analytics.js';
 import { pointsRouter } from './routes/points.js';
 import { benchmarksRouter } from './routes/benchmarks.js';
 import { resourcesRouter } from './routes/resources.js';
@@ -114,6 +115,7 @@ app.use('/api/admin/points-config', adminPointsConfigRouter);
 app.use('/api/admin/members', adminPointsRouter);
 app.use('/api/admin/benchmarks', adminBenchmarksRouter);
 app.use('/api/admin/resources', adminResourcesRouter);
+app.use('/api/admin/analytics', adminAnalyticsRouter);
 
 // Points routes (member-facing)
 app.use('/api/points', pointsRouter);

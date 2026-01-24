@@ -6,10 +6,11 @@
  * Provides React Query hooks for:
  * - Fetching member's benchmark submissions
  * - Submitting new benchmark data
+ * - Fetching benchmark aggregates with filters
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { benchmarksApi } from '@/lib/api';
+import { benchmarksApi, AggregatesResponse } from '@/lib/api';
 
 export type BenchmarkCategory = 'COMPENSATION' | 'INFRASTRUCTURE' | 'BUSINESS' | 'OPERATIONAL';
 
@@ -40,6 +41,27 @@ export function useSubmitBenchmark() {
       queryClient.invalidateQueries({ queryKey: ['benchmarks', 'my-submissions'] });
       // Invalidate points to show new total (benchmark submission awards points)
       queryClient.invalidateQueries({ queryKey: ['points'] });
+      // Invalidate aggregates to show updated results
+      queryClient.invalidateQueries({ queryKey: ['benchmarks', 'aggregates'] });
     },
+  });
+}
+
+/**
+ * Hook to fetch benchmark aggregates for a category
+ * Supports segment filtering by company size and industry
+ */
+export function useAggregates(
+  category: BenchmarkCategory,
+  filters?: { companySize?: string; industry?: string }
+) {
+  return useQuery<AggregatesResponse>({
+    queryKey: ['benchmarks', 'aggregates', category, filters],
+    queryFn: () =>
+      benchmarksApi.getAggregates(category, {
+        ...(filters?.companySize && { companySize: filters.companySize }),
+        ...(filters?.industry && { industry: filters.industry }),
+      }),
+    staleTime: 5 * 60_000, // 5 minutes - aggregates don't change frequently
   });
 }

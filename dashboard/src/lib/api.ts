@@ -136,6 +136,28 @@ export interface MySubmissionsResponse {
   submissions: BenchmarkSubmission[];
 }
 
+export interface FieldAggregate {
+  field: string;
+  median: number;
+  average: number;
+  p25: number;
+  p75: number;
+  min: number;
+  max: number;
+  count: number;
+  yourValue?: number; // Included if member has submitted
+}
+
+export interface AggregatesResponse {
+  category: string;
+  available: FieldAggregate[];
+  insufficient: { field: string; count: number; needed: number }[];
+  filters: {
+    companySize?: string;
+    industry?: string;
+  };
+}
+
 export const benchmarksApi = {
   /** Get member's submissions for all categories */
   getMySubmissions: () =>
@@ -151,7 +173,7 @@ export const benchmarksApi = {
   /** Get benchmark results/aggregates for a category */
   getAggregates: (category: string, filters?: Record<string, string>) => {
     const params = new URLSearchParams(filters);
-    return apiFetch<Record<string, unknown>>(
+    return apiFetch<AggregatesResponse>(
       `/api/benchmarks/aggregates/${category}?${params}`
     );
   },
@@ -204,6 +226,35 @@ export const resourcesApi = {
 
   /** Get all available tags for filtering */
   getTags: () => apiFetch<{ tags: string[] }>('/api/resources/tags'),
+};
+
+// =============================================================================
+// API Methods - Leaderboard
+// =============================================================================
+
+export type LeaderboardPeriod = 'month' | 'alltime';
+
+export interface LeaderboardMember {
+  id: string;
+  discordUsername: string | null;
+  totalPoints: number;
+  currentStreak: number;
+  rank: number;
+  isCurrent?: boolean;
+}
+
+export interface LeaderboardResponse {
+  period: LeaderboardPeriod;
+  topMembers: LeaderboardMember[];
+  currentMember: LeaderboardMember | null;
+  totalParticipants: number;
+  nextResetAt: string;
+}
+
+export const leaderboardApi = {
+  /** Get leaderboard rankings */
+  get: (period: LeaderboardPeriod = 'month') =>
+    apiFetch<LeaderboardResponse>(`/api/leaderboard?period=${period}`),
 };
 
 // =============================================================================

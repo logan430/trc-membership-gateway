@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 33 - Admin Analytics Dashboard
-**Current Plan:** 1 of 3 complete
+**Current Plan:** 2 of 3 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -43,8 +43,8 @@ Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
 Phase 32: [####################] 7/7 plans (Complete!)
-Phase 33: [######              ] 1/3 plans (In progress)
-v2.0:     [###################-] 29/31 plans
+Phase 33: [#############       ] 2/3 plans (In progress)
+v2.0:     [###################-] 30/31 plans
 ```
 
 ---
@@ -54,7 +54,7 @@ v2.0:     [###################-] 29/31 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~92 requirements (~91%) - Phases 26-32 + 33-01 complete
+- Completed: ~95 requirements (~94%) - Phases 26-32 + 33-01/02 complete
 - In progress: Phase 33 (Admin Analytics)
 - Blocked: 0
 
@@ -158,6 +158,10 @@ v2.0:     [###################-] 29/31 plans
 | Cohort retention limit 12 months | Reasonable historical view without excessive data | 33-01 |
 | Multi-factor churn scoring | Inactivity (0-40) + engagement (0-30) + payment (0-30) | 33-01 |
 | At-risk batch size 500 | Prevent memory issues with large member counts | 33-01 |
+| Export limit 10,000 members | Prevent memory issues on large exports | 33-02 |
+| Default 30-day date range | Standard period for analytics queries | 33-02 |
+| Churn digest Monday 09:00 UTC | Start of work week for admin review | 33-02 |
+| SUPER_ADMIN only for digest | Limit churn alerts to highest admin level | 33-02 |
 
 ### Research Insights
 
@@ -172,6 +176,7 @@ v2.0:     [###################-] 29/31 plans
 - file-type library for magic number validation
 - multer for multipart file uploads
 - node-cron for background job scheduling
+- json2csv for CSV export functionality
 
 **Architecture approach:**
 - Express (port 4000) proxies /dashboard/* to Next.js (port 3000)
@@ -181,6 +186,7 @@ v2.0:     [###################-] 29/31 plans
 - Magic number validation prevents extension spoofing
 - Optional malware scanning via ClamAV daemon
 - Centralized job scheduler with graceful shutdown
+- Weekly churn digest emails to SUPER_ADMIN recipients
 
 **Critical pitfalls identified:**
 - Production database migration downtime (Phase 26 establishes patterns)
@@ -229,7 +235,9 @@ v2.0:     [###################-] 29/31 plans
 - [x] Create analytics type definitions (Plan 33-01)
 - [x] Create member and engagement analytics services (Plan 33-01)
 - [x] Create benchmark, resource, and churn analytics services (Plan 33-01)
-- [ ] Create analytics API endpoints (Plan 33-02)
+- [x] Create analytics API endpoints (Plan 33-02)
+- [x] Create export service with CSV/JSON (Plan 33-02)
+- [x] Create churn digest email job (Plan 33-02)
 - [ ] Create admin analytics dashboard UI (Plan 33-03)
 
 ### Known Blockers
@@ -247,15 +255,17 @@ None - Phase 33 in progress.
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 33-01: Analytics Service Layer
-- Created src/analytics/ with 6 service files
-- Member overview, engagement trends, benchmark stats
-- Resource analytics, cohort retention, churn prediction
+- Completed Plan 33-02: Admin Analytics API
+- Created 14 admin analytics endpoints at /api/admin/analytics/*
+- Added CSV/JSON export functionality with filters
+- Implemented weekly churn digest email job
 
-**Next session:** Plan 33-02 (Analytics API Endpoints)
-- Create admin routes at /api/admin/analytics/*
-- Wire up service functions to HTTP endpoints
-- Add date range parsing and export functionality
+**Next session:** Plan 33-03 (Admin Analytics Dashboard UI)
+- Create admin analytics dashboard page at /admin/analytics
+- Build KPI overview cards with clickable navigation
+- Add engagement and benchmark trend charts
+- Create at-risk members section with churn scores
+- Implement cohort retention visualization
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -278,6 +288,7 @@ None - Phase 33 in progress.
 - MEE6 sync job at: src/jobs/mee6-sync.ts
 - Streak calculator at: src/jobs/streak-calculator.ts
 - Job scheduler at: src/jobs/index.ts
+- Churn digest job at: src/jobs/churn-digest.ts
 - Leaderboard API at: src/routes/leaderboard.ts
 - Member settings API at: src/routes/member.ts
 - Next.js app at: dashboard/package.json, dashboard/src/app/
@@ -312,8 +323,10 @@ None - Phase 33 in progress.
 - Benchmark analytics at: src/analytics/benchmark-analytics.ts
 - Resource analytics at: src/analytics/resource-analytics.ts
 - Churn prediction at: src/analytics/churn-prediction.ts
+- Export service at: src/analytics/export.ts
+- Admin analytics API at: src/routes/admin/analytics.ts
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Completed 33-01-PLAN.md (Analytics Service Layer)*
+*Last updated: 2026-01-24 - Completed 33-02-PLAN.md (Admin Analytics API)*

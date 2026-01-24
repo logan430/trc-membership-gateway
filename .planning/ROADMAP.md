@@ -142,6 +142,15 @@ Plans:
 
 **Requirements:** AUTH-01, AUTH-02, AUTH-03, AUTH-04
 
+**Plans:** 5 plans
+
+Plans:
+- [ ] 31-01-PLAN.md — Initialize Next.js 15 app with Tailwind v4 medieval theme
+- [ ] 31-02-PLAN.md — Add Express proxy middleware and update cookie configuration
+- [ ] 31-03-PLAN.md — Create Next.js auth middleware with JWT validation
+- [ ] 31-04-PLAN.md — Port and theme UI components (Button, Card, Input, GoldCoinsLoader)
+- [ ] 31-05-PLAN.md — Create dashboard shell layout with sidebar and overview page
+
 **Success Criteria:**
 1. Next.js 15.1 app runs at port 3000 with Express proxy forwarding /dashboard/* requests from port 4000
 2. JWT tokens validate consistently in both Express middleware and Next.js middleware
@@ -194,7 +203,7 @@ Plans:
 | 28 - Benchmarking System | Complete | 3 | 14/14 requirements |
 | 29 - Resource Library & File Storage | Complete | 4 | 22/22 requirements |
 | 30 - MEE6 Discord Integration | Complete | 3 | 10/11 requirements |
-| 31 - Next.js Frontend Setup | Pending | 0 | 0/4 requirements |
+| 31 - Next.js Frontend Setup | Planned | 5 | 0/4 requirements |
 | 32 - Member Dashboard Pages | Pending | 0 | 0/21 requirements |
 | 33 - Admin Analytics Dashboard | Pending | 0 | 0/10 requirements |
 
@@ -203,4 +212,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 (Phase 30 complete)*
+*Last updated: 2026-01-23 (Phase 31 planned)*

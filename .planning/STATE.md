@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 32 - Member Dashboard Pages
-**Current Plan:** 5 of 7 complete
+**Current Plan:** 6 of 7 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -42,8 +42,8 @@ Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
-Phase 32: [##############......] 5/7 plans (In progress)
-v2.0:     [###################.] 26/~28 plans
+Phase 32: [################....] 6/7 plans (In progress)
+v2.0:     [###################.] 27/~28 plans
 ```
 
 ---
@@ -53,8 +53,8 @@ v2.0:     [###################.] 26/~28 plans
 **v2.0 Milestone:**
 - Total phases: 8 (Phases 26-33)
 - Total requirements: 101
-- Completed: ~75 requirements (~74%) - Phases 26-31 complete, 32 in progress
-- In progress: Phase 32 (5/7 plans)
+- Completed: ~78 requirements (~77%) - Phases 26-31 complete, 32 nearly complete
+- In progress: Phase 32 (6/7 plans)
 - Blocked: 0
 
 **Recent velocity:**
@@ -149,6 +149,7 @@ v2.0:     [###################.] 26/~28 plans
 | Suspense for searchParams | Required to avoid hydration errors with client-side params in Next.js 15 | 32-04 |
 | Monthly points via raw SQL | Prisma doesn't support conditional sums in groupBy | 32-05 |
 | Privacy filter in both queries | Consistent leaderboardVisible enforcement for top 25 and rank | 32-05 |
+| Profile uses dashboard API | Dashboard already returns member info - no extra call needed | 32-06 |
 
 ### Research Insights
 
@@ -212,12 +213,13 @@ v2.0:     [###################.] 26/~28 plans
 - [x] Create benchmarks page with submission forms (Plan 32-03)
 - [x] Create benchmark results page with charts (Plan 32-04)
 - [x] Create leaderboard page (Plan 32-05)
-- [ ] Create profile page (Plan 32-06)
-- [ ] Create settings page (Plan 32-07)
+- [x] Create profile page (Plan 32-06)
+- [x] Create account settings page (Plan 32-06)
+- [ ] Create sidebar navigation links (Plan 32-07)
 
 ### Known Blockers
 
-None - Plan 32-05 complete. Leaderboard page with period toggle and rank pinning functional.
+None - Plan 32-06 complete. Profile and account pages with privacy controls functional.
 
 ### Questions for User
 
@@ -230,21 +232,21 @@ None - Plan 32-05 complete. Leaderboard page with period toggle and rank pinning
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 32-05: Leaderboard Page
-- Created /api/leaderboard endpoint with period filter and privacy support
-- Built LeaderboardTable, RankBadge, PeriodTabs, ResetCountdown components
-- Created /dashboard/leaderboard page with supportive messaging
+- Completed Plan 32-06: Profile and Account Pages
+- Created /dashboard/profile with point history and activity timeline
+- Created /dashboard/account with email, password, and privacy settings
+- Leaderboard visibility toggle (GAME-11) functional
 
-**Next session:** Plan 32-06 (Profile Page)
-- Create member profile page
-- Account settings and preferences
-- Activity summary
+**Next session:** Plan 32-07 (Final Integration)
+- Update sidebar navigation to link to all pages
+- Final verification pass
+- Phase 32 completion
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
 - Research findings (stack choices, architecture patterns, critical pitfalls)
 - Phase dependencies (backend -> frontend, points system -> gamification)
-- Migration files at: prisma/migrations/0_init/ through 20260123183355_resource_library_schema/
+- Migration files at: prisma/migrations/0_init/ through 20260124051950_add_leaderboard_visible/
 - Point system files at: src/points/types.ts, src/points/config.ts, src/points/service.ts
 - Points API at: src/routes/points.ts, src/routes/admin/points.ts
 - Admin config API at: src/routes/admin/points-config.ts
@@ -262,6 +264,7 @@ None - Plan 32-05 complete. Leaderboard page with period toggle and rank pinning
 - Streak calculator at: src/jobs/streak-calculator.ts
 - Job scheduler at: src/jobs/index.ts
 - Leaderboard API at: src/routes/leaderboard.ts
+- Member settings API at: src/routes/member.ts
 - Next.js app at: dashboard/package.json, dashboard/src/app/
 - Tailwind theme at: dashboard/src/app/globals.css
 - Auth lib at: dashboard/src/lib/auth.ts
@@ -273,6 +276,7 @@ None - Plan 32-05 complete. Leaderboard page with period toggle and rank pinning
 - Benchmark hooks at: dashboard/src/hooks/useBenchmarks.ts
 - Resource hooks at: dashboard/src/hooks/useResources.ts
 - Leaderboard hooks at: dashboard/src/hooks/useLeaderboard.ts
+- Profile hooks at: dashboard/src/hooks/useProfile.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 - Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
 - Benchmark components at: dashboard/src/components/benchmarks/ (CategoryCard, ConversationalWizard, ComparisonBar, MetricComparisonCard, KAnonymityGate)
@@ -283,8 +287,10 @@ None - Plan 32-05 complete. Leaderboard page with period toggle and rank pinning
 - Benchmark results at: dashboard/src/app/dashboard/benchmarks/results/page.tsx
 - Resources page at: dashboard/src/app/dashboard/resources/page.tsx
 - Leaderboard page at: dashboard/src/app/dashboard/leaderboard/page.tsx
+- Profile page at: dashboard/src/app/dashboard/profile/page.tsx
+- Account page at: dashboard/src/app/dashboard/account/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 32-05 (Leaderboard Page) complete*
+*Last updated: 2026-01-24 - Plan 32-06 (Profile and Account Pages) complete*

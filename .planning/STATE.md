@@ -27,12 +27,12 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 30 - MEE6 Discord Integration
-**Current Plan:** 3 of 3 complete
-**Status:** Phase complete
+**Current Phase:** 31 - Next.js Frontend Setup
+**Current Plan:** 2 of 4 complete
+**Status:** In progress
 
 **Phase Goal:**
-Discord activity automatically earns points through MEE6 XP synchronization.
+React-based member dashboard foundation with Express proxy and shared JWT authentication.
 
 **Progress:**
 ```
@@ -41,7 +41,8 @@ Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
-v2.0:     [##################..] 16/~17 plans
+Phase 31: [##########..........] 2/4 plans (In progress)
+v2.0:     [##################..] 18/~21 plans
 ```
 
 ---
@@ -119,6 +120,9 @@ v2.0:     [##################..] 16/~17 plans
 | Weekday-only streaks | Mon-Fri required, weekends automatic grace days | 30-03 |
 | Jobs stop before HTTP in shutdown | Ensure jobs don't trigger work during connection teardown | 30-03 |
 | Batch streak updates (100/tx) | Prevent memory issues with large member counts | 30-03 |
+| sameSite 'lax' for cross-app auth | Allows cookie on same-site navigation, prevents CSRF on POST | 31-02 |
+| Cookie path '/' for cross-app access | Next.js middleware can read refresh token | 31-02 |
+| Proxy enabled conditionally | Only when NEXT_APP_URL set or in development mode | 31-02 |
 
 ### Research Insights
 
@@ -179,7 +183,7 @@ v2.0:     [##################..] 16/~17 plans
 
 ### Known Blockers
 
-None - Phase 30 (MEE6 Discord Integration) complete. Ready for Phase 31 (Next.js Frontend Setup).
+None - Phase 31 in progress. Express proxy infrastructure complete, ready for Next.js auth middleware.
 
 ### Questions for User
 
@@ -192,16 +196,15 @@ None - Phase 30 (MEE6 Discord Integration) complete. Ready for Phase 31 (Next.js
 ## Session Continuity
 
 **Last session:** 2026-01-23
-- Completed Phase 30: MEE6 Discord Integration
-- Created MEE6 API client at src/mee6/types.ts, src/mee6/client.ts
-- Created sync job at src/jobs/mee6-sync.ts with XP delta calculation
-- Created streak calculator at src/jobs/streak-calculator.ts
-- Created job scheduler at src/jobs/index.ts with graceful shutdown
-- Integrated job lifecycle in src/index.ts
+- Completed Plan 31-02: Express Proxy for Next.js Dashboard
+- Installed http-proxy-middleware for proxying to Next.js
+- Mounted proxy before dashboardRouter in src/index.ts
+- Updated cookie path to '/' and sameSite to 'lax' for cross-app auth
+- Express builds successfully with proxy configuration
 
-**Next session:** Phase 31 - Next.js Frontend Setup
-- React-based member dashboard foundation
-- Express proxy to Next.js, shared JWT auth
+**Next session:** Plan 31-03 - Next.js Auth Middleware
+- Implement Next.js middleware for JWT token verification
+- Create auth context and protected routes
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -228,4 +231,4 @@ None - Phase 30 (MEE6 Discord Integration) complete. Ready for Phase 31 (Next.js
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 - Phase 30 (MEE6 Discord Integration) complete!*
+*Last updated: 2026-01-23 - Plan 31-02 (Express Proxy for Next.js) complete*

@@ -28,8 +28,8 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 31 - Next.js Frontend Setup
-**Current Plan:** 3 of 4 complete
-**Status:** In progress
+**Current Plan:** 4 of 4 complete (Phase complete!)
+**Status:** Phase complete
 
 **Phase Goal:**
 React-based member dashboard foundation with Express proxy and shared JWT authentication.
@@ -41,8 +41,8 @@ Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
-Phase 31: [###############.....] 3/4 plans (In progress)
-v2.0:     [##################..] 19/~21 plans
+Phase 31: [####################] 4/4 plans (Complete!)
+v2.0:     [###################.] 20/~21 plans
 ```
 
 ---
@@ -64,6 +64,7 @@ v2.0:     [##################..] 19/~21 plans
 - Phase 28 completed: 2026-01-23 (3 plans, ~14 minutes total)
 - Phase 29 completed: 2026-01-23 (4 plans, ~23 minutes total)
 - Phase 30 completed: 2026-01-23 (3 plans, ~15 minutes total)
+- Phase 31 completed: 2026-01-24 (4 plans)
 
 ---
 
@@ -132,6 +133,8 @@ v2.0:     [##################..] 19/~21 plans
 | credentials: include for API fetch | Cookie forwarding for all Express backend calls | 31-03 |
 | Pixel shadows via arbitrary Tailwind | Consistent 3px offset, no blur, per CONTEXT.md | 31-04 |
 | Barrel export pattern for UI | Clean imports via @/components/ui | 31-04 |
+| Gold count hardcoded placeholder | Data from API integration in Phase 32 | 31-05 |
+| Static activity items | Placeholders until Phase 32 API integration | 31-05 |
 
 ### Research Insights
 
@@ -192,7 +195,7 @@ v2.0:     [##################..] 19/~21 plans
 
 ### Known Blockers
 
-None - Phase 31 in progress. Auth middleware complete, ready for dashboard shell layout.
+None - Phase 31 complete. Dashboard shell with sidebar navigation ready for Phase 32 integration.
 
 ### Questions for User
 
@@ -205,13 +208,15 @@ None - Phase 31 in progress. Auth middleware complete, ready for dashboard shell
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 31-04: UI Components
-- Created Button, Card, Input, GoldCoinsLoader components
-- Applied medieval pixel styling (8px radius, hard shadows, gold accents)
-- Created barrel export for clean imports
+- Completed Plan 31-05: Dashboard Shell Layout
+- Created Sidebar with "The Realm" and "My Keep" navigation sections
+- Created Header with mobile menu, notifications, user avatar
+- Created dashboard layout with responsive sidebar
+- Created overview page with stat cards and activity section
 
-**Next session:** Plan 31-03 (if not complete) or Phase 32
-- Dashboard shell layout with sidebar navigation
+**Next session:** Phase 32 (Frontend Integration)
+- Connect dashboard to backend APIs
+- Integrate real member data
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -240,8 +245,10 @@ None - Phase 31 in progress. Auth middleware complete, ready for dashboard shell
 - Auth middleware at: dashboard/src/middleware.ts
 - API client at: dashboard/src/lib/api.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
+- Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
+- Dashboard shell at: dashboard/src/app/dashboard/ (layout.tsx, page.tsx)
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 31-04 (UI Components) complete*
+*Last updated: 2026-01-24 - Plan 31-05 (Dashboard Shell Layout) complete - Phase 31 complete!*

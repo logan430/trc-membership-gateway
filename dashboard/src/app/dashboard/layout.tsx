@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Sidebar, Header } from '@/components/layout';
+import { usePointsSummary } from '@/hooks/usePoints';
+import { useProfile } from '@/hooks/useProfile';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,15 +21,25 @@ interface DashboardLayoutProps {
  * - Light mode only
  * - Parchment background
  * - Medieval pixel aesthetic
+ *
+ * Data integration:
+ * - Real gold count from points summary API
+ * - Real member name from profile API
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { data: points } = usePointsSummary();
+  const { data: profile } = useProfile();
+
+  const goldCount = points?.totalPoints ?? 0;
+  const memberName = profile?.member?.discordUsername || profile?.member?.email?.split('@')[0] || 'Member';
 
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar - hidden on mobile, shown on lg+ */}
       <div className="hidden lg:flex">
-        <Sidebar goldCount={150} />
+        <Sidebar goldCount={goldCount} />
       </div>
 
       {/* Mobile sidebar overlay */}
@@ -40,7 +52,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           />
           {/* Sidebar */}
           <div className="absolute left-0 top-0 h-full w-64 bg-card shadow-lg">
-            <Sidebar goldCount={150} />
+            <Sidebar goldCount={goldCount} />
           </div>
         </div>
       )}
@@ -49,7 +61,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="flex-1 flex flex-col min-w-0">
         <Header
           onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          memberName="Guild Member"
+          memberName={memberName}
         />
 
         {/* Page content */}

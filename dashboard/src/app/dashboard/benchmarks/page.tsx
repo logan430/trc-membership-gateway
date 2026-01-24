@@ -9,10 +9,11 @@
  */
 
 import { useState } from 'react';
-import { GoldCoinsLoader, Card } from '@/components/ui';
+import Link from 'next/link';
+import { GoldCoinsLoader, Card, Button } from '@/components/ui';
 import { CategoryCard, ConversationalWizard, type WizardQuestion } from '@/components/benchmarks';
 import { useMySubmissions, useSubmitBenchmark, type BenchmarkCategory } from '@/hooks/useBenchmarks';
-import { DollarSign, Server, TrendingUp, Users } from 'lucide-react';
+import { DollarSign, Server, TrendingUp, Users, BarChart3 } from 'lucide-react';
 
 // Question definitions matching backend schemas (src/benchmarks/schemas.ts)
 const categoryQuestions: Record<BenchmarkCategory, WizardQuestion[]> = {
@@ -348,18 +349,31 @@ export default function BenchmarksPage() {
     );
   }
 
+  // Check if member has any submissions to show "View Results" link
+  const hasAnySubmission = (submissions?.submissions?.length ?? 0) > 0;
+
   // Default state - show category selection
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Peer Benchmarks
-        </h1>
-        <p className="text-muted-foreground">
-          Share your data anonymously and see how you compare to peers.
-          Earn +50 gold per submission.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Peer Benchmarks
+          </h1>
+          <p className="text-muted-foreground">
+            Share your data anonymously and see how you compare to peers.
+            Earn +50 gold per submission.
+          </p>
+        </div>
+        {hasAnySubmission && (
+          <Link href="/dashboard/benchmarks/results">
+            <Button variant="outline" className="w-full sm:w-auto flex-shrink-0">
+              <BarChart3 size={16} className="mr-2" />
+              View Results
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Category cards grid */}

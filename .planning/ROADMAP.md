@@ -196,6 +196,13 @@ Plans:
 
 **Requirements:** ANALYTICS-01, ANALYTICS-02, ANALYTICS-03, ANALYTICS-04, ANALYTICS-05, ANALYTICS-06, ANALYTICS-07, ANALYTICS-08, ANALYTICS-09, ANALYTICS-10
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 33-01-PLAN.md — Create analytics service layer with aggregation queries
+- [ ] 33-02-PLAN.md — Create admin analytics API and export functionality
+- [ ] 33-03-PLAN.md — Create admin analytics dashboard with React components
+
 **Success Criteria:**
 1. Admin sees member overview dashboard (total members, active, inactive counts, MRR)
 2. Admin sees engagement metrics with time-series charts (benchmark submissions, resource downloads, Discord activity)
@@ -216,11 +223,11 @@ Plans:
 | 30 - MEE6 Discord Integration | Complete | 3 | 10/11 requirements |
 | 31 - Next.js Frontend Setup | Complete | 5 | 4/4 requirements |
 | 32 - Member Dashboard Pages | Complete | 7 | 21/21 requirements |
-| 33 - Admin Analytics Dashboard | Pending | 0 | 0/10 requirements |
+| 33 - Admin Analytics Dashboard | Planned | 3 | 0/10 requirements |
 
 **Overall Progress:** 89/101 requirements (88%)
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-24 (Phase 32 complete - 7 plans executed in 3 waves)*
+*Last updated: 2026-01-24 (Phase 33 planned - 3 plans in 3 waves)*

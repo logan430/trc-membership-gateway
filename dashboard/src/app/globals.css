@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* Medieval Pixel Theme - The Revenue Council Dashboard */
+/* Per CONTEXT.md: Parchment backgrounds, gold accents, pixel-style borders */
+
+:root {
+  /* Core palette */
+  --background: #faf8f5;           /* Parchment background */
+  --foreground: #334155;           /* Slate/charcoal primary */
+  --card: #fffef9;                 /* Card parchment */
+  --card-foreground: #334155;
+
+  /* Gold accents - medieval theme */
+  --gold: #d4a017;
+  --gold-light: #f4d03f;
+  --gold-dark: #b8860b;
+
+  /* Supporting colors */
+  --accent: #e8e4db;               /* Aged parchment accent */
+  --accent-foreground: #334155;
+  --muted: #f0ece4;
+  --muted-foreground: #64748b;
+  --border: #d1c7b5;               /* Parchment edge */
+  --input: #d1c7b5;
+
+  /* Semantic colors */
+  --destructive: #dc2626;
+  --destructive-foreground: #fef2f2;
+  --success: #16a34a;
+  --success-foreground: #f0fdf4;
+
+  /* Pixel styling parameters */
+  --pixel-border-width: 2px;
+  --pixel-shadow-offset: 3px;
+  --radius: 8px;                   /* Per success criteria */
+}
+
+/* Tailwind v4 theme registration */
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  /* Radius */
+  --radius-default: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-lg: calc(var(--radius) + 4px);
+
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Base styles */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Pixel-style utility classes per CONTEXT.md */
+/* Hard-edge offset shadows (no blur) */
+.pixel-shadow {
+  box-shadow: var(--pixel-shadow-offset) var(--pixel-shadow-offset) 0px 0px rgba(51, 65, 85, 0.2);
+}
+
+.pixel-shadow-sm {
+  box-shadow: 2px 2px 0px 0px rgba(51, 65, 85, 0.15);
+}
+
+.pixel-shadow-lg {
+  box-shadow: 4px 4px 0px 0px rgba(51, 65, 85, 0.25);
+}
+
+/* Gold shadows for accents */
+.pixel-shadow-gold {
+  box-shadow: var(--pixel-shadow-offset) var(--pixel-shadow-offset) 0px 0px rgba(212, 160, 23, 0.3);
+}
+
+/* Pixel-style borders (thick, 2-3px) */
+.pixel-border {
+  border-width: var(--pixel-border-width);
+  border-style: solid;
+}
+
+/* Hover scale effect per CONTEXT.md (1.02x grow) */
+.hover-lift {
+  transition: transform 0.15s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: scale(1.02);
+}
+
+/* Gold sparkle animation for success feedback */
+@keyframes sparkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; filter: brightness(1.2); }
+}
+
+.animate-sparkle {
+  animation: sparkle 0.6s ease-in-out;
+}
+
+/* Gold coins stacking animation for loader */
+@keyframes coin-stack {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-8px) scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.animate-coin-stack {
+  animation: coin-stack 1s ease-in-out infinite;
+}

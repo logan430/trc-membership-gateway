@@ -33,6 +33,7 @@ import { pointsRouter } from './routes/points.js';
 import { benchmarksRouter } from './routes/benchmarks.js';
 import { resourcesRouter } from './routes/resources.js';
 import { leaderboardRouter } from './routes/leaderboard.js';
+import { memberRouter } from './routes/member.js';
 import { startBot, discordClient } from './bot/client.js';
 import { prisma } from './lib/prisma.js';
 import { seedDefaultPointConfigs } from './points/config.js';
@@ -125,6 +126,9 @@ app.use('/api/resources', resourcesRouter);
 
 // Leaderboard routes (member-facing)
 app.use('/api/leaderboard', leaderboardRouter);
+
+// Member settings routes (privacy, etc.)
+app.use('/api/member', memberRouter);
 
 // Auth routes (session refresh, logout, signup, login)
 app.use('/auth', authRouter);

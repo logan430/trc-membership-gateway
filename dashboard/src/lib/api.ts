@@ -258,7 +258,106 @@ export const leaderboardApi = {
 };
 
 // =============================================================================
-// API Methods - Member Profile
+// API Methods - Dashboard
+// =============================================================================
+
+export interface DashboardMember {
+  id: string;
+  email: string;
+  subscriptionStatus: string;
+  seatTier: string;
+  currentPeriodEnd: string | null;
+  discordUsername: string | null;
+  introCompleted: boolean;
+  leaderboardVisible: boolean;
+}
+
+export interface DashboardClaim {
+  canClaim: boolean;
+  hasClaimed: boolean;
+  discordInviteUrl: string | null;
+}
+
+export interface DashboardTeam {
+  id: string;
+  name: string;
+  isOwner: boolean;
+}
+
+export interface TimelineEvent {
+  type: string;
+  date: string;
+  description: string;
+}
+
+export interface DashboardData {
+  member: DashboardMember;
+  claim: DashboardClaim;
+  team: DashboardTeam | null;
+  timeline: TimelineEvent[];
+}
+
+export const dashboardApi = {
+  /** Get dashboard data */
+  get: () => apiFetch<DashboardData>('/dashboard'),
+};
+
+// =============================================================================
+// API Methods - Auth
+// =============================================================================
+
+export interface UpdateEmailResponse {
+  success: boolean;
+  email: string;
+}
+
+export interface UpdatePasswordResponse {
+  success: boolean;
+}
+
+export const authApi = {
+  /** Update authenticated member's email */
+  updateEmail: (data: { newEmail: string; currentPassword: string }) =>
+    apiFetch<UpdateEmailResponse>('/auth/update-email', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  /** Update authenticated member's password */
+  updatePassword: (data: { currentPassword: string; newPassword: string }) =>
+    apiFetch<UpdatePasswordResponse>('/auth/update-password', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
+// =============================================================================
+// API Methods - Member Privacy
+// =============================================================================
+
+export interface PrivacySettings {
+  leaderboardVisible: boolean;
+}
+
+export interface PrivacyUpdateResponse {
+  message: string;
+  leaderboardVisible: boolean;
+}
+
+export const memberPrivacyApi = {
+  /** Get member's privacy settings */
+  getPrivacy: () => apiFetch<PrivacySettings>('/api/member/privacy'),
+
+  /** Update member's privacy settings */
+  updatePrivacy: (data: PrivacySettings) =>
+    apiFetch<PrivacyUpdateResponse>('/api/member/privacy', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+};
+
+// =============================================================================
+// API Methods - Member Profile (deprecated - use dashboardApi)
 // =============================================================================
 
 export interface MemberProfile {
@@ -290,5 +389,8 @@ export const api = {
   benchmarks: benchmarksApi,
   resources: resourcesApi,
   leaderboard: leaderboardApi,
+  dashboard: dashboardApi,
+  auth: authApi,
+  memberPrivacy: memberPrivacyApi,
   member: memberApi,
 };

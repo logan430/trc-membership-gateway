@@ -121,9 +121,10 @@ model Member {
   updatedAt DateTime @updatedAt
 
   // Gamification (v2.0 - DB-06)
-  totalPoints   Int       @default(0)
-  currentStreak Int       @default(0)
-  lastActiveAt  DateTime?
+  totalPoints        Int       @default(0)
+  currentStreak      Int       @default(0)
+  lastActiveAt       DateTime?
+  leaderboardVisible Boolean   @default(true) // GAME-11: Privacy setting for leaderboard opt-out
 
   // Relationships (v2.0)
   benchmarkSubmissions BenchmarkSubmission[]

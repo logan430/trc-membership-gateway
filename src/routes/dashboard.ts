@@ -21,6 +21,7 @@ dashboardRouter.get('/', requireAuth, async (req: AuthenticatedRequest, res: Res
       discordId: true,
       discordUsername: true,
       introCompleted: true,
+      leaderboardVisible: true,
       createdAt: true,
       updatedAt: true,
       introCompletedAt: true,
@@ -92,6 +93,7 @@ dashboardRouter.get('/', requireAuth, async (req: AuthenticatedRequest, res: Res
       currentPeriodEnd: member.currentPeriodEnd,
       discordUsername: member.discordUsername,
       introCompleted: member.introCompleted,
+      leaderboardVisible: member.leaderboardVisible,
     },
     claim: {
       canClaim,

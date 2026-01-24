@@ -72,6 +72,7 @@ export interface PointsBreakdown {
 
 export interface PointsSummary {
   totalPoints: number;
+  currentStreak: number;
   breakdown: PointsBreakdown[];
 }
 

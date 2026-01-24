@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 31 - Next.js Frontend Setup
-**Current Plan:** 2 of 4 complete
+**Current Plan:** 3 of 4 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -41,8 +41,8 @@ Phase 27: [####################] 3/3 plans (Complete!)
 Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
-Phase 31: [##########..........] 2/4 plans (In progress)
-v2.0:     [##################..] 18/~21 plans
+Phase 31: [###############.....] 3/4 plans (In progress)
+v2.0:     [##################..] 19/~21 plans
 ```
 
 ---
@@ -127,6 +127,11 @@ v2.0:     [##################..] 18/~21 plans
 | sameSite 'lax' for cross-app auth | Allows cookie on same-site navigation, prevents CSRF on POST | 31-02 |
 | Cookie path '/' for cross-app access | Next.js middleware can read refresh token | 31-02 |
 | Proxy enabled conditionally | Only when NEXT_APP_URL set or in development mode | 31-02 |
+| verifyToken returns null on error | Consistent with Express, simplifies caller logic | 31-03 |
+| x-member-id header injection | Server components access member ID without re-parsing token | 31-03 |
+| credentials: include for API fetch | Cookie forwarding for all Express backend calls | 31-03 |
+| Pixel shadows via arbitrary Tailwind | Consistent 3px offset, no blur, per CONTEXT.md | 31-04 |
+| Barrel export pattern for UI | Clean imports via @/components/ui | 31-04 |
 
 ### Research Insights
 
@@ -187,7 +192,7 @@ v2.0:     [##################..] 18/~21 plans
 
 ### Known Blockers
 
-None - Phase 31 in progress. Express proxy infrastructure complete, ready for Next.js auth middleware.
+None - Phase 31 in progress. Auth middleware complete, ready for dashboard shell layout.
 
 ### Questions for User
 
@@ -200,15 +205,12 @@ None - Phase 31 in progress. Express proxy infrastructure complete, ready for Ne
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 31-01: Next.js Frontend Setup
-- Created Next.js 15 app in dashboard/ subdirectory
-- Configured Tailwind v4 with CSS-first @theme inline
-- Created medieval pixel theme with gold/parchment palette
-- Added pixel-shadow and hover-lift utility classes
-- App boots successfully on port 3000
+- Completed Plan 31-04: UI Components
+- Created Button, Card, Input, GoldCoinsLoader components
+- Applied medieval pixel styling (8px radius, hard shadows, gold accents)
+- Created barrel export for clean imports
 
-**Next session:** Plan 31-03 or continue with remaining 31-02 tasks
-- Next.js auth middleware for JWT token verification
+**Next session:** Plan 31-03 (if not complete) or Phase 32
 - Dashboard shell layout with sidebar navigation
 
 **Context preserved:**
@@ -234,8 +236,9 @@ None - Phase 31 in progress. Express proxy infrastructure complete, ready for Ne
 - Job scheduler at: src/jobs/index.ts
 - Next.js app at: dashboard/package.json, dashboard/src/app/
 - Tailwind theme at: dashboard/src/app/globals.css
+- UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 31-01 (Next.js Frontend Setup) complete*
+*Last updated: 2026-01-24 - Plan 31-04 (UI Components) complete*

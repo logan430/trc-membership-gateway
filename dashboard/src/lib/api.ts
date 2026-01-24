@@ -357,6 +357,49 @@ export const memberPrivacyApi = {
 };
 
 // =============================================================================
+// API Methods - Billing
+// =============================================================================
+
+export interface Invoice {
+  id: string;
+  date: string;
+  amount: number;
+  status: string | null;
+  pdfUrl: string | null;
+  hostedUrl: string | null;
+}
+
+export interface BillingDetails {
+  managedBy?: 'team';
+  teamName?: string;
+  canManageBilling: boolean;
+  subscription: {
+    status: string;
+    currentPeriodEnd: string | null;
+    cancelAtPeriodEnd: boolean;
+    planName: string;
+  } | null;
+  paymentMethod: {
+    brand: string;
+    last4: string;
+    expMonth: number;
+    expYear: number;
+  } | null;
+  invoices: Invoice[];
+}
+
+export const billingApi = {
+  /** Get billing details for the authenticated member */
+  getDetails: () => apiFetch<BillingDetails>('/billing/details'),
+
+  /** Create Stripe billing portal session */
+  createPortal: () =>
+    apiFetch<{ portalUrl: string }>('/billing/portal', {
+      method: 'POST',
+    }),
+};
+
+// =============================================================================
 // API Methods - Member Profile (deprecated - use dashboardApi)
 // =============================================================================
 
@@ -393,4 +436,5 @@ export const api = {
   auth: authApi,
   memberPrivacy: memberPrivacyApi,
   member: memberApi,
+  billing: billingApi,
 };

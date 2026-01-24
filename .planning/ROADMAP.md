@@ -171,13 +171,13 @@ Plans:
 **Plans:** 7 plans
 
 Plans:
-- [ ] 32-01-PLAN.md — Overview API integration with React Query setup
-- [ ] 32-02-PLAN.md — Resources page with grid/list toggle and download modal
-- [ ] 32-03-PLAN.md — Benchmarks submission page with conversational wizard
-- [ ] 32-04-PLAN.md — Benchmarks results page with Recharts visualizations
-- [ ] 32-05-PLAN.md — Leaderboard page with pinned member row
-- [ ] 32-06-PLAN.md — Profile and account settings pages
-- [ ] 32-07-PLAN.md — Billing page and final navigation polish
+- [x] 32-01-PLAN.md — Overview API integration with React Query setup
+- [x] 32-02-PLAN.md — Resources page with grid/list toggle and download modal
+- [x] 32-03-PLAN.md — Benchmarks submission page with conversational wizard
+- [x] 32-04-PLAN.md — Benchmarks results page with Recharts visualizations
+- [x] 32-05-PLAN.md — Leaderboard page with pinned member row
+- [x] 32-06-PLAN.md — Profile and account settings pages
+- [x] 32-07-PLAN.md — Billing page and final navigation polish
 
 **Success Criteria:**
 1. Member dashboard overview shows points, streak, recent activity at /dashboard
@@ -215,12 +215,12 @@ Plans:
 | 29 - Resource Library & File Storage | Complete | 4 | 22/22 requirements |
 | 30 - MEE6 Discord Integration | Complete | 3 | 10/11 requirements |
 | 31 - Next.js Frontend Setup | Complete | 5 | 4/4 requirements |
-| 32 - Member Dashboard Pages | Planned | 7 | 0/21 requirements |
+| 32 - Member Dashboard Pages | Complete | 7 | 21/21 requirements |
 | 33 - Admin Analytics Dashboard | Pending | 0 | 0/10 requirements |
 
-**Overall Progress:** 68/101 requirements (67%)
+**Overall Progress:** 89/101 requirements (88%)
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-24 (Phase 32 planned - 7 plans in 3 waves)*
+*Last updated: 2026-01-24 (Phase 32 complete - 7 plans executed in 3 waves)*

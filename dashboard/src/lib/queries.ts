@@ -49,9 +49,10 @@ export const benchmarksQueries = {
 
 export const resourcesQueries = {
   all: ['resources'] as const,
-  list: (filters?: { type?: string; tags?: string; search?: string }) =>
+  list: (filters?: { type?: string; tags?: string; search?: string; featured?: boolean }) =>
     [...resourcesQueries.all, 'list', filters] as const,
   detail: (id: string) => [...resourcesQueries.all, 'detail', id] as const,
+  tags: () => [...resourcesQueries.all, 'tags'] as const,
   recommended: () => [...resourcesQueries.all, 'recommended'] as const,
 };
 

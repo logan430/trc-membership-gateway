@@ -64,66 +64,94 @@ export class ApiError extends Error {
 // API Methods - Points
 // =============================================================================
 
+export interface PointsBreakdown {
+  action: string;
+  actionLabel: string;
+  points: number;
+}
+
 export interface PointsSummary {
   totalPoints: number;
-  currentStreak: number;
-  monthlyPoints: number;
-  lastActiveAt: string | null;
+  breakdown: PointsBreakdown[];
 }
 
 export interface PointTransaction {
   id: string;
+  action: string;
+  actionLabel: string;
   points: number;
-  type: string;
-  reason: string;
+  metadata: Record<string, unknown>;
   createdAt: string;
+}
+
+export interface PointsHistoryResponse {
+  transactions: PointTransaction[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+export interface PointValue {
+  action: string;
+  label: string;
+  points: number;
+  description?: string;
 }
 
 export const pointsApi = {
   /** Get member's point summary */
   getSummary: () => apiFetch<PointsSummary>('/api/points/summary'),
 
-  /** Get member's point history */
-  getHistory: (limit = 20, offset = 0) =>
-    apiFetch<{ transactions: PointTransaction[]; total: number }>(
-      `/api/points/history?limit=${limit}&offset=${offset}`
-    ),
+  /** Get member's point history with cursor pagination */
+  getHistory: (limit = 20, cursor?: string) => {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (cursor) params.set('cursor', cursor);
+    return apiFetch<PointsHistoryResponse>(`/api/points/history?${params}`);
+  },
 
   /** Get point values configuration */
-  getValues: () => apiFetch<Record<string, number>>('/api/points/values'),
+  getValues: () => apiFetch<{ values: PointValue[] }>('/api/points/values'),
 };
 
 // =============================================================================
 // API Methods - Benchmarks
 // =============================================================================
 
-export interface BenchmarkCategory {
+export interface BenchmarkSubmission {
   id: string;
-  name: string;
-  description: string;
-  submissionCount: number;
-  hasSubmitted: boolean;
+  category: string;
+  data: Record<string, unknown>;
+  isValid: boolean;
+  submittedAt: string;
+  updatedAt: string;
+}
+
+export interface BenchmarkSubmitResponse {
+  submission: BenchmarkSubmission;
+  outlierFields?: string[];
+  pointsAwarded: number;
+}
+
+export interface MySubmissionsResponse {
+  submissions: BenchmarkSubmission[];
 }
 
 export const benchmarksApi = {
-  /** Get available benchmark categories */
-  getCategories: () => apiFetch<BenchmarkCategory[]>('/api/benchmarks/categories'),
-
-  /** Get member's submissions */
-  getSubmissions: () => apiFetch<Record<string, unknown>[]>('/api/benchmarks/submissions'),
+  /** Get member's submissions for all categories */
+  getMySubmissions: () =>
+    apiFetch<MySubmissionsResponse>('/api/benchmarks/my-submissions'),
 
   /** Submit benchmark data */
   submit: (category: string, data: Record<string, unknown>) =>
-    apiFetch<{ id: string }>('/api/benchmarks/submit', {
+    apiFetch<BenchmarkSubmitResponse>('/api/benchmarks/submit', {
       method: 'POST',
       body: JSON.stringify({ category, data }),
     }),
 
-  /** Get benchmark results for a category */
-  getResults: (category: string, filters?: Record<string, string>) => {
+  /** Get benchmark results/aggregates for a category */
+  getAggregates: (category: string, filters?: Record<string, string>) => {
     const params = new URLSearchParams(filters);
     return apiFetch<Record<string, unknown>>(
-      `/api/benchmarks/results/${category}?${params}`
+      `/api/benchmarks/aggregates/${category}?${params}`
     );
   },
 };
@@ -140,33 +168,41 @@ export interface Resource {
   tags: string[];
   downloadCount: number;
   createdAt: string;
+  isFeatured?: boolean;
+  author?: string;
+  fileSize?: number;
+  mimeType?: string;
 }
 
 export const resourcesApi = {
   /** List resources with optional filters */
-  list: (filters?: { type?: string; tags?: string; search?: string; limit?: number; offset?: number }) => {
+  list: (filters?: { type?: string; tags?: string; search?: string; featured?: boolean; limit?: number; cursor?: string }) => {
     const params = new URLSearchParams();
     if (filters?.type) params.set('type', filters.type);
     if (filters?.tags) params.set('tags', filters.tags);
     if (filters?.search) params.set('search', filters.search);
+    if (filters?.featured !== undefined) params.set('featured', String(filters.featured));
     if (filters?.limit) params.set('limit', String(filters.limit));
-    if (filters?.offset) params.set('offset', String(filters.offset));
-    return apiFetch<{ resources: Resource[]; total: number }>(
+    if (filters?.cursor) params.set('cursor', filters.cursor);
+    return apiFetch<{ resources: Resource[]; nextCursor?: string; hasMore: boolean }>(
       `/api/resources?${params}`
     );
   },
 
   /** Get resource details */
-  get: (id: string) => apiFetch<Resource>(`/api/resources/${id}`),
+  get: (id: string) => apiFetch<{ resource: Resource }>(`/api/resources/${id}`),
 
   /** Download resource (returns signed URL) */
   download: (id: string) =>
-    apiFetch<{ url: string }>(`/api/resources/${id}/download`, {
+    apiFetch<{ downloadUrl: string; expiresAt: string; pointsAwarded: number }>(`/api/resources/${id}/download`, {
       method: 'POST',
     }),
 
   /** Get recommended resources */
-  getRecommended: () => apiFetch<Resource[]>('/api/resources/recommended'),
+  getRecommended: () => apiFetch<{ resources: Resource[] }>('/api/resources/recommended'),
+
+  /** Get all available tags for filtering */
+  getTags: () => apiFetch<{ tags: string[] }>('/api/resources/tags'),
 };
 
 // =============================================================================

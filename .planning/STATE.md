@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 32 - Member Dashboard Pages
-**Current Plan:** 3 of 5 complete
+**Current Plan:** 4 of 5 complete
 **Status:** In progress
 
 **Phase Goal:**
@@ -42,8 +42,8 @@ Phase 28: [####################] 3/3 plans (Complete!)
 Phase 29: [####################] 4/4 plans (Complete!)
 Phase 30: [####################] 3/3 plans (Complete!)
 Phase 31: [####################] 5/5 plans (Complete!)
-Phase 32: [############........] 3/5 plans (In progress)
-v2.0:     [###################.] 24/~26 plans
+Phase 32: [################....] 4/5 plans (In progress)
+v2.0:     [###################.] 25/~26 plans
 ```
 
 ---
@@ -145,6 +145,8 @@ v2.0:     [###################.] 24/~26 plans
 | Question sets match backend schemas | Ensures submitted data validates against Zod schemas | 32-03 |
 | zod@3 for forms over zod@4 | Better compatibility with react-hook-form resolvers | 32-03 |
 | Conversational wizard flow | One question per screen per CONTEXT.md - feel like conversation | 32-03 |
+| Horizontal bar chart for comparisons | Easy visual comparison, compact on mobile | 32-04 |
+| Suspense for searchParams | Required to avoid hydration errors with client-side params in Next.js 15 | 32-04 |
 
 ### Research Insights
 
@@ -206,12 +208,12 @@ v2.0:     [###################.] 24/~26 plans
 - [x] Create points hooks and connect overview page (Plan 32-01)
 - [x] Create resources page with browser UI (Plan 32-02)
 - [x] Create benchmarks page with submission forms (Plan 32-03)
-- [ ] Create leaderboard page (Plan 32-04)
+- [x] Create benchmark results page with charts (Plan 32-04)
 - [ ] Create profile page (Plan 32-05)
 
 ### Known Blockers
 
-None - Plan 32-03 complete. Benchmark submission page functional with conversational wizard.
+None - Plan 32-04 complete. Benchmark results page with Recharts visualizations and k-anonymity gate.
 
 ### Questions for User
 
@@ -224,16 +226,15 @@ None - Plan 32-03 complete. Benchmark submission page functional with conversati
 ## Session Continuity
 
 **Last session:** 2026-01-24
-- Completed Plan 32-03: Benchmark Submission Page
-- Installed react-hook-form and zod@3 for form management
-- Created useBenchmarks hooks (useMySubmissions, useSubmitBenchmark)
-- Built CategoryCard and ConversationalWizard components
-- Created /dashboard/benchmarks page with 4 categories (31 total questions)
+- Completed Plan 32-04: Benchmark Results Page
+- Added AggregatesResponse interface and useAggregates hook
+- Created ComparisonBar, MetricComparisonCard, and KAnonymityGate components
+- Created /dashboard/benchmarks/results page with charts and filters
 
-**Next session:** Plan 32-04 (Leaderboard Page)
-- Create leaderboard with monthly rankings
-- Show member's position highlighted
-- Privacy opt-out toggle
+**Next session:** Plan 32-05 (Profile Page)
+- Create member profile page
+- Account settings and preferences
+- Activity summary
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -268,13 +269,14 @@ None - Plan 32-03 complete. Benchmark submission page functional with conversati
 - Resource hooks at: dashboard/src/hooks/useResources.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 - Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
-- Benchmark components at: dashboard/src/components/benchmarks/ (CategoryCard, ConversationalWizard)
+- Benchmark components at: dashboard/src/components/benchmarks/ (CategoryCard, ConversationalWizard, ComparisonBar, MetricComparisonCard, KAnonymityGate)
 - Resource components at: dashboard/src/components/resources/ (ResourceCard, ResourceListItem, ResourceFilters, ResourcePreviewModal)
 - Dashboard shell at: dashboard/src/app/dashboard/ (layout.tsx, page.tsx)
 - Benchmarks page at: dashboard/src/app/dashboard/benchmarks/page.tsx
+- Benchmark results at: dashboard/src/app/dashboard/benchmarks/results/page.tsx
 - Resources page at: dashboard/src/app/dashboard/resources/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Plan 32-03 (Benchmark Submission Page) complete*
+*Last updated: 2026-01-24 - Plan 32-04 (Benchmark Results Page) complete*

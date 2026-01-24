@@ -5,6 +5,7 @@ import pino from 'pino';
 import * as Sentry from '@sentry/node';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { env } from './config/env.js';
 import { stripeWebhookRouter } from './webhooks/stripe.js';
 import { authRouter } from './routes/auth.js';
@@ -133,7 +134,47 @@ app.use('/billing', billingRouter);
 // Company checkout routes (team subscription purchase)
 app.use('/company', companyCheckoutRouter);
 
+// =============================================================================
+// NEXT.JS DASHBOARD PROXY
+// =============================================================================
+// Proxy /dashboard/* requests to Next.js app running on port 3000
+// Must be mounted BEFORE other /dashboard routes
+// =============================================================================
+
+// Only enable proxy in development or when NEXT_APP_URL is set
+if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
+  const nextAppUrl = process.env.NEXT_APP_URL || 'http://localhost:3000';
+
+  app.use('/dashboard', createProxyMiddleware({
+    target: nextAppUrl,
+    changeOrigin: true,
+    ws: true, // WebSocket support for HMR in dev
+    // Forward cookies for authentication
+    on: {
+      proxyReq: (proxyReq, req) => {
+        // Forward all cookies to Next.js
+        const cookies = req.headers.cookie;
+        if (cookies) {
+          proxyReq.setHeader('Cookie', cookies);
+        }
+      },
+      proxyRes: (proxyRes, req, res) => {
+        // Log proxy requests in development
+        if (env.NODE_ENV === 'development') {
+          logger.debug({
+            path: req.url,
+            status: proxyRes.statusCode
+          }, 'Dashboard proxy request');
+        }
+      },
+    },
+  }));
+
+  logger.info({ target: nextAppUrl }, 'Dashboard proxy enabled');
+}
+
 // Dashboard routes (subscription status, claim availability)
+// NOTE: These only match if proxy didn't handle the request (proxy runs first)
 app.use('/dashboard', dashboardRouter);
 
 // Team dashboard routes (seat management for team owners)

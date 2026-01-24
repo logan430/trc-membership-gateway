@@ -236,6 +236,9 @@ None - Phase 31 in progress. Auth middleware complete, ready for dashboard shell
 - Job scheduler at: src/jobs/index.ts
 - Next.js app at: dashboard/package.json, dashboard/src/app/
 - Tailwind theme at: dashboard/src/app/globals.css
+- Auth lib at: dashboard/src/lib/auth.ts
+- Auth middleware at: dashboard/src/middleware.ts
+- API client at: dashboard/src/lib/api.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 
 ---

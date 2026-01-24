@@ -68,17 +68,22 @@ function redirectToLogin(request: NextRequest, reason?: string): NextResponse {
 
 /**
  * Middleware matcher configuration
- * Only run on /dashboard/* routes (our protected pages)
+ * Only run on protected routes (our member and admin pages)
  */
 export const config = {
   matcher: [
     /*
-     * Match all paths starting with /dashboard
+     * Match all paths starting with /dashboard or /admin
      * Excludes:
      * - _next/static (static files)
      * - _next/image (image optimization)
      * - favicon.ico, images, etc.
+     *
+     * Note: Admin pages use Bearer token from localStorage, not cookies.
+     * The middleware validates member tokens but admin pages handle
+     * their own authentication via localStorage token.
      */
     '/dashboard/:path*',
+    '/admin/:path*',
   ],
 };

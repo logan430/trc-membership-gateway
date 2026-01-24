@@ -10,13 +10,9 @@ import {
   Legend,
 } from 'recharts';
 
-interface DataPoint {
-  date: string;
-  [key: string]: number | string;
-}
-
 interface TimeSeriesChartProps {
-  data: DataPoint[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any[];
   lines: {
     key: string;
     label: string;

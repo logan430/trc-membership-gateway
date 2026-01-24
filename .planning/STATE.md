@@ -265,11 +265,14 @@ None - Plan 32-03 complete. Benchmark submission page functional with conversati
 - Providers at: dashboard/src/app/providers.tsx
 - Points hooks at: dashboard/src/hooks/usePoints.ts
 - Benchmark hooks at: dashboard/src/hooks/useBenchmarks.ts
+- Resource hooks at: dashboard/src/hooks/useResources.ts
 - UI components at: dashboard/src/components/ui/ (Button, Card, Input, GoldCoinsLoader)
 - Layout components at: dashboard/src/components/layout/ (Sidebar, Header)
 - Benchmark components at: dashboard/src/components/benchmarks/ (CategoryCard, ConversationalWizard)
+- Resource components at: dashboard/src/components/resources/ (ResourceCard, ResourceListItem, ResourceFilters, ResourcePreviewModal)
 - Dashboard shell at: dashboard/src/app/dashboard/ (layout.tsx, page.tsx)
 - Benchmarks page at: dashboard/src/app/dashboard/benchmarks/page.tsx
+- Resources page at: dashboard/src/app/dashboard/resources/page.tsx
 
 ---
 

@@ -15,6 +15,7 @@ import cron, { ScheduledTask } from 'node-cron';
 import { logger } from '../index.js';
 import { syncMee6Xp } from './mee6-sync.js';
 import { calculateStreaks } from './streak-calculator.js';
+import { sendChurnDigest } from './churn-digest.js';
 
 // Track scheduled tasks for graceful shutdown
 const scheduledTasks: ScheduledTask[] = [];
@@ -82,6 +83,35 @@ export function startJobScheduler(): void {
   scheduledTasks.push(streakJob);
   logger.info({ cron: '5 0 * * *', timezone: 'UTC' }, 'Streak calculation job scheduled');
 
+  // Churn digest job - weekly on Monday at 09:00 UTC
+  // Cron: 0 9 * * 1 (at 09:00 on Monday)
+  const churnDigestJob = cron.schedule(
+    '0 9 * * 1',
+    async () => {
+      try {
+        const stats = await sendChurnDigest();
+        logger.info(
+          {
+            totalAtRisk: stats.totalAtRisk,
+            highRisk: stats.highRisk,
+            mediumRisk: stats.mediumRisk,
+            emailsSent: stats.emailsSent,
+            errors: stats.errors,
+          },
+          'Churn digest completed'
+        );
+      } catch (error) {
+        logger.error(
+          { error: error instanceof Error ? { message: error.message, stack: error.stack } : error },
+          'Churn digest job failed'
+        );
+      }
+    },
+    { timezone: 'UTC' }
+  );
+  scheduledTasks.push(churnDigestJob);
+  logger.info({ cron: '0 9 * * 1', timezone: 'UTC' }, 'Churn digest job scheduled');
+
   logger.info({ jobCount: scheduledTasks.length }, 'Job scheduler started');
 }
 
@@ -105,6 +135,7 @@ export function stopJobScheduler(): void {
 // Re-export job functions for direct invocation (testing, manual runs)
 export { syncMee6Xp } from './mee6-sync.js';
 export { calculateStreaks } from './streak-calculator.js';
+export { sendChurnDigest } from './churn-digest.js';
 
 // Re-export types
 export type { SyncStats, StreakStats } from './types.js';

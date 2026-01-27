@@ -569,4 +569,264 @@ export const adminUsersApi = {
     }),
 };
 
+// =============================================================================
+// Resources API
+// =============================================================================
+
+export type ResourceType = 'TEMPLATE' | 'SOP' | 'PLAYBOOK' | 'COURSE' | 'VIDEO';
+export type ResourceStatus = 'DRAFT' | 'PUBLISHED' | 'SCHEDULED';
+
+export interface AdminResource {
+  id: string;
+  title: string;
+  description: string;
+  type: ResourceType;
+  status: ResourceStatus;
+  tags: string[];
+  downloadCount: number;
+  isFeatured: boolean;
+  author: string | null;
+  publishAt: string | null;
+  currentVersionNumber: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+export interface ResourceVersion {
+  id: string;
+  versionNumber: number;
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  changelog: string | null;
+  uploadedBy: string;
+  createdAt: string;
+}
+
+export interface ResourceTag {
+  id: string;
+  name: string;
+}
+
+export interface ResourceFilters {
+  page?: number;
+  limit?: number;
+  type?: ResourceType;
+  status?: ResourceStatus;
+  tags?: string;
+  search?: string;
+  includeDeleted?: boolean;
+}
+
+/** Helper to get token (for file upload forms) */
+function getAdminToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export const adminResourcesApi = {
+  /** List resources with filters */
+  list: (filters: ResourceFilters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.limit) params.set('limit', String(filters.limit));
+    if (filters.type) params.set('type', filters.type);
+    if (filters.status) params.set('status', filters.status);
+    if (filters.tags) params.set('tags', filters.tags);
+    if (filters.search) params.set('search', filters.search);
+    if (filters.includeDeleted) params.set('includeDeleted', 'true');
+    return adminFetch<{
+      resources: AdminResource[];
+      nextCursor: string | null;
+      hasMore: boolean;
+    }>(`/api/admin/resources?${params}`);
+  },
+
+  /** Get resource with versions */
+  get: (id: string) =>
+    adminFetch<{ resource: AdminResource; versions: ResourceVersion[] }>(
+      `/api/admin/resources/${id}`
+    ),
+
+  /** Create resource with file */
+  create: async (
+    file: File,
+    metadata: {
+      title: string;
+      description: string;
+      type: ResourceType;
+      status: ResourceStatus;
+      tags: string[];
+      isFeatured?: boolean;
+      author?: string;
+      publishAt?: string;
+    }
+  ) => {
+    const token = getAdminToken();
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('metadata', JSON.stringify(metadata));
+
+    const response = await fetch('/api/admin/resources', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Upload failed' }));
+      throw new AdminApiError(error.error, response.status);
+    }
+
+    return response.json();
+  },
+
+  /** Update resource metadata */
+  update: (id: string, data: Partial<Omit<AdminResource, 'id' | 'createdAt' | 'updatedAt'>>) =>
+    adminFetch<{ resource: AdminResource }>(`/api/admin/resources/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+
+  /** Upload new version */
+  uploadVersion: async (id: string, file: File, changelog?: string) => {
+    const token = getAdminToken();
+    const formData = new FormData();
+    formData.append('file', file);
+    if (changelog) formData.append('changelog', changelog);
+
+    const response = await fetch(`/api/admin/resources/${id}/version`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Upload failed' }));
+      throw new AdminApiError(error.error, response.status);
+    }
+
+    return response.json();
+  },
+
+  /** Soft delete resource */
+  delete: (id: string) =>
+    adminFetch<{ success: boolean }>(`/api/admin/resources/${id}`, {
+      method: 'DELETE',
+    }),
+
+  /** Get all tags */
+  getTags: () => adminFetch<{ tags: ResourceTag[] }>('/api/admin/resources/tags'),
+
+  /** Create tag */
+  createTag: (name: string) =>
+    adminFetch<{ tag: ResourceTag }>('/api/admin/resources/tags', {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    }),
+
+  /** Delete tag */
+  deleteTag: (id: string) =>
+    adminFetch<{ success: boolean }>(`/api/admin/resources/tags/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
+// =============================================================================
+// Benchmarks API
+// =============================================================================
+
+export interface FlaggedBenchmark {
+  id: string;
+  memberId: string;
+  category: string;
+  data: Record<string, unknown>;
+  outlierFields: string[];
+  flagReason: string;
+  isValid: boolean;
+  updatedAt: string;
+  member: {
+    id: string;
+    email: string;
+    discordUsername: string | null;
+  };
+}
+
+export interface BenchmarkStatsItem {
+  category: string;
+  total: number;
+  valid: number;
+  flagged: number;
+}
+
+export const adminBenchmarksApi = {
+  /** Get flagged submissions */
+  getFlagged: (filters?: { category?: string; limit?: number; cursor?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.category) params.set('category', filters.category);
+    if (filters?.limit) params.set('limit', String(filters.limit));
+    if (filters?.cursor) params.set('cursor', filters.cursor);
+    return adminFetch<{
+      submissions: FlaggedBenchmark[];
+      nextCursor: string | null;
+      hasMore: boolean;
+    }>(`/api/admin/benchmarks/flagged?${params}`);
+  },
+
+  /** Approve flagged submission */
+  approve: (id: string) =>
+    adminFetch<{ success: boolean }>(`/api/admin/benchmarks/${id}/review`, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'approve' }),
+    }),
+
+  /** Reject flagged submission */
+  reject: (id: string) =>
+    adminFetch<{ success: boolean }>(`/api/admin/benchmarks/${id}/review`, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'reject' }),
+    }),
+
+  /** Get benchmark statistics */
+  getStats: () =>
+    adminFetch<{
+      stats: BenchmarkStatsItem[];
+      totals: { total: number; valid: number; flagged: number };
+    }>('/api/admin/benchmarks/stats'),
+};
+
+// =============================================================================
+// Points Config API
+// =============================================================================
+
+export interface PointConfig {
+  action: string;
+  label: string;
+  points: number;
+  enabled: boolean;
+  description: string | null;
+  updatedAt: string;
+}
+
+export const adminPointsConfigApi = {
+  /** List all point configs */
+  list: () => adminFetch<{ configs: PointConfig[] }>('/api/admin/points-config'),
+
+  /** Update point config */
+  update: (
+    action: string,
+    data: { points: number; enabled: boolean; label?: string; description?: string | null }
+  ) =>
+    adminFetch<{ success: boolean; config: PointConfig }>(`/api/admin/points-config/${action}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  /** Seed defaults (super admin only) */
+  seed: () =>
+    adminFetch<{ success: boolean }>('/api/admin/points-config/seed', {
+      method: 'POST',
+    }),
+};
+
 export { AdminApiError };

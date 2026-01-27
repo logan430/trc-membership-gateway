@@ -7,3 +7,5 @@ export { RetentionHeatmap } from './RetentionHeatmap';
 export { AtRiskMemberList } from './AtRiskMemberList';
 export { DateRangePicker } from './DateRangePicker';
 export { MembersTable } from './MembersTable';
+export { MemberInfoCard } from './MemberInfoCard';
+export { PointsAdjuster } from './PointsAdjuster';

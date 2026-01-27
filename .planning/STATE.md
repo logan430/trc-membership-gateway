@@ -28,7 +28,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 ## Current Position
 
 **Current Phase:** 34 - Admin Dashboard Migration
-**Current Plan:** 2 of 4 complete
+**Current Plan:** 3 of 4 complete
 **Status:** IN PROGRESS - v2.1 Frontend Consolidation
 
 **Phase Goal:**
@@ -37,9 +37,9 @@ Migrate admin pages from static HTML to unified Next.js dashboard with proper au
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE!)
-Phase 34: [##########          ] 2/4 plans (Admin Migration - in progress)
+Phase 34: [###############     ] 3/4 plans (Admin Migration - in progress)
 Phase 35: [####################] 1/1 plans (Auth Pages - Complete!)
-v2.1:     [######              ] 3/5+ plans (in progress)
+v2.1:     [########            ] 4/5+ plans (in progress)
 ```
 
 ---
@@ -172,6 +172,9 @@ v2.1:     [######              ] 3/5+ plans (in progress)
 | (auth) route group for admin login | Bypass AdminAuthGuard for login page | 34-02 |
 | adminAuthApi uses /admin/auth/* | Consistent with existing backend auth endpoints | 34-02 |
 | subscriptionStatus filter param | Matches backend expected query parameter name | 34-02 |
+| Nested response unwrap for templates | API returns {template: {...}}, client unwraps to fix bug | 34-03 |
+| Category grouping for templates | Matches existing static HTML organization | 34-03 |
+| Cursor pagination for audit logs | Scales better for large datasets, matches backend pattern | 34-03 |
 
 ### Research Insights
 
@@ -266,10 +269,13 @@ v2.1:     [######              ] 3/5+ plans (in progress)
 - [x] Create admin dashboard overview page (Plan 34-02)
 - [x] Create members list page with table and filters (Plan 34-02)
 - [x] Create member detail page with points adjustment (Plan 34-02)
-- [ ] Migrate config page (Plan 34-03)
-- [ ] Migrate templates pages (Plan 34-03)
-- [ ] Migrate audit page (Plan 34-03)
-- [ ] Migrate admins page (Plan 34-04)
+- [x] Migrate config page (Plan 34-03)
+- [x] Migrate templates pages (Plan 34-03)
+- [x] Migrate audit page (Plan 34-03)
+- [x] Migrate admins page (Plan 34-03)
+- [ ] Migrate resources page (Plan 34-04)
+- [ ] Migrate benchmarks page (Plan 34-04)
+- [ ] Migrate points config page (Plan 34-04)
 
 ### Known Blockers
 
@@ -286,19 +292,20 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-27
-- Completed Plan 34-02: Core Admin Pages Migration
-- Extended admin-api.ts with adminAuthApi and adminMembersApi
-- Created useAdminMembers.ts with React Query hooks
-- Created admin login page at dashboard/src/app/admin/(auth)/login/page.tsx
-- Created admin dashboard page at dashboard/src/app/admin/dashboard/page.tsx
-- Created members list page at dashboard/src/app/admin/members/page.tsx
-- Created member detail page at dashboard/src/app/admin/members/[id]/page.tsx
-- Created MembersTable, MemberInfoCard, PointsAdjuster components
+- Completed Plan 34-03: Config Pages Migration
+- Extended admin-api.ts with adminConfigApi, adminTemplatesApi, adminAuditApi, adminUsersApi
+- Created useAdminConfig.ts with React Query hooks
+- Created FeatureFlagCard, AuditTable components
+- Created config page at dashboard/src/app/admin/config/page.tsx
+- Created templates pages at dashboard/src/app/admin/templates/
+- Created audit page at dashboard/src/app/admin/audit/page.tsx
+- Created admins page at dashboard/src/app/admin/admins/page.tsx
+- Fixed template edit bug (nested response unwrapping)
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
 **v2.1 IN PROGRESS:** Frontend consolidation (Phase 34-35+)
 
-**Next tasks:** Plan 34-03 config, templates, audit pages migration
+**Next tasks:** Plan 34-04 resources, benchmarks, points config pages
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -376,8 +383,14 @@ None currently.
 - Admin members list at: dashboard/src/app/admin/members/page.tsx
 - Admin member detail at: dashboard/src/app/admin/members/[id]/page.tsx
 - Admin member components at: dashboard/src/components/admin/MembersTable.tsx, MemberInfoCard.tsx, PointsAdjuster.tsx
+- Admin config hooks at: dashboard/src/hooks/useAdminConfig.ts
+- Admin config components at: dashboard/src/components/admin/FeatureFlagCard.tsx, AuditTable.tsx
+- Admin config page at: dashboard/src/app/admin/config/page.tsx
+- Admin templates pages at: dashboard/src/app/admin/templates/page.tsx, [slug]/page.tsx
+- Admin audit page at: dashboard/src/app/admin/audit/page.tsx
+- Admin admins page at: dashboard/src/app/admin/admins/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-27 - Completed 34-02 (Core Admin Pages Migration)*
+*Last updated: 2026-01-27 - Completed 34-03 (Config Pages Migration)*

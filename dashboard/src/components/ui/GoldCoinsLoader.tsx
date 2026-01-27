@@ -51,15 +51,19 @@ export function GoldCoinsLoader({ size = 'md', className = '' }: GoldCoinsLoader
   );
 }
 
+interface PageLoaderProps {
+  message?: string;
+}
+
 /**
  * Full-page loading state with centered loader
  */
-export function PageLoader() {
+export function PageLoader({ message = 'Loading your realm...' }: PageLoaderProps) {
   return (
     <div className="flex items-center justify-center min-h-[400px]">
       <div className="text-center">
         <GoldCoinsLoader size="lg" className="mx-auto mb-4" />
-        <p className="text-muted-foreground text-sm">Loading your realm...</p>
+        <p className="text-muted-foreground text-sm">{message}</p>
       </div>
     </div>
   );

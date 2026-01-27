@@ -372,4 +372,201 @@ export const adminMembersApi = {
   },
 };
 
+// =============================================================================
+// Feature Flags API
+// =============================================================================
+
+export interface FeatureFlag {
+  key: string;
+  enabled: boolean;
+  description: string | null;
+  category: string | null;
+  updatedAt: string;
+  updatedBy: string | null;
+}
+
+export const adminConfigApi = {
+  /** List all feature flags */
+  getFlags: () => adminFetch<{ flags: FeatureFlag[] }>('/api/admin/config/feature-flags'),
+
+  /** Toggle a feature flag */
+  toggleFlag: (key: string, enabled: boolean) =>
+    adminFetch<{ success: boolean; flag: { key: string; enabled: boolean } }>(
+      `/api/admin/config/feature-flags/${key}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ enabled }),
+      }
+    ),
+
+  /** Seed default feature flags */
+  seedFlags: () =>
+    adminFetch<{ success: boolean; message: string }>('/api/admin/config/feature-flags/seed', {
+      method: 'POST',
+    }),
+
+  /** Get Discord channel configuration */
+  getDiscordChannels: () =>
+    adminFetch<{
+      channels: { introductions: string | null; billingSupport: string | null; adminAlerts: string | null };
+      note: string;
+    }>('/api/admin/config/discord-channels'),
+};
+
+// =============================================================================
+// Email Templates API
+// =============================================================================
+
+export interface EmailTemplate {
+  name: string;
+  subject: string;
+  body: string;
+  updatedAt: string;
+  updatedBy: string | null;
+}
+
+export const adminTemplatesApi = {
+  /** List all templates */
+  list: () => adminFetch<{ templates: EmailTemplate[] }>('/api/admin/templates'),
+
+  /** Get single template - IMPORTANT: API returns {template: {...}} */
+  get: async (name: string) => {
+    const response = await adminFetch<{ template: EmailTemplate }>(`/api/admin/templates/${name}`);
+    return response.template; // Unwrap the nested object (BUG FIX)
+  },
+
+  /** Update template */
+  update: (name: string, data: { subject: string; body: string }) =>
+    adminFetch<{ success: boolean; template: EmailTemplate; warning?: string }>(
+      `/api/admin/templates/${name}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }
+    ),
+
+  /** Get template variables */
+  getVariables: (name: string) =>
+    adminFetch<{ variables: string[] }>(`/api/admin/templates/${name}/variables`),
+
+  /** Preview template with sample data */
+  preview: (name: string) =>
+    adminFetch<{ preview: { subject: string; body: string }; sampleData: Record<string, string> }>(
+      `/api/admin/templates/${name}/preview`
+    ),
+
+  /** Reset template to default */
+  reset: (name: string) =>
+    adminFetch<{ success: boolean; template: EmailTemplate; message: string }>(
+      `/api/admin/templates/${name}/reset`,
+      { method: 'POST' }
+    ),
+
+  /** Seed default templates */
+  seed: () =>
+    adminFetch<{ success: boolean; created: number }>('/api/admin/templates/seed', {
+      method: 'POST',
+    }),
+};
+
+// =============================================================================
+// Audit Log API
+// =============================================================================
+
+export interface AuditLogEntry {
+  id: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  details: Record<string, unknown>;
+  performedBy: string | null;
+  createdAt: string;
+}
+
+export interface AuditLogFilters {
+  cursor?: string;
+  limit?: number;
+  action?: string;
+  entityType?: string;
+  entityId?: string;
+  startDate?: string;
+  endDate?: string;
+  search?: string;
+}
+
+export const adminAuditApi = {
+  /** List audit logs with pagination and filters */
+  list: (filters: AuditLogFilters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.cursor) params.set('cursor', filters.cursor);
+    if (filters.limit) params.set('limit', String(filters.limit));
+    if (filters.action) params.set('action', filters.action);
+    if (filters.entityType) params.set('entityType', filters.entityType);
+    if (filters.entityId) params.set('entityId', filters.entityId);
+    if (filters.startDate) params.set('startDate', filters.startDate);
+    if (filters.endDate) params.set('endDate', filters.endDate);
+    if (filters.search) params.set('search', filters.search);
+    return adminFetch<{
+      logs: AuditLogEntry[];
+      nextCursor: string | null;
+      hasMore: boolean;
+    }>(`/api/admin/audit?${params}`);
+  },
+
+  /** Get distinct action types for filter dropdown */
+  getActions: () => adminFetch<{ actions: string[] }>('/api/admin/audit/actions'),
+
+  /** Get distinct entity types for filter dropdown */
+  getEntityTypes: () => adminFetch<{ entityTypes: string[] }>('/api/admin/audit/entity-types'),
+};
+
+// =============================================================================
+// Admin Users API
+// =============================================================================
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  role: 'ADMIN' | 'SUPER_ADMIN';
+  createdAt: string;
+  lastLoginAt: string | null;
+  createdBy: string | null;
+}
+
+export const adminUsersApi = {
+  /** List all admin users */
+  list: () => adminFetch<{ admins: AdminUser[] }>('/api/admin/admins'),
+
+  /** Get single admin with their audit history */
+  get: (id: string) =>
+    adminFetch<{ admin: AdminUser; actionsPerformed: AuditLogEntry[] }>(`/api/admin/admins/${id}`),
+
+  /** Create new admin */
+  create: (data: { email: string; password: string; role: 'ADMIN' | 'SUPER_ADMIN' }) =>
+    adminFetch<{ admin: AdminUser }>('/api/admin/admins', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  /** Update admin role */
+  updateRole: (id: string, role: 'ADMIN' | 'SUPER_ADMIN') =>
+    adminFetch<{ admin: AdminUser }>(`/api/admin/admins/${id}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    }),
+
+  /** Reset admin password */
+  resetPassword: (id: string, password: string) =>
+    adminFetch<{ success: boolean }>(`/api/admin/admins/${id}/reset-password`, {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    }),
+
+  /** Delete admin */
+  delete: (id: string) =>
+    adminFetch<{ success: boolean }>(`/api/admin/admins/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
 export { AdminApiError };

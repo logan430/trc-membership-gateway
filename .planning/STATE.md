@@ -1,7 +1,7 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-01-24
-**Milestone:** v2.0 Community Intelligence Platform
+**Updated:** 2026-01-27
+**Milestone:** v2.1 Frontend Consolidation
 **Mode:** YOLO
 
 ---
@@ -27,24 +27,19 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 33 - Admin Analytics Dashboard
-**Current Plan:** 3 of 3 complete
-**Status:** COMPLETE - v2.0 MILESTONE ACHIEVED
+**Current Phase:** 34 - Admin Dashboard Migration
+**Current Plan:** 1 of 4 complete
+**Status:** IN PROGRESS - v2.1 Frontend Consolidation
 
 **Phase Goal:**
-Admin analytics dashboard with member overview, engagement metrics, benchmark insights, and churn prediction.
+Migrate admin pages from static HTML to unified Next.js dashboard with proper authentication and navigation.
 
 **Progress:**
 ```
-Phase 26: [####################] 3/3 plans (Complete!)
-Phase 27: [####################] 3/3 plans (Complete!)
-Phase 28: [####################] 3/3 plans (Complete!)
-Phase 29: [####################] 4/4 plans (Complete!)
-Phase 30: [####################] 3/3 plans (Complete!)
-Phase 31: [####################] 5/5 plans (Complete!)
-Phase 32: [####################] 7/7 plans (Complete!)
-Phase 33: [####################] 3/3 plans (Complete!)
 v2.0:     [####################] 31/31 plans (COMPLETE!)
+Phase 34: [#####               ] 1/4 plans (Admin Migration - in progress)
+Phase 35: [####################] 1/1 plans (Auth Pages - Complete!)
+v2.1:     [####                ] 2/5+ plans (in progress)
 ```
 
 ---
@@ -166,6 +161,14 @@ v2.0:     [####################] 31/31 plans (COMPLETE!)
 | Bearer token auth for admin API | Different pattern from member httpOnly cookies | 33-03 |
 | 60s/120s polling intervals | Balance real-time freshness with API load | 33-03 |
 | any[] type for chart data | TypeScript strict mode conflicts with Recharts patterns | 33-03 |
+| useAuth hook pattern | Matches useProfile/usePoints hook conventions | 35-01 |
+| Suspense for useSearchParams | Next.js 15 requires Suspense boundary for client params | 35-01 |
+| Auth pages in (auth) route group | Clean URL structure: /login, /signup without /auth prefix | 35-01 |
+| Middleware redirects to /login | Consolidated auth flow - all redirects go to Next.js pages | 35-01 |
+| Cinzel font via next/font | Self-hosted Google font for medieval headings | 35-01 |
+| Separate proxies for /_next, /admin, /dashboard | Clear routing per content type | 34-01 |
+| Admin routes skip middleware | Bearer token auth handled client-side | 34-01 |
+| AdminAuthGuard client-side validation | JWT decoded from localStorage, not server | 34-01 |
 
 ### Research Insights
 
@@ -243,10 +246,25 @@ v2.0:     [####################] 31/31 plans (COMPLETE!)
 - [x] Create export service with CSV/JSON (Plan 33-02)
 - [x] Create churn digest email job (Plan 33-02)
 - [x] Create admin analytics dashboard UI (Plan 33-03)
+- [x] Create useAuth hook for login/signup (Plan 35-01)
+- [x] Create auth layout with medieval branding (Plan 35-01)
+- [x] Create login page with email/password form (Plan 35-01)
+- [x] Create signup page with password confirmation (Plan 35-01)
+- [x] Update middleware to redirect to /login (Plan 35-01)
+- [x] Add /_next and /admin proxies to Express (Plan 34-01)
+- [x] Skip cookie auth in middleware for admin routes (Plan 34-01)
+- [x] Create admin auth utilities with useAdminAuth hook (Plan 34-01)
+- [x] Create AdminAuthGuard component (Plan 34-01)
+- [x] Create AdminSidebar component (Plan 34-01)
+- [x] Create admin layout with auth guard and sidebar (Plan 34-01)
+- [ ] Create admin login page (Plan 34-02 - next)
+- [ ] Migrate admin dashboard page (Plan 34-02)
+- [ ] Migrate admin members page (Plan 34-03)
+- [ ] Migrate remaining admin pages (Plan 34-04)
 
 ### Known Blockers
 
-None - v2.0 milestone complete.
+None currently.
 
 ### Questions for User
 
@@ -258,16 +276,19 @@ None - v2.0 milestone complete.
 
 ## Session Continuity
 
-**Last session:** 2026-01-24
-- Completed Plan 33-03: Admin Analytics Dashboard
-- Created admin analytics page at /admin/analytics with 5 tabs
-- Built admin API client with Bearer token auth
-- Created 6 admin analytics components (KpiCard, TimeSeriesChart, etc.)
-- Implemented React Query hooks with polling for real-time updates
+**Last session:** 2026-01-27
+- Completed Plan 34-01: Admin Infrastructure Setup
+- Added /_next and /admin proxies to Express
+- Updated middleware to skip cookie auth for admin routes
+- Created admin auth utilities at dashboard/src/lib/admin-auth.ts
+- Created AdminAuthGuard component at dashboard/src/components/admin/AdminAuthGuard.tsx
+- Created AdminSidebar component at dashboard/src/components/admin/AdminSidebar.tsx
+- Created admin layout at dashboard/src/app/admin/layout.tsx
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
+**v2.1 IN PROGRESS:** Frontend consolidation (Phase 34-35+)
 
-**Next milestone:** v2.1 planning (user questions pending)
+**Next tasks:** Plan 34-02 admin login page and dashboard migration
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -331,8 +352,16 @@ None - v2.0 milestone complete.
 - Analytics hooks at: dashboard/src/hooks/useAnalytics.ts
 - Admin components at: dashboard/src/components/admin/
 - Admin analytics page at: dashboard/src/app/admin/analytics/page.tsx
+- Auth hook at: dashboard/src/hooks/useAuth.ts
+- Auth layout at: dashboard/src/app/(auth)/layout.tsx
+- Login page at: dashboard/src/app/(auth)/login/page.tsx
+- Signup page at: dashboard/src/app/(auth)/signup/page.tsx
+- Admin auth lib at: dashboard/src/lib/admin-auth.ts
+- Admin auth guard at: dashboard/src/components/admin/AdminAuthGuard.tsx
+- Admin sidebar at: dashboard/src/components/admin/AdminSidebar.tsx
+- Admin layout at: dashboard/src/app/admin/layout.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 - Completed 33-03-PLAN.md (Admin Analytics Dashboard) - v2.0 COMPLETE*
+*Last updated: 2026-01-27 - Completed 34-01 (Admin Infrastructure Setup)*

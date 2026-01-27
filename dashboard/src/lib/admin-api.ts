@@ -239,4 +239,137 @@ export const adminAnalyticsApi = {
   },
 };
 
+// =============================================================================
+// Auth API
+// =============================================================================
+
+export const adminAuthApi = {
+  /** Login and get token */
+  login: async (email: string, password: string) => {
+    const response = await fetch('/admin/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include', // Include cookies for refresh token
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Login failed' }));
+      throw new AdminApiError(error.error || 'Login failed', response.status);
+    }
+
+    const data = await response.json();
+    if (data.accessToken) {
+      localStorage.setItem(TOKEN_KEY, data.accessToken);
+    }
+    return data;
+  },
+
+  /** Logout */
+  logout: async () => {
+    localStorage.removeItem(TOKEN_KEY);
+    await fetch('/admin/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    }).catch(() => {
+      // Ignore logout errors
+    });
+  },
+};
+
+// =============================================================================
+// Members API Types
+// =============================================================================
+
+export interface AdminMember {
+  id: string;
+  email: string;
+  name: string | null;
+  discordId: string | null;
+  discordUsername: string | null;
+  subscriptionStatus: string;
+  seatTier: string | null;
+  totalPoints: number;
+  currentStreak: number;
+  introCompleted: boolean;
+  createdAt: string;
+  lastActiveAt: string | null;
+}
+
+export interface MembersListResponse {
+  members: AdminMember[];
+  pagination: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+export interface MemberFilters {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PointTransaction {
+  id: string;
+  action: string;
+  actionLabel: string;
+  points: number;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface PointsHistoryResponse {
+  transactions: PointTransaction[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+// =============================================================================
+// Members API
+// =============================================================================
+
+export const adminMembersApi = {
+  /** List members with pagination and filters */
+  list: (filters: MemberFilters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.page) params.set('page', String(filters.page));
+    if (filters.pageSize) params.set('pageSize', String(filters.pageSize));
+    if (filters.search) params.set('search', filters.search);
+    if (filters.status) params.set('subscriptionStatus', filters.status);
+    if (filters.sortBy) params.set('sortBy', filters.sortBy);
+    if (filters.sortOrder) params.set('sortOrder', filters.sortOrder);
+    return adminFetch<MembersListResponse>(`/api/admin/members?${params}`);
+  },
+
+  /** Get single member details */
+  get: (id: string) => adminFetch<{ member: AdminMember }>(`/api/admin/members/${id}`),
+
+  /** Update member */
+  update: (id: string, data: Partial<AdminMember>) =>
+    adminFetch<{ member: AdminMember }>(`/api/admin/members/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+
+  /** Adjust member points */
+  adjustPoints: (id: string, data: { points: number; reason?: string; notifyMember?: boolean }) =>
+    adminFetch<{ success: boolean; newTotal: number }>(`/api/admin/members/${id}/points/adjust`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  /** Get member points history */
+  getPointsHistory: (id: string, limit = 50, cursor?: string) => {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (cursor) params.set('cursor', cursor);
+    return adminFetch<PointsHistoryResponse>(`/api/admin/members/${id}/points/history?${params}`);
+  },
+};
+
 export { AdminApiError };

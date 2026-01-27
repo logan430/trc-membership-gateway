@@ -212,6 +212,46 @@ Plans:
 
 ---
 
+---
+
+## v2.1 Frontend Consolidation
+
+### Phase 34: Admin Pages Migration
+
+**Goal:** Migrate admin pages from static HTML to unified Next.js dashboard with React components.
+
+**Dependencies:** Phase 31 (Next.js setup), Phase 33 (admin analytics already in Next.js)
+
+**Plans:** 4 plans
+
+Plans:
+- [x] 34-01-PLAN.md — Admin infrastructure (proxy, auth, layout)
+- [x] 34-02-PLAN.md — Core admin pages (login, dashboard, members)
+- [x] 34-03-PLAN.md — Config pages (flags, templates, audit, admins)
+- [x] 34-04-PLAN.md — New feature UIs (resources, benchmarks, points config)
+
+**Success Criteria:**
+1. Express proxies /_next/* and /admin/* to Next.js
+2. Admin auth via localStorage token with AdminAuthGuard
+3. All admin pages migrated: login, dashboard, members, config, templates, audit, admins, resources, benchmarks, points-config
+4. Template edit bug fixed (nested response handling)
+5. Unified medieval pixel theme across admin UI
+
+---
+
+### Phase 35: Auth Pages Migration
+
+**Goal:** Migrate auth pages (login, signup) to Next.js.
+
+**Dependencies:** Phase 31 (Next.js setup)
+
+**Plans:** 1 plan
+
+Plans:
+- [x] 35-01-PLAN.md — Auth pages migration to Next.js
+
+---
+
 ## Progress
 
 | Phase | Status | Plans | Complete |
@@ -224,10 +264,14 @@ Plans:
 | 31 - Next.js Frontend Setup | Complete | 5 | 4/4 requirements |
 | 32 - Member Dashboard Pages | Complete | 7 | 21/21 requirements |
 | 33 - Admin Analytics Dashboard | Complete | 3 | 10/10 requirements |
+| **v2.1 Frontend Consolidation** | | | |
+| 34 - Admin Pages Migration | Complete | 4 | All admin pages migrated |
+| 35 - Auth Pages Migration | Complete | 1 | Auth pages migrated |
 
-**Overall Progress:** 99/101 requirements (98%)
+**v2.0 Progress:** 99/101 requirements (98%)
+**v2.1 Progress:** 2/2 phases complete
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-24 (Phase 33 complete - v2.0 milestone complete)*
+*Last updated: 2026-01-27 (Phase 34 complete - Admin pages migrated to Next.js)*

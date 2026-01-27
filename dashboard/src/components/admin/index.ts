@@ -6,3 +6,4 @@ export { ComparisonBarChart } from './ComparisonBarChart';
 export { RetentionHeatmap } from './RetentionHeatmap';
 export { AtRiskMemberList } from './AtRiskMemberList';
 export { DateRangePicker } from './DateRangePicker';
+export { MembersTable } from './MembersTable';

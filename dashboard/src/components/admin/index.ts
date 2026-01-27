@@ -1,3 +1,4 @@
+export { AdminAuthGuard } from './AdminAuthGuard';
 export { KpiCard } from './KpiCard';
 export { TimeSeriesChart } from './TimeSeriesChart';
 export { ComparisonBarChart } from './ComparisonBarChart';

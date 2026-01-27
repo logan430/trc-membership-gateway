@@ -155,6 +155,29 @@ app.use('/company', companyCheckoutRouter);
 if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
   const nextAppUrl = process.env.NEXT_APP_URL || 'http://localhost:3000';
 
+  // Proxy Next.js static assets (CSS, JS, images)
+  app.use('/_next', createProxyMiddleware({
+    target: nextAppUrl,
+    changeOrigin: true,
+  }));
+
+  // Proxy admin pages to Next.js
+  app.use('/admin', createProxyMiddleware({
+    target: nextAppUrl,
+    changeOrigin: true,
+    ws: true,
+    on: {
+      proxyReq: (proxyReq, req) => {
+        // Forward cookies for any potential cookie-based features
+        const cookies = req.headers.cookie;
+        if (cookies) {
+          proxyReq.setHeader('Cookie', cookies);
+        }
+      },
+    },
+  }));
+
+  // Proxy /dashboard/* to Next.js
   app.use('/dashboard', createProxyMiddleware({
     target: nextAppUrl,
     changeOrigin: true,
@@ -167,25 +190,32 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
         if (cookies) {
           proxyReq.setHeader('Cookie', cookies);
         }
-      },
-      proxyRes: (proxyRes, req, res) => {
         // Log proxy requests in development
+        if (env.NODE_ENV === 'development') {
+          logger.info({
+            path: req.url,
+            hasCookie: !!cookies,
+          }, 'Proxying dashboard request');
+        }
+      },
+      proxyRes: (proxyRes, req) => {
+        // Log proxy responses in development
         if (env.NODE_ENV === 'development') {
           logger.debug({
             path: req.url,
             status: proxyRes.statusCode
-          }, 'Dashboard proxy request');
+          }, 'Dashboard proxy response');
         }
       },
     },
   }));
 
-  logger.info({ target: nextAppUrl }, 'Dashboard proxy enabled');
+  logger.info({ target: nextAppUrl }, 'Next.js proxy enabled for /_next, /admin, /dashboard');
 }
 
-// Dashboard routes (subscription status, claim availability)
-// NOTE: These only match if proxy didn't handle the request (proxy runs first)
-app.use('/dashboard', dashboardRouter);
+// Dashboard API routes (subscription status, claim availability)
+// Mounted at /api/dashboard to avoid conflict with Next.js proxy at /dashboard
+app.use('/api/dashboard', dashboardRouter);
 
 // Team dashboard routes (seat management for team owners)
 app.use('/team', teamDashboardRouter);

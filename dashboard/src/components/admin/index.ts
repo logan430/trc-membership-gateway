@@ -1,4 +1,5 @@
 export { AdminAuthGuard } from './AdminAuthGuard';
+export { AdminSidebar } from './AdminSidebar';
 export { KpiCard } from './KpiCard';
 export { TimeSeriesChart } from './TimeSeriesChart';
 export { ComparisonBarChart } from './ComparisonBarChart';

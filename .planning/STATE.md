@@ -27,9 +27,9 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 34 - Admin Dashboard Migration
-**Current Plan:** 3 of 4 complete
-**Status:** IN PROGRESS - v2.1 Frontend Consolidation
+**Current Phase:** 34 - Admin Dashboard Migration (COMPLETE)
+**Current Plan:** 4 of 4 complete
+**Status:** PHASE COMPLETE - v2.1 Frontend Consolidation
 
 **Phase Goal:**
 Migrate admin pages from static HTML to unified Next.js dashboard with proper authentication and navigation.
@@ -37,9 +37,9 @@ Migrate admin pages from static HTML to unified Next.js dashboard with proper au
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE!)
-Phase 34: [###############     ] 3/4 plans (Admin Migration - in progress)
-Phase 35: [####################] 1/1 plans (Auth Pages - Complete!)
-v2.1:     [########            ] 4/5+ plans (in progress)
+Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
+Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
+v2.1:     [####################] 5/5 plans (COMPLETE!)
 ```
 
 ---
@@ -175,6 +175,9 @@ v2.1:     [########            ] 4/5+ plans (in progress)
 | Nested response unwrap for templates | API returns {template: {...}}, client unwraps to fix bug | 34-03 |
 | Category grouping for templates | Matches existing static HTML organization | 34-03 |
 | Cursor pagination for audit logs | Scales better for large datasets, matches backend pattern | 34-03 |
+| Expandable benchmark cards | Admins need raw data visible but not always expanded | 34-04 |
+| Inline point config editing | Quick edits are more common than bulk changes | 34-04 |
+| Reject benchmarks without reason | Backend API uses approve/reject enum, no reason required | 34-04 |
 
 ### Research Insights
 
@@ -273,9 +276,9 @@ v2.1:     [########            ] 4/5+ plans (in progress)
 - [x] Migrate templates pages (Plan 34-03)
 - [x] Migrate audit page (Plan 34-03)
 - [x] Migrate admins page (Plan 34-03)
-- [ ] Migrate resources page (Plan 34-04)
-- [ ] Migrate benchmarks page (Plan 34-04)
-- [ ] Migrate points config page (Plan 34-04)
+- [x] Migrate resources page (Plan 34-04)
+- [x] Migrate benchmarks page (Plan 34-04)
+- [x] Migrate points config page (Plan 34-04)
 
 ### Known Blockers
 
@@ -292,20 +295,20 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-27
-- Completed Plan 34-03: Config Pages Migration
-- Extended admin-api.ts with adminConfigApi, adminTemplatesApi, adminAuditApi, adminUsersApi
-- Created useAdminConfig.ts with React Query hooks
-- Created FeatureFlagCard, AuditTable components
-- Created config page at dashboard/src/app/admin/config/page.tsx
-- Created templates pages at dashboard/src/app/admin/templates/
-- Created audit page at dashboard/src/app/admin/audit/page.tsx
-- Created admins page at dashboard/src/app/admin/admins/page.tsx
-- Fixed template edit bug (nested response unwrapping)
+- Completed Plan 34-04: New Admin Feature UIs
+- Extended admin-api.ts with adminResourcesApi, adminBenchmarksApi, adminPointsConfigApi
+- Created useAdminResources.ts, useAdminBenchmarks.ts, useAdminPointsConfig.ts hooks
+- Created ResourceUploader, FlaggedBenchmarkCard components
+- Created resources pages at dashboard/src/app/admin/resources/
+- Created benchmarks page at dashboard/src/app/admin/benchmarks/page.tsx
+- Created points config page at dashboard/src/app/admin/points-config/page.tsx
+- Fixed PageLoader to accept optional message prop
+- Installed date-fns dependency for relative time formatting
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Frontend consolidation (Phase 34-35+)
+**v2.1 COMPLETE:** Frontend consolidation (Phases 34-35), 5 plans delivered.
 
-**Next tasks:** Plan 34-04 resources, benchmarks, points config pages
+**Phase 34 Summary:** Admin dashboard fully migrated to Next.js with medieval theme.
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -389,8 +392,15 @@ None currently.
 - Admin templates pages at: dashboard/src/app/admin/templates/page.tsx, [slug]/page.tsx
 - Admin audit page at: dashboard/src/app/admin/audit/page.tsx
 - Admin admins page at: dashboard/src/app/admin/admins/page.tsx
+- Admin resources hooks at: dashboard/src/hooks/useAdminResources.ts
+- Admin benchmarks hooks at: dashboard/src/hooks/useAdminBenchmarks.ts
+- Admin points config hooks at: dashboard/src/hooks/useAdminPointsConfig.ts
+- Admin resource components at: dashboard/src/components/admin/ResourceUploader.tsx, FlaggedBenchmarkCard.tsx
+- Admin resources pages at: dashboard/src/app/admin/resources/page.tsx, [id]/page.tsx
+- Admin benchmarks page at: dashboard/src/app/admin/benchmarks/page.tsx
+- Admin points config page at: dashboard/src/app/admin/points-config/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-27 - Completed 34-03 (Config Pages Migration)*
+*Last updated: 2026-01-27 - Completed 34-04 (New Admin Feature UIs) - Phase 34 COMPLETE*

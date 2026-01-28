@@ -23,16 +23,16 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 
 ## Current Position
 
-**Current Phase:** 38 - Containerization (NOT STARTED)
-**Next Phase:** Plan Phase 38
-**Status:** Ready to plan
+**Current Phase:** 38 - Containerization (IN PROGRESS)
+**Last Completed:** 38-02 Next.js Dockerfile
+**Status:** In progress
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [....................] 0/14 plans (STARTING)
-Phase 38: [....................] 0/3 plans
+v2.2:     [#...................] 1/14 plans (IN PROGRESS)
+Phase 38: [######..............] 1/3 plans
 ```
 
 ---
@@ -42,14 +42,14 @@ Phase 38: [....................] 0/3 plans
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 0
+- v2.2 plans completed: 1
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
 
 | Phase | Plans | Status |
 |-------|-------|--------|
-| 38 - Containerization | 3 | Not started |
+| 38 - Containerization | 3 | 1/3 complete |
 | 39 - Coolify Deployment | 2 | Not started |
 | 40 - Database Setup | 2 | Not started |
 | 41 - Stripe Integration | 2 | Not started |
@@ -69,6 +69,9 @@ Phase 38: [....................] 0/3 plans
 | Containerization first | Dockerfiles prerequisite for all Coolify work | Roadmap |
 | Database after deploy | Need running app to verify connectivity | Roadmap |
 | E2E + Go-Live combined | Natural delivery boundary for launch | Roadmap |
+| Four-stage Dockerfile | base, deps, builder, runner for optimal caching | 38-02 |
+| Non-root nextjs user | uid/gid 1001 for container security | 38-02 |
+| Simple health check | Status + timestamp since Next.js proxies through Express | 38-02 |
 
 ### Research Insights
 
@@ -83,6 +86,11 @@ Phase 38: [....................] 0/3 plans
 - Multi-stage builds with non-root users
 - Signed environment variables in Coolify
 - Manual migration timing (pre-deploy for v2.2)
+
+**Established patterns (38-02):**
+- Container health: GET /api/health returns JSON with status and timestamp
+- Next.js Docker: standalone output + server.js CMD
+- HOSTNAME=0.0.0.0 for Docker networking
 
 ### Known Blockers
 
@@ -100,13 +108,13 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- v2.1 milestone completed (Phase 37)
-- v2.2 roadmap created with 6 phases, 54 requirements
-- Ready to begin Phase 38 planning
+- Completed 38-02 Next.js Dockerfile plan
+- Created dashboard/Dockerfile with multi-stage Alpine build
+- Added /api/health endpoint for container health checks
 
-**Resume:** `/gsd:plan-phase 38`
+**Resume:** `/gsd:execute-phase` to continue with 38-03
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - v2.2 roadmap created*
+*Last updated: 2026-01-28 - Completed 38-02 Next.js Dockerfile*

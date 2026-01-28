@@ -13,6 +13,9 @@ Transform The Revenue Council from access gateway to intelligence platform by ad
 
 ---
 
+<details>
+<summary>v2.0 Community Intelligence Platform (Phases 26-33) - COMPLETE</summary>
+
 ## Phase 26: Database Schema Extension
 
 **Goal:** Extend production database with new tables for v2.0 features using zero-downtime migrations.
@@ -210,11 +213,12 @@ Plans:
 4. Admin sees industry insights dashboard showing aggregate benchmark patterns by segment
 5. Admin can export data for CRM sync (CSV or JSON), view cohort retention analysis, and see churn prediction alerts based on engagement scoring
 
----
+</details>
 
 ---
 
-## v2.1 Frontend Consolidation
+<details>
+<summary>v2.1 Frontend Consolidation (Phases 34-37) - COMPLETE</summary>
 
 ### Phase 34: Admin Pages Migration
 
@@ -268,7 +272,7 @@ Plans:
 - [x] 36-05-PLAN.md — Session & Routing Fixes
 
 **Success Criteria:**
-1. Login → Dashboard flow works reliably without ERR_ABORTED
+1. Login -> Dashboard flow works reliably without ERR_ABORTED
 2. Session persists correctly across page navigation
 3. Single, consistent login path (no confusion between multiple pages)
 4. Terms and Privacy pages exist and are linked correctly
@@ -299,30 +303,181 @@ Plans:
 3. Analytics page shows current period data without comparison percentages
 4. Resources page has drag-drop upload and featured badges in list
 
+</details>
+
+---
+
+## v2.2 Production Deployment & Launch
+
+**Milestone Goal:** Deploy the complete membership gateway to Coolify, configure all external integrations with production URLs, validate end-to-end flows with real services, and prepare for public launch.
+
+### Phase 38: Containerization
+
+**Goal:** Create production-ready Docker images that work locally before deploying to Coolify.
+
+**Dependencies:** Phase 37 (v2.1 complete)
+
+**Requirements:** INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05, INFRA-07
+
+**Success Criteria:**
+1. Express backend builds as multi-stage Alpine Docker image with non-root user
+2. Next.js frontend builds with standalone output mode for minimal image size
+3. docker-compose.yml defines both services on shared network with health checks
+4. Both services respond to /health endpoint with 200 status
+5. Express can reach Next.js via internal network (http://nextjs:3001) and proxy works
+
+**Plans:** TBD
+
+Plans:
+- [ ] 38-01: Create backend Dockerfile and health endpoint
+- [ ] 38-02: Create frontend Dockerfile with standalone output
+- [ ] 38-03: Create docker-compose.yml and verify local stack
+
+---
+
+### Phase 39: Coolify Deployment
+
+**Goal:** Application deployed to Coolify with SSL and custom domain.
+
+**Dependencies:** Phase 38 (containers ready)
+
+**Requirements:** INFRA-06, DOMAIN-01, DOMAIN-02, DOMAIN-03, DOMAIN-04, DOMAIN-05
+
+**Success Criteria:**
+1. Both containers build successfully on Coolify
+2. DNS A record points domain to Coolify server IP
+3. SSL certificate issued via Let's Encrypt (HTTPS works)
+4. HTTP redirects to HTTPS automatically
+5. Application accessible via https://[domain] with working health checks
+
+**Plans:** TBD
+
+Plans:
+- [ ] 39-01: Create Coolify project and configure environment
+- [ ] 39-02: Deploy and verify SSL/domain configuration
+
+---
+
+### Phase 40: Database Production Setup
+
+**Goal:** Production database ready with schema and seed data.
+
+**Dependencies:** Phase 39 (deployed to Coolify)
+
+**Requirements:** DATA-01, DATA-02, DATA-03, DATA-04, DATA-05, DATA-06
+
+**Success Criteria:**
+1. Supabase database accessible from Coolify containers
+2. Prisma migrations run successfully against production database
+3. Admin account seeded for dashboard access
+4. Point configs seeded with correct values
+5. Feature flags and email templates seeded and enabled
+
+**Plans:** TBD
+
+Plans:
+- [ ] 40-01: Configure database connectivity and run migrations
+- [ ] 40-02: Seed admin, configs, flags, and templates
+
+---
+
+### Phase 41: Stripe Integration
+
+**Goal:** Stripe webhooks and checkout flows work with production URLs.
+
+**Dependencies:** Phase 40 (database ready)
+
+**Requirements:** STRIPE-01, STRIPE-02, STRIPE-03, STRIPE-04, STRIPE-05, STRIPE-06, STRIPE-07, STRIPE-08
+
+**Success Criteria:**
+1. Webhook endpoint URL configured in Stripe Dashboard with production domain
+2. Webhook signature verification passes with production secret
+3. checkout.session.completed webhook fires and creates member correctly
+4. invoice.payment_succeeded and invoice.payment_failed webhooks update member status
+5. Test mode checkout completes full flow (signup -> payment -> active member)
+
+**Plans:** TBD
+
+Plans:
+- [ ] 41-01: Configure Stripe webhooks and verify signature handling
+- [ ] 41-02: Test checkout and billing portal flows
+
+---
+
+### Phase 42: Discord Integration
+
+**Goal:** Discord OAuth and bot role assignment work in production.
+
+**Dependencies:** Phase 40 (database ready)
+
+**Requirements:** DISCORD-01, DISCORD-02, DISCORD-03, DISCORD-04, DISCORD-05, DISCORD-06, DISCORD-07, DISCORD-08
+
+**Success Criteria:**
+1. Discord OAuth redirect URI updated in Developer Portal for production domain
+2. OAuth flow completes successfully (member can link Discord account)
+3. Discord bot connects and shows online in test server
+4. Bot assigns Squire role when member links Discord
+5. Introduction detection works and promotes member to Knight/Lord
+
+**Plans:** TBD
+
+Plans:
+- [ ] 42-01: Configure Discord OAuth and test linking flow
+- [ ] 42-02: Verify bot connection and role assignment
+
+---
+
+### Phase 43: End-to-End Verification & Go-Live
+
+**Goal:** Full member lifecycle verified, production environment ready for real members.
+
+**Dependencies:** Phase 41 (Stripe), Phase 42 (Discord)
+
+**Requirements:** E2E-01, E2E-02, E2E-03, E2E-04, E2E-05, E2E-06, E2E-07, E2E-08, E2E-09, E2E-10, E2E-11, GOLIVE-01, GOLIVE-02, GOLIVE-03, GOLIVE-04, GOLIVE-05, GOLIVE-06, GOLIVE-07, GOLIVE-08, GOLIVE-09
+
+**Success Criteria:**
+1. Complete member journey works: signup -> checkout -> Discord link -> intro -> dashboard access
+2. All dashboard features work: points, resources, benchmarks, leaderboard, billing
+3. Admin dashboard works: login, member management, points adjustment, feature toggles
+4. Database reset script clears test data while preserving admin and configs
+5. Go-live checklist completed: production Discord, live Stripe mode, final verification
+
+**Plans:** TBD
+
+Plans:
+- [ ] 43-01: Execute full member lifecycle test
+- [ ] 43-02: Verify admin dashboard functionality
+- [ ] 43-03: Create reset script and execute go-live checklist
+
 ---
 
 ## Progress
 
-| Phase | Status | Plans | Complete |
-|-------|--------|-------|----------|
-| 26 - Database Schema Extension | Complete | 3 | 10/10 requirements |
-| 27 - Points System Backend | Complete | 3 | 8/8 requirements |
-| 28 - Benchmarking System | Complete | 3 | 14/14 requirements |
-| 29 - Resource Library & File Storage | Complete | 4 | 22/22 requirements |
-| 30 - MEE6 Discord Integration | Complete | 3 | 10/11 requirements |
-| 31 - Next.js Frontend Setup | Complete | 5 | 4/4 requirements |
-| 32 - Member Dashboard Pages | Complete | 7 | 21/21 requirements |
-| 33 - Admin Analytics Dashboard | Complete | 3 | 10/10 requirements |
-| **v2.1 Frontend Consolidation** | | | |
-| 34 - Admin Pages Migration | Complete | 4 | All admin pages migrated |
-| 35 - Auth Pages Migration | Complete | 1 | Auth pages migrated |
-| 36 - UI/UX Polish & Legal | Complete | 5 | 8/8 success criteria verified |
-| 37 - Admin Feature Pages | Complete | 4 | 4/4 success criteria verified |
-
-**v2.0 Progress:** 101/101 requirements (100%)
-**v2.1 Progress:** 4/4 phases complete (MILESTONE COMPLETE)
+| Phase | Milestone | Status | Plans | Complete |
+|-------|-----------|--------|-------|----------|
+| 26 - Database Schema Extension | v2.0 | Complete | 3 | 10/10 requirements |
+| 27 - Points System Backend | v2.0 | Complete | 3 | 8/8 requirements |
+| 28 - Benchmarking System | v2.0 | Complete | 3 | 14/14 requirements |
+| 29 - Resource Library & File Storage | v2.0 | Complete | 4 | 22/22 requirements |
+| 30 - MEE6 Discord Integration | v2.0 | Complete | 3 | 10/11 requirements |
+| 31 - Next.js Frontend Setup | v2.0 | Complete | 5 | 4/4 requirements |
+| 32 - Member Dashboard Pages | v2.0 | Complete | 7 | 21/21 requirements |
+| 33 - Admin Analytics Dashboard | v2.0 | Complete | 3 | 10/10 requirements |
+| **v2.0 Total** | | **Complete** | **31** | **100%** |
+| 34 - Admin Pages Migration | v2.1 | Complete | 4 | All admin pages |
+| 35 - Auth Pages Migration | v2.1 | Complete | 1 | Auth pages migrated |
+| 36 - UI/UX Polish & Legal | v2.1 | Complete | 5 | 8/8 success criteria |
+| 37 - Admin Feature Pages | v2.1 | Complete | 4 | 4/4 success criteria |
+| **v2.1 Total** | | **Complete** | **14** | **100%** |
+| 38 - Containerization | v2.2 | Not started | 3 | 0/6 requirements |
+| 39 - Coolify Deployment | v2.2 | Not started | 2 | 0/6 requirements |
+| 40 - Database Production Setup | v2.2 | Not started | 2 | 0/6 requirements |
+| 41 - Stripe Integration | v2.2 | Not started | 2 | 0/8 requirements |
+| 42 - Discord Integration | v2.2 | Not started | 2 | 0/8 requirements |
+| 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements |
+| **v2.2 Total** | | **Not started** | **14** | **0%** |
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-28 (v2.1 Frontend Consolidation COMPLETE)*
+*Last updated: 2026-01-28 (v2.2 Production Deployment phases added)*

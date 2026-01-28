@@ -109,6 +109,22 @@ publicRouter.get('/', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/index.html'));
 });
 
+/**
+ * GET /terms
+ * Serve the Terms of Service page
+ */
+publicRouter.get('/terms', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/terms.html'));
+});
+
+/**
+ * GET /privacy
+ * Serve the Privacy Policy page
+ */
+publicRouter.get('/privacy', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/privacy.html'));
+});
+
 /* ================================
    Admin Pages
    ================================ */

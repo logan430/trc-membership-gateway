@@ -1,6 +1,6 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-01-28
+**Updated:** 2026-01-27
 **Milestone:** v2.1 Frontend Consolidation
 **Mode:** YOLO
 
@@ -29,7 +29,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 **Current Phase:** 36 - UI/UX Polish and Legal Compliance (IN PROGRESS)
 **Next Phase:** 37 - Admin Feature Pages (PLANNED)
-**Status:** IN PROGRESS - Plan 36-05 complete, Wave 2 ready
+**Status:** IN PROGRESS - Plan 36-01 complete, continuing Wave 2
 
 **Phase 36 Goal:**
 Fix session persistence, consolidate routing, add legal pages (Terms, Privacy), implement forgot password, and polish auth forms.
@@ -42,9 +42,9 @@ Implement 4 missing admin pages: points-config, benchmarks moderation, analytics
 v2.0:     [####################] 31/31 plans (COMPLETE!)
 Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
 Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
-Phase 36: [####................] 1/5 plans (UI/UX Polish - IN PROGRESS)
+Phase 36: [########............] 2/5 plans (UI/UX Polish - IN PROGRESS)
 Phase 37: [....................] 0/4 plans (Admin Features - PLANNED)
-v2.1:     [############........] 6/14 plans (36-05 complete, Wave 2 ready)
+v2.1:     [##############......] 7/14 plans (36-01 complete, Wave 2 continues)
 ```
 
 ---
@@ -186,6 +186,9 @@ v2.1:     [############........] 6/14 plans (36-05 complete, Wave 2 ready)
 | pathFilter for proxy routing | Preserves full URL path instead of stripping mount path | 36-05 |
 | Bearer token in API client | Dashboard requests need Authorization header for auth | 36-05 |
 | Redirect stubs for legacy auth | Backward compat for bookmarks on /login.html, /signup.html | 36-05 |
+| Medieval voice in legal pages | Consistency with site branding while maintaining legal clarity | 36-01 |
+| Static HTML for legal pages | SEO friendly, fast loading, simple maintenance | 36-01 |
+| Terms links open in new tab | Users can review terms without losing signup form state | 36-01 |
 
 ### Research Insights
 
@@ -288,8 +291,10 @@ v2.1:     [############........] 6/14 plans (36-05 complete, Wave 2 ready)
 - [x] Migrate benchmarks page (Plan 34-04)
 - [x] Migrate points config page (Plan 34-04)
 - [x] Fix session persistence and routing (Plan 36-05)
-- [ ] Create Terms of Service page (Plan 36-01)
-- [ ] Create Privacy Policy page (Plan 36-01)
+- [x] Create Terms of Service page (Plan 36-01)
+- [x] Create Privacy Policy page (Plan 36-01)
+- [x] Add Express routes for legal pages (Plan 36-01)
+- [x] Add Terms checkbox to signup form (Plan 36-01)
 - [ ] Implement forgot password flow (Plan 36-02)
 - [ ] Add password UX improvements (Plan 36-03)
 - [ ] Add favicon and branding (Plan 36-04)
@@ -312,18 +317,18 @@ None currently.
 
 ## Session Continuity
 
-**Last session:** 2026-01-28
-- Completed Plan 36-05: Session & Routing Fixes
-- Fixed auth flow with consolidated proxy routing using pathFilter
-- Added Bearer token to API client for dashboard requests
-- Replaced legacy HTML auth pages with redirect stubs
-- Verified auth flow end-to-end with Playwright testing
-- Wave 1 complete, Wave 2 (Legal Pages, Forgot Password) ready to start
+**Last session:** 2026-01-27
+- Completed Plan 36-01: Legal Pages (Terms & Privacy)
+- Created Terms of Service page with medieval styling and comprehensive content
+- Created Privacy Policy page with third-party disclosures and user rights
+- Added Express routes for /terms and /privacy
+- Added Terms checkbox validation to signup form
+- Wave 2 continues with Plan 36-02 (Forgot Password)
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plan 05 complete (1 plan), remaining planned (8 plans).
+**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plans 05 and 01 complete (2 plans), remaining planned (7 plans).
 
-**Phase 36-05 Summary:** Fixed auth flow with pathFilter proxy, Bearer token API auth, legacy redirects.
+**Phase 36-01 Summary:** Terms/Privacy pages with medieval styling, Express routes, signup checkbox.
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -418,8 +423,10 @@ None currently.
 - Phase 36 plans at: .planning/phases/36-ui-ux-polish/36-0*.md
 - Phase 37 context at: .planning/phases/37-admin-features/37-CONTEXT.md
 - UI/UX testing reports at: .planning/TESTING-*.md, .planning/UI-UX-COMPREHENSIVE-FINDINGS.md
+- Legal pages at: public/terms.html, public/privacy.html
+- Legal routes in: src/routes/public.ts (/terms, /privacy)
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Plan 36-05 complete, Wave 2 ready*
+*Last updated: 2026-01-27 - Plan 36-01 complete, Wave 2 continues*

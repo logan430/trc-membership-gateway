@@ -7,20 +7,39 @@ const __dirname = dirname(__filename);
 
 export const publicRouter = Router();
 
+/* ================================
+   Auth Route Redirects
+   ================================
+   Legacy routes redirect to Next.js auth pages.
+   The Next.js pages at /login and /signup are proxied through Express.
+*/
+
 /**
- * GET /app/auth/signup
- * Serve the registration page
+ * GET /app/auth/signup - Redirect to Next.js signup
  */
 publicRouter.get('/app/auth/signup', (_req: Request, res: Response): void => {
-  res.sendFile(join(__dirname, '../../public/signup.html'));
+  res.redirect(301, '/signup');
 });
 
 /**
- * GET /app/auth/login
- * Serve the login page
+ * GET /app/auth/login - Redirect to Next.js login
  */
 publicRouter.get('/app/auth/login', (_req: Request, res: Response): void => {
-  res.sendFile(join(__dirname, '../../public/login.html'));
+  res.redirect(301, '/login');
+});
+
+/**
+ * GET /signup.html - Redirect to Next.js signup
+ */
+publicRouter.get('/signup.html', (_req: Request, res: Response): void => {
+  res.redirect(301, '/signup');
+});
+
+/**
+ * GET /login.html - Redirect to Next.js login
+ */
+publicRouter.get('/login.html', (_req: Request, res: Response): void => {
+  res.redirect(301, '/login');
 });
 
 /**
@@ -39,6 +58,22 @@ publicRouter.get('/app/dashboard', (_req: Request, res: Response): void => {
  */
 publicRouter.get('/app/claim', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/claim.html'));
+});
+
+/**
+ * GET /app/account
+ * Serve the member account settings page
+ */
+publicRouter.get('/app/account', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/account.html'));
+});
+
+/**
+ * GET /app/billing
+ * Serve the member billing details page
+ */
+publicRouter.get('/app/billing', (_req: Request, res: Response): void => {
+  res.sendFile(join(__dirname, '../../public/billing.html'));
 });
 
 /**

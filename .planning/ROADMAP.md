@@ -281,23 +281,23 @@ Plans:
 
 ### Phase 37: Admin Feature Pages
 
-**Goal:** Implement the 4 missing admin dashboard pages identified during UI/UX testing.
+**Goal:** Enhance the 4 existing admin dashboard pages to match UX decisions from user discussion.
 
 **Dependencies:** Phase 36 (UI/UX Polish)
 
-**Plans:** 4 plans (pending)
+**Plans:** 4 plans
 
 Plans:
-- [ ] 37-01-PLAN.md — Points Configuration Page
-- [ ] 37-02-PLAN.md — Benchmarks Moderation Page
-- [ ] 37-03-PLAN.md — Analytics Dashboard Page
-- [ ] 37-04-PLAN.md — Resource Management Page
+- [ ] 37-01-PLAN.md — Points Config: Table layout with inline editing
+- [ ] 37-02-PLAN.md — Benchmarks Moderation: Table layout with bulk actions
+- [ ] 37-03-PLAN.md — Analytics Dashboard: Remove comparison display
+- [ ] 37-04-PLAN.md — Resources: Drag-drop upload and featured management
 
 **Success Criteria:**
-1. `/app/admin/points-config` page exists and allows point value configuration
-2. `/app/admin/benchmarks` page exists with approval/rejection workflow
-3. `/app/admin/analytics` page exists with member and engagement metrics
-4. `/app/admin/resources` page exists with upload and management UI
+1. Points config page displays as table with click-to-edit and save indicator
+2. Benchmarks page has checkbox selection and bulk approve/reject actions
+3. Analytics page shows current period data without comparison percentages
+4. Resources page has drag-drop upload and featured badges in list
 
 ---
 
@@ -317,12 +317,12 @@ Plans:
 | 34 - Admin Pages Migration | Complete | 4 | All admin pages migrated |
 | 35 - Auth Pages Migration | Complete | 1 | Auth pages migrated |
 | 36 - UI/UX Polish & Legal | Complete | 5 | 8/8 success criteria verified |
-| 37 - Admin Feature Pages | Planned | 4 | 4 missing admin pages |
+| 37 - Admin Feature Pages | Ready | 4 | 4 admin page enhancements |
 
 **v2.0 Progress:** 99/101 requirements (98%)
-**v2.1 Progress:** 3/4 phases complete (Phase 37 remaining)
+**v2.1 Progress:** 3/4 phases complete (Phase 37 ready for execution)
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-28 (Phase 36 complete - UI/UX polish and legal compliance)*
+*Last updated: 2026-01-28 (Phase 37 planned - 4 plans in 1 wave)*

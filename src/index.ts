@@ -161,6 +161,33 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
     changeOrigin: true,
   }));
 
+  // Proxy auth pages to Next.js (/login, /signup)
+  app.use('/login', createProxyMiddleware({
+    target: nextAppUrl,
+    changeOrigin: true,
+    on: {
+      proxyReq: (proxyReq, req) => {
+        const cookies = req.headers.cookie;
+        if (cookies) {
+          proxyReq.setHeader('Cookie', cookies);
+        }
+      },
+    },
+  }));
+
+  app.use('/signup', createProxyMiddleware({
+    target: nextAppUrl,
+    changeOrigin: true,
+    on: {
+      proxyReq: (proxyReq, req) => {
+        const cookies = req.headers.cookie;
+        if (cookies) {
+          proxyReq.setHeader('Cookie', cookies);
+        }
+      },
+    },
+  }));
+
   // Proxy admin pages to Next.js
   app.use('/admin', createProxyMiddleware({
     target: nextAppUrl,
@@ -210,7 +237,7 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
     },
   }));
 
-  logger.info({ target: nextAppUrl }, 'Next.js proxy enabled for /_next, /admin, /dashboard');
+  logger.info({ target: nextAppUrl }, 'Next.js proxy enabled for /_next, /login, /signup, /admin, /dashboard');
 }
 
 // Dashboard API routes (subscription status, claim availability)

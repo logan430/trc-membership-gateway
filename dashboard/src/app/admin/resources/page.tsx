@@ -118,8 +118,13 @@ export default function AdminResourcesPage() {
                 <div className="flex items-center gap-2 mt-2">
                   <TypeBadge type={resource.type} />
                   <StatusBadge status={resource.status} />
+                  {resource.isFeatured && (
+                    <span className="text-xs px-2 py-1 bg-gold/20 text-gold rounded">
+                      Featured
+                    </span>
+                  )}
                   <span className="text-xs text-muted-foreground">
-                    v{resource.currentVersionNumber} | {resource.downloadCount} downloads
+                    v{resource.currentVersionNumber}
                   </span>
                 </div>
               </div>

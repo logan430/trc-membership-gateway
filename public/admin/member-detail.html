@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Member Detail - The Revenue Council</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#16213e">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/admin/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -174,10 +179,10 @@
     let member = null;
     let dialogResolve = null;
 
-    // Get member ID from URL
+    // Get member ID from URL path (e.g., /app/admin/members/abc123)
     function getMemberId() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('id');
+      const pathParts = window.location.pathname.split('/');
+      return pathParts[pathParts.length - 1] || null;
     }
 
     // Get admin access token
@@ -236,8 +241,14 @@
 
     // Get badge HTML
     function getBadge(value, type) {
-      const lower = (value || 'none').toLowerCase();
-      return `<span class="badge ${lower}">${value || 'None'}</span>`;
+      const tierNames = {
+        INDIVIDUAL: 'Individual',
+        OWNER: 'Owner',
+        TEAM_MEMBER: 'Team Member',
+      };
+      const lower = (value || 'none').toLowerCase().replace('_', '-');
+      const displayName = tierNames[value] || value || 'None';
+      return `<span class="badge ${lower}">${displayName}</span>`;
     }
 
     // Load member detail
@@ -481,7 +492,7 @@
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ roleName, reason }),
+          body: JSON.stringify({ role: roleName, reason }),
         });
 
         if (!response.ok) {

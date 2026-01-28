@@ -14,3 +14,5 @@ export { GoldCoinsLoader, PageLoader, InlineLoader } from './GoldCoinsLoader';
 
 export { PasswordInput } from './PasswordInput';
 export type { PasswordInputProps } from './PasswordInput';
+
+export { PasswordStrength } from './PasswordStrength';

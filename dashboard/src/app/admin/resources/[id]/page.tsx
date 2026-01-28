@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Upload, Save, History } from 'lucide-react';
+import { ArrowLeft, Upload, Save, History, Download, Star } from 'lucide-react';
 import { Card, Button, Input } from '@/components/ui';
 import { PageLoader } from '@/components/ui/GoldCoinsLoader';
 import { useResource, useUpdateResource, useUploadVersion } from '@/hooks/useAdminResources';
@@ -23,6 +23,7 @@ export default function ResourceDetailPage({ params }: PageProps) {
   const [description, setDescription] = useState('');
   const [type, setType] = useState<ResourceType>('TEMPLATE');
   const [status, setStatus] = useState<ResourceStatus>('DRAFT');
+  const [isFeatured, setIsFeatured] = useState(false);
   const [showVersionUpload, setShowVersionUpload] = useState(false);
   const [versionFile, setVersionFile] = useState<File | null>(null);
   const [changelog, setChangelog] = useState('');
@@ -35,6 +36,7 @@ export default function ResourceDetailPage({ params }: PageProps) {
       setDescription(data.resource.description);
       setType(data.resource.type);
       setStatus(data.resource.status);
+      setIsFeatured(data.resource.isFeatured);
       setInitialized(true);
     }
   }, [data, initialized]);
@@ -45,6 +47,7 @@ export default function ResourceDetailPage({ params }: PageProps) {
       description,
       type,
       status,
+      isFeatured,
     });
   };
 
@@ -154,6 +157,24 @@ export default function ResourceDetailPage({ params }: PageProps) {
               </div>
             </div>
 
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isFeatured}
+                  onChange={(e) => setIsFeatured(e.target.checked)}
+                  className="w-4 h-4 accent-gold"
+                />
+                <Star size={16} className={isFeatured ? 'text-gold' : 'text-muted-foreground'} />
+                <span className="text-sm font-medium">Featured Resource</span>
+              </label>
+              {isFeatured && (
+                <span className="text-xs text-muted-foreground">
+                  Will appear first in member listings
+                </span>
+              )}
+            </div>
+
             {updateMutation.isSuccess && (
               <div className="p-3 bg-success/10 text-success rounded-[8px]">Changes saved!</div>
             )}
@@ -166,8 +187,21 @@ export default function ResourceDetailPage({ params }: PageProps) {
           </Card>
         </div>
 
-        {/* Version History */}
-        <div>
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Analytics */}
+          <Card className="p-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Download size={20} className="text-muted-foreground" />
+              <h3 className="font-semibold text-foreground">Analytics</h3>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-gold">{resource.downloadCount}</p>
+              <p className="text-sm text-muted-foreground">Total Downloads</p>
+            </div>
+          </Card>
+
+          {/* Version History */}
           <Card className="p-4">
             <div className="flex items-center gap-2 mb-4">
               <History size={20} className="text-muted-foreground" />

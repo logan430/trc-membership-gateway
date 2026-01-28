@@ -3,7 +3,7 @@
 import { useState, FormEvent, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Card, Input, Button, GoldCoinsLoader } from '@/components/ui';
+import { Card, Button, GoldCoinsLoader, PasswordInput, PasswordStrength, PasswordRequirements } from '@/components/ui';
 import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 
 /**
@@ -158,23 +158,24 @@ function ResetPasswordForm() {
             </div>
           )}
 
-          <Input
-            id="password"
-            type="password"
-            label="New Password"
-            placeholder="At least 8 characters"
-            hint="Choose a strong password with at least 8 characters"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
-            autoComplete="new-password"
-            disabled={isLoading}
-          />
+          <div className="space-y-2">
+            <PasswordInput
+              id="password"
+              label="New Password"
+              placeholder="At least 8 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+              autoComplete="new-password"
+              disabled={isLoading}
+            />
+            <PasswordStrength password={password} />
+            <PasswordRequirements password={password} />
+          </div>
 
-          <Input
+          <PasswordInput
             id="confirm-password"
-            type="password"
             label="Confirm Password"
             placeholder="Confirm your new password"
             value={confirmPassword}

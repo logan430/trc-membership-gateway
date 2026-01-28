@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield } from 'lucide-react';
-import { Button, Card, Input } from '@/components/ui';
+import { Button, Card, Input, PasswordInput } from '@/components/ui';
 import { adminAuthApi, AdminApiError } from '@/lib/admin-api';
 
 export default function AdminLoginPage() {
@@ -61,20 +61,15 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              required
-              disabled={isLoading}
-            />
-          </div>
+          <PasswordInput
+            id="password"
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter password"
+            required
+            disabled={isLoading}
+          />
 
           {error && (
             <div className="p-3 bg-error/10 border border-error/30 rounded-[8px] text-error text-sm">

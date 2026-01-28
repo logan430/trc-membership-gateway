@@ -1,6 +1,6 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-01-27
+**Updated:** 2026-01-28
 **Milestone:** v2.1 Frontend Consolidation
 **Mode:** YOLO
 
@@ -27,19 +27,24 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 34 - Admin Dashboard Migration (COMPLETE)
-**Current Plan:** 4 of 4 complete
-**Status:** PHASE COMPLETE - v2.1 Frontend Consolidation
+**Current Phase:** 36 - UI/UX Polish and Legal Compliance (IN PROGRESS)
+**Next Phase:** 37 - Admin Feature Pages (PLANNED)
+**Status:** IN PROGRESS - Plan 36-05 complete, Wave 2 ready
 
-**Phase Goal:**
-Migrate admin pages from static HTML to unified Next.js dashboard with proper authentication and navigation.
+**Phase 36 Goal:**
+Fix session persistence, consolidate routing, add legal pages (Terms, Privacy), implement forgot password, and polish auth forms.
+
+**Phase 37 Goal:**
+Implement 4 missing admin pages: points-config, benchmarks moderation, analytics, resources.
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE!)
 Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
 Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
-v2.1:     [####################] 5/5 plans (COMPLETE!)
+Phase 36: [####................] 1/5 plans (UI/UX Polish - IN PROGRESS)
+Phase 37: [....................] 0/4 plans (Admin Features - PLANNED)
+v2.1:     [############........] 6/14 plans (36-05 complete, Wave 2 ready)
 ```
 
 ---
@@ -178,6 +183,9 @@ v2.1:     [####################] 5/5 plans (COMPLETE!)
 | Expandable benchmark cards | Admins need raw data visible but not always expanded | 34-04 |
 | Inline point config editing | Quick edits are more common than bulk changes | 34-04 |
 | Reject benchmarks without reason | Backend API uses approve/reject enum, no reason required | 34-04 |
+| pathFilter for proxy routing | Preserves full URL path instead of stripping mount path | 36-05 |
+| Bearer token in API client | Dashboard requests need Authorization header for auth | 36-05 |
+| Redirect stubs for legacy auth | Backward compat for bookmarks on /login.html, /signup.html | 36-05 |
 
 ### Research Insights
 
@@ -279,6 +287,16 @@ v2.1:     [####################] 5/5 plans (COMPLETE!)
 - [x] Migrate resources page (Plan 34-04)
 - [x] Migrate benchmarks page (Plan 34-04)
 - [x] Migrate points config page (Plan 34-04)
+- [x] Fix session persistence and routing (Plan 36-05)
+- [ ] Create Terms of Service page (Plan 36-01)
+- [ ] Create Privacy Policy page (Plan 36-01)
+- [ ] Implement forgot password flow (Plan 36-02)
+- [ ] Add password UX improvements (Plan 36-03)
+- [ ] Add favicon and branding (Plan 36-04)
+- [ ] Implement Points Config admin page (Plan 37-01)
+- [ ] Implement Benchmarks Moderation page (Plan 37-02)
+- [ ] Implement Analytics Dashboard page (Plan 37-03)
+- [ ] Implement Resource Management page (Plan 37-04)
 
 ### Known Blockers
 
@@ -294,21 +312,18 @@ None currently.
 
 ## Session Continuity
 
-**Last session:** 2026-01-27
-- Completed Plan 34-04: New Admin Feature UIs
-- Extended admin-api.ts with adminResourcesApi, adminBenchmarksApi, adminPointsConfigApi
-- Created useAdminResources.ts, useAdminBenchmarks.ts, useAdminPointsConfig.ts hooks
-- Created ResourceUploader, FlaggedBenchmarkCard components
-- Created resources pages at dashboard/src/app/admin/resources/
-- Created benchmarks page at dashboard/src/app/admin/benchmarks/page.tsx
-- Created points config page at dashboard/src/app/admin/points-config/page.tsx
-- Fixed PageLoader to accept optional message prop
-- Installed date-fns dependency for relative time formatting
+**Last session:** 2026-01-28
+- Completed Plan 36-05: Session & Routing Fixes
+- Fixed auth flow with consolidated proxy routing using pathFilter
+- Added Bearer token to API client for dashboard requests
+- Replaced legacy HTML auth pages with redirect stubs
+- Verified auth flow end-to-end with Playwright testing
+- Wave 1 complete, Wave 2 (Legal Pages, Forgot Password) ready to start
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 COMPLETE:** Frontend consolidation (Phases 34-35), 5 plans delivered.
+**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plan 05 complete (1 plan), remaining planned (8 plans).
 
-**Phase 34 Summary:** Admin dashboard fully migrated to Next.js with medieval theme.
+**Phase 36-05 Summary:** Fixed auth flow with pathFilter proxy, Bearer token API auth, legacy redirects.
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -399,8 +414,12 @@ None currently.
 - Admin resources pages at: dashboard/src/app/admin/resources/page.tsx, [id]/page.tsx
 - Admin benchmarks page at: dashboard/src/app/admin/benchmarks/page.tsx
 - Admin points config page at: dashboard/src/app/admin/points-config/page.tsx
+- Phase 36 context at: .planning/phases/36-ui-ux-polish/36-CONTEXT.md
+- Phase 36 plans at: .planning/phases/36-ui-ux-polish/36-0*.md
+- Phase 37 context at: .planning/phases/37-admin-features/37-CONTEXT.md
+- UI/UX testing reports at: .planning/TESTING-*.md, .planning/UI-UX-COMPREHENSIVE-FINDINGS.md
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-27 - Completed 34-04 (New Admin Feature UIs) - Phase 34 COMPLETE*
+*Last updated: 2026-01-28 - Plan 36-05 complete, Wave 2 ready*

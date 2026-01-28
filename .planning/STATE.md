@@ -125,7 +125,7 @@ Phase 38: [####################] 3/3 plans (COMPLETE)
 - Updated .env.example with container configuration
 - Phase 38 Containerization COMPLETE
 
-**Resume:** `/gsd:execute-phase` to begin Phase 39 Coolify Deployment
+**Resume:** `/gsd:plan-phase 39` to plan Phase 39 Coolify Deployment
 
 ---
 

@@ -9,20 +9,20 @@ Requirements for v2.2 Production Deployment & Launch release. Each maps to roadm
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Dockerfile created for Express backend with multi-stage Alpine build
-- [ ] **INFRA-02**: Dockerfile created for Next.js frontend with standalone output
-- [ ] **INFRA-03**: docker-compose.yml defines both services with internal networking
-- [ ] **INFRA-04**: Health check endpoint (/health) returns 200 when service is ready
-- [ ] **INFRA-05**: Next.js health check endpoint works for Traefik routing
+- [x] **INFRA-01**: Dockerfile created for Express backend with multi-stage Alpine build
+- [x] **INFRA-02**: Dockerfile created for Next.js frontend with standalone output
+- [x] **INFRA-03**: docker-compose.yml defines both services with internal networking
+- [x] **INFRA-04**: Health check endpoint (/health) returns 200 when service is ready
+- [x] **INFRA-05**: Next.js health check endpoint works for Traefik routing
 - [ ] **INFRA-06**: Both containers build successfully on Coolify
-- [ ] **INFRA-07**: Express can reach Next.js via internal Docker network (http://nextjs:3001)
+- [x] **INFRA-07**: Express can reach Next.js via internal Docker network (http://nextjs:3000)
 
 ### Domain & SSL
 
 - [ ] **DOMAIN-01**: Custom domain configured in Coolify project settings
 - [ ] **DOMAIN-02**: DNS A record points domain to Coolify server IP
 - [ ] **DOMAIN-03**: SSL certificate issued via Let's Encrypt
-- [ ] **DOMAIN-04**: HTTPS redirect works (HTTP → HTTPS)
+- [ ] **DOMAIN-04**: HTTPS redirect works (HTTP -> HTTPS)
 - [ ] **DOMAIN-05**: Application accessible via https://[domain]
 
 ### Stripe Integration
@@ -39,7 +39,7 @@ Requirements for v2.2 Production Deployment & Launch release. Each maps to roadm
 ### Discord Integration
 
 - [ ] **DISCORD-01**: Discord OAuth redirect URI updated in Developer Portal
-- [ ] **DISCORD-02**: OAuth flow completes successfully (authorize → callback → linked)
+- [ ] **DISCORD-02**: OAuth flow completes successfully (authorize -> callback -> linked)
 - [ ] **DISCORD-03**: Member discordId and discordUsername saved after OAuth
 - [ ] **DISCORD-04**: Discord bot is online and connected to test server
 - [ ] **DISCORD-05**: Bot assigns Squire role when member links Discord
@@ -97,20 +97,70 @@ Explicitly excluded. Documented to prevent scope creep.
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
+Which phases cover which requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | TBD | Pending |
-| INFRA-02 | TBD | Pending |
-| INFRA-03 | TBD | Pending |
-| ... | ... | ... |
+| INFRA-01 | Phase 38 | Complete |
+| INFRA-02 | Phase 38 | Complete |
+| INFRA-03 | Phase 38 | Complete |
+| INFRA-04 | Phase 38 | Complete |
+| INFRA-05 | Phase 38 | Complete |
+| INFRA-06 | Phase 39 | Pending |
+| INFRA-07 | Phase 38 | Complete |
+| DOMAIN-01 | Phase 39 | Pending |
+| DOMAIN-02 | Phase 39 | Pending |
+| DOMAIN-03 | Phase 39 | Pending |
+| DOMAIN-04 | Phase 39 | Pending |
+| DOMAIN-05 | Phase 39 | Pending |
+| STRIPE-01 | Phase 41 | Pending |
+| STRIPE-02 | Phase 41 | Pending |
+| STRIPE-03 | Phase 41 | Pending |
+| STRIPE-04 | Phase 41 | Pending |
+| STRIPE-05 | Phase 41 | Pending |
+| STRIPE-06 | Phase 41 | Pending |
+| STRIPE-07 | Phase 41 | Pending |
+| STRIPE-08 | Phase 41 | Pending |
+| DISCORD-01 | Phase 42 | Pending |
+| DISCORD-02 | Phase 42 | Pending |
+| DISCORD-03 | Phase 42 | Pending |
+| DISCORD-04 | Phase 42 | Pending |
+| DISCORD-05 | Phase 42 | Pending |
+| DISCORD-06 | Phase 42 | Pending |
+| DISCORD-07 | Phase 42 | Pending |
+| DISCORD-08 | Phase 42 | Pending |
+| DATA-01 | Phase 40 | Pending |
+| DATA-02 | Phase 40 | Pending |
+| DATA-03 | Phase 40 | Pending |
+| DATA-04 | Phase 40 | Pending |
+| DATA-05 | Phase 40 | Pending |
+| DATA-06 | Phase 40 | Pending |
+| E2E-01 | Phase 43 | Pending |
+| E2E-02 | Phase 43 | Pending |
+| E2E-03 | Phase 43 | Pending |
+| E2E-04 | Phase 43 | Pending |
+| E2E-05 | Phase 43 | Pending |
+| E2E-06 | Phase 43 | Pending |
+| E2E-07 | Phase 43 | Pending |
+| E2E-08 | Phase 43 | Pending |
+| E2E-09 | Phase 43 | Pending |
+| E2E-10 | Phase 43 | Pending |
+| E2E-11 | Phase 43 | Pending |
+| GOLIVE-01 | Phase 43 | Pending |
+| GOLIVE-02 | Phase 43 | Pending |
+| GOLIVE-03 | Phase 43 | Pending |
+| GOLIVE-04 | Phase 43 | Pending |
+| GOLIVE-05 | Phase 43 | Pending |
+| GOLIVE-06 | Phase 43 | Pending |
+| GOLIVE-07 | Phase 43 | Pending |
+| GOLIVE-08 | Phase 43 | Pending |
+| GOLIVE-09 | Phase 43 | Pending |
 
 **Coverage:**
-- v2.2 requirements: 45 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 45
+- v2.2 requirements: 54 total
+- Mapped to phases: 54
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-28*
-*Last updated: 2026-01-28 after initial definition*
+*Last updated: 2026-01-28 (Phase 38 complete)*

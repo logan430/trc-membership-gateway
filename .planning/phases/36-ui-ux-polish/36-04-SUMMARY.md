@@ -113,19 +113,22 @@ Created `public/images/shield-logo.svg`:
 
 ### 5. Auth Pages Shield Logo (Task 05)
 
-Updated `dashboard/src/app/(auth)/layout.tsx`:
-- Replaced Coins icon with shield-logo.svg using Next.js Image
-- Logo appears on all member auth pages (login, signup, forgot-password, reset-password)
-- Added hover scale effect for interactivity
-- Properly sized at 64x77px
+Updated each auth page individually:
+- `dashboard/src/app/(auth)/login/page.tsx` - Shield logo above "Welcome Back" header
+- `dashboard/src/app/(auth)/signup/page.tsx` - Shield logo above "Join The Council" header
+- `dashboard/src/app/(auth)/forgot-password/page.tsx` - Shield logo on form and success states
+- `dashboard/src/app/(auth)/reset-password/page.tsx` - Shield logo on all states (error, success, form)
+- Logo links to home page for easy navigation
+- Properly sized at 64x77px using next/image with priority loading
 
 ### 6. Admin Login Distinct Branding (Task 06)
 
 Updated `dashboard/src/app/admin/(auth)/login/page.tsx`:
-- Added "Admin Portal" badge below shield icon
-- Changed subtitle from "Admin access to The Revenue Council" to "Authorized personnel only"
-- Badge styled with gold background/border, uppercase text
-- Clear visual distinction from member login
+- Replaced Shield icon with actual shield-logo.svg
+- Added "ADMIN" badge overlay with lock icon at bottom of shield
+- Badge positioned with absolute positioning, gold border and text
+- Maintains "Council Chamber" title and "Authorized personnel only" subtitle
+- Clear visual distinction from member login using same shield but with admin badge
 
 ## Commits
 
@@ -134,8 +137,8 @@ Updated `dashboard/src/app/admin/(auth)/login/page.tsx`:
 | 248aeb7 | feat(36-04): create favicon and shield logo assets |
 | 18db55c | feat(36-04): add favicon links to all HTML pages |
 | 03fb80d | feat(36-04): add favicon metadata to Next.js layout |
-| a2a1748 | feat(36-04): add shield logo to member auth pages |
-| 0f3cd89 | feat(36-04): add admin badge to admin login page |
+| 9f09d00 | feat(36-04): add shield logo to member auth pages |
+| f777134 | feat(36-04): enhance admin login with shield logo and badge |
 
 ## Deviations from Plan
 

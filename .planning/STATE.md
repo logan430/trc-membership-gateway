@@ -23,16 +23,16 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 
 ## Current Position
 
-**Current Phase:** 38 - Containerization (IN PROGRESS)
-**Last Completed:** 38-01 Express Dockerfile
-**Status:** In progress
+**Current Phase:** 38 - Containerization (COMPLETE)
+**Last Completed:** 38-03 Docker Compose
+**Status:** Phase 38 complete, ready for Phase 39
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [##..................] 2/14 plans (IN PROGRESS)
-Phase 38: [#############.......] 2/3 plans
+v2.2:     [###.................] 3/14 plans (IN PROGRESS)
+Phase 38: [####################] 3/3 plans (COMPLETE)
 ```
 
 ---
@@ -42,14 +42,14 @@ Phase 38: [#############.......] 2/3 plans
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 2
+- v2.2 plans completed: 3
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
 
 | Phase | Plans | Status |
 |-------|-------|--------|
-| 38 - Containerization | 3 | 2/3 complete |
+| 38 - Containerization | 3 | COMPLETE |
 | 39 - Coolify Deployment | 2 | Not started |
 | 40 - Database Setup | 2 | Not started |
 | 41 - Stripe Integration | 2 | Not started |
@@ -75,6 +75,10 @@ Phase 38: [#############.......] 2/3 plans
 | Three-stage Dockerfile | deps, builder, runner for Express with argon2 support | 38-01 |
 | Degraded health mode | Always 200, JSON with service-by-service status | 38-01 |
 | Non-root expressuser | uid/gid 1001 for container security | 38-01 |
+| Express port 4000:80 | External:internal for production pattern | 38-03 |
+| Next.js port 3001:3000 | Debug access externally, standard internally | 38-03 |
+| service_healthy condition | Express waits for Next.js before starting | 38-03 |
+| Node fetch health checks | No curl/wget needed in minimal Alpine images | 38-03 |
 
 ### Research Insights
 
@@ -90,14 +94,19 @@ Phase 38: [#############.......] 2/3 plans
 - Signed environment variables in Coolify
 - Manual migration timing (pre-deploy for v2.2)
 
-**Established patterns (38-02):**
+**Established patterns (Phase 38):**
 - Container health: GET /api/health returns JSON with status and timestamp
 - Next.js Docker: standalone output + server.js CMD
 - HOSTNAME=0.0.0.0 for Docker networking
+- Service discovery: NEXT_APP_URL=http://nextjs:3000
+- Health check pattern: Node fetch with process.exit(0/1)
 
 ### Known Blockers
 
-None currently.
+**Docker not available in execution environment:**
+- Build verification deferred for plans 38-01, 38-02, 38-03
+- Manual verification commands documented in each SUMMARY.md
+- Coolify will build and verify during Phase 39 deployment
 
 ### Open Questions (from research)
 
@@ -111,14 +120,14 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- Completed 38-01 Express Dockerfile plan
-- Created Dockerfile with multi-stage Alpine build for Express backend
-- Created .dockerignore for build context optimization
-- Enhanced /health endpoint with degraded mode and service-by-service status
+- Completed 38-03 Docker Compose plan
+- Created docker-compose.yml with service orchestration
+- Updated .env.example with container configuration
+- Phase 38 Containerization COMPLETE
 
-**Resume:** `/gsd:execute-phase` to continue with 38-03
+**Resume:** `/gsd:execute-phase` to begin Phase 39 Coolify Deployment
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Completed 38-01 Express Dockerfile*
+*Last updated: 2026-01-28 - Completed Phase 38 Containerization*

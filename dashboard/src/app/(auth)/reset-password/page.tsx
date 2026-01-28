@@ -3,6 +3,7 @@
 import { useState, FormEvent, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card, Button, GoldCoinsLoader, PasswordInput, PasswordStrength, PasswordRequirements } from '@/components/ui';
 import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 
@@ -26,6 +27,19 @@ function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="space-y-6">
+        {/* Shield Logo */}
+        <div className="flex justify-center">
+          <Link href="/">
+            <Image
+              src="/images/shield-logo.svg"
+              alt="The Revenue Council"
+              width={64}
+              height={77}
+              priority
+            />
+          </Link>
+        </div>
+
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground font-heading">
             Invalid Reset Link
@@ -112,6 +126,19 @@ function ResetPasswordForm() {
   if (isSuccess) {
     return (
       <div className="space-y-6">
+        {/* Shield Logo */}
+        <div className="flex justify-center">
+          <Link href="/">
+            <Image
+              src="/images/shield-logo.svg"
+              alt="The Revenue Council"
+              width={64}
+              height={77}
+              priority
+            />
+          </Link>
+        </div>
+
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground font-heading">
             Password Reset!
@@ -141,6 +168,19 @@ function ResetPasswordForm() {
 
   return (
     <div className="space-y-6">
+      {/* Shield Logo */}
+      <div className="flex justify-center">
+        <Link href="/">
+          <Image
+            src="/images/shield-logo.svg"
+            alt="The Revenue Council"
+            width={64}
+            height={77}
+            priority
+          />
+        </Link>
+      </div>
+
       <div className="text-center">
         <h1 className="text-2xl font-bold text-foreground font-heading">
           Set New Password

@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card, Input, Button, PasswordInput, PasswordStrength, PasswordRequirements } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -53,6 +54,19 @@ export default function SignupPage() {
 
   return (
     <div className="space-y-6">
+      {/* Shield Logo */}
+      <div className="flex justify-center">
+        <Link href="/">
+          <Image
+            src="/images/shield-logo.svg"
+            alt="The Revenue Council"
+            width={64}
+            height={77}
+            priority
+          />
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="text-center">
         <h1 className="text-2xl font-bold text-foreground font-heading">

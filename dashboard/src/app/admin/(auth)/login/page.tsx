@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield } from 'lucide-react';
+import Image from 'next/image';
+import { Lock } from 'lucide-react';
 import { Button, Card, Input, PasswordInput } from '@/components/ui';
 import { adminAuthApi, AdminApiError } from '@/lib/admin-api';
 
@@ -36,13 +37,20 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="flex flex-col items-center justify-center mb-4">
-            <div className="p-4 bg-gold/10 rounded-[8px] border-2 border-gold/30">
-              <Shield size={40} className="text-gold" />
+          {/* Shield Logo with Admin Badge */}
+          <div className="relative inline-block mb-4">
+            <Image
+              src="/images/shield-logo.svg"
+              alt="The Revenue Council"
+              width={80}
+              height={96}
+              priority
+            />
+            {/* Admin Badge Overlay */}
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-0.5 bg-background border-2 border-gold rounded text-xs font-bold text-gold uppercase tracking-wider whitespace-nowrap">
+              <Lock size={10} />
+              Admin
             </div>
-            <span className="mt-2 px-3 py-1 bg-gold/20 border border-gold/40 rounded text-xs font-bold text-gold uppercase tracking-wider">
-              Admin Portal
-            </span>
           </div>
           <h1 className="text-2xl font-bold text-foreground font-cinzel">Council Chamber</h1>
           <p className="text-muted-foreground mt-2">Authorized personnel only</p>

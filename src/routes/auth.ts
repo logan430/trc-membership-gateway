@@ -25,6 +25,7 @@ import { requireAuth, AuthenticatedRequest } from '../middleware/session.js';
 import { env } from '../config/env.js';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../index.js';
+import { sendPasswordResetEmail, sendPasswordResetConfirmationEmail } from '../email/send.js';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
@@ -48,6 +49,15 @@ const updateEmailSchema = z.object({
 
 const updatePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z.string().min(8, 'Password must be at least 8 characters').max(128, 'Password too long'),
+});
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email format'),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
   newPassword: z.string().min(8, 'Password must be at least 8 characters').max(128, 'Password too long'),
 });
 
@@ -571,4 +581,135 @@ authRouter.post('/update-password', requireAuth, async (req: AuthenticatedReques
 
   logger.info({ memberId: member.id }, 'Member password updated');
   res.json({ success: true });
+});
+
+/**
+ * POST /auth/forgot-password
+ * Request a password reset email
+ * Always returns success to prevent email enumeration
+ */
+authRouter.post('/forgot-password', async (req: Request, res: Response): Promise<void> => {
+  const parsed = forgotPasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0].message });
+    return;
+  }
+
+  const { email } = parsed.data;
+
+  // Always return success message (prevent email enumeration)
+  const successResponse = {
+    success: true,
+    message: 'If an account exists with this email, a password reset link has been sent.',
+  };
+
+  // Find member by email
+  const member = await prisma.member.findUnique({
+    where: { email },
+  });
+
+  // If member not found, return success anyway (security)
+  if (!member) {
+    logger.debug({ email }, 'Password reset requested for non-existent email');
+    res.json(successResponse);
+    return;
+  }
+
+  // Generate secure token
+  const token = randomUUID();
+
+  // Set expiry to 1 hour from now
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+  // Create password reset token in database
+  await prisma.passwordResetToken.create({
+    data: {
+      token,
+      memberId: member.id,
+      expiresAt,
+    },
+  });
+
+  // Build reset URL
+  const resetUrl = `${env.APP_URL}/reset-password?token=${token}`;
+
+  // Send email (fire-and-forget, don't fail the request)
+  try {
+    await sendPasswordResetEmail(email, resetUrl);
+  } catch (error) {
+    logger.error({ email, error }, 'Failed to send password reset email');
+    // Still return success to prevent enumeration
+  }
+
+  // Log for audit trail
+  logger.info({ memberId: member.id, email }, 'Password reset requested');
+
+  res.json(successResponse);
+});
+
+/**
+ * POST /auth/reset-password
+ * Reset password using a valid token
+ */
+authRouter.post('/reset-password', async (req: Request, res: Response): Promise<void> => {
+  const parsed = resetPasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.issues[0].message });
+    return;
+  }
+
+  const { token, newPassword } = parsed.data;
+
+  // Find token in database
+  const resetToken = await prisma.passwordResetToken.findUnique({
+    where: { token },
+    include: { member: true },
+  });
+
+  // Validate token exists
+  if (!resetToken) {
+    res.status(400).json({ error: 'Invalid or expired reset link' });
+    return;
+  }
+
+  // Validate token not already used
+  if (resetToken.usedAt) {
+    res.status(400).json({ error: 'This reset link has already been used' });
+    return;
+  }
+
+  // Validate token not expired
+  if (resetToken.expiresAt < new Date()) {
+    res.status(400).json({ error: 'This reset link has expired' });
+    return;
+  }
+
+  // Hash new password
+  const passwordHash = await hashPassword(newPassword);
+
+  // Update member password and mark token as used in a transaction
+  await prisma.$transaction([
+    prisma.member.update({
+      where: { id: resetToken.memberId },
+      data: { passwordHash },
+    }),
+    prisma.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: { usedAt: new Date() },
+    }),
+  ]);
+
+  // Send confirmation email (fire-and-forget)
+  if (resetToken.member.email) {
+    try {
+      await sendPasswordResetConfirmationEmail(resetToken.member.email);
+    } catch (error) {
+      logger.error({ email: resetToken.member.email, error }, 'Failed to send password reset confirmation email');
+    }
+  }
+
+  // Log for audit trail
+  logger.info({ memberId: resetToken.memberId }, 'Password reset completed');
+
+  res.json({ success: true, message: 'Password has been reset successfully' });
 });

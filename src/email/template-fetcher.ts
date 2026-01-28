@@ -184,6 +184,42 @@ Run ID: {{runId}}
 This is an automated report from The Revenue Council membership system.
 To enable automatic fixes, set RECONCILIATION_AUTO_FIX=true.`,
   },
+  {
+    name: 'password_reset',
+    subject: 'Reset Thy Password - The Revenue Council',
+    body: `Hark! A request hath been made to reset thy password.
+
+If thou didst request this password reset, click the link below to set a new password:
+
+{{resetUrl}}
+
+This link shall expire in 1 hour.
+
+If thou didst NOT request a password reset, simply ignore this message. Thy account remaineth secure.
+
+May thy new password be both strong and memorable.
+
+The Gatekeeper
+The Revenue Council
+
+---
+Questions? Reply to this email.`,
+  },
+  {
+    name: 'password_reset_confirmation',
+    subject: 'Thy Password Hath Been Changed - The Revenue Council',
+    body: `Hark! Thy password hath been successfully changed.
+
+If thou didst make this change, no further action is required. Thou may now sign in with thy new password.
+
+If thou didst NOT change thy password, please contact us immediately at support@revenuecouncil.com. Thy account may be compromised.
+
+The Gatekeeper
+The Revenue Council
+
+---
+Questions? Reply to this email.`,
+  },
 ];
 
 /**
@@ -198,6 +234,8 @@ export const TEMPLATE_VARIABLES: Record<string, string[]> = {
   payment_recovered_debtor: [],
   seat_invite: ['teamName', 'claimUrl', 'seatTier'],
   reconciliation_report: ['issuesFound', 'fixStatus', 'summaryText', 'runId'],
+  password_reset: ['resetUrl'],
+  password_reset_confirmation: [],
 };
 
 /**

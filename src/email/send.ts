@@ -139,6 +139,45 @@ export async function sendSeatInviteEmail(
 }
 
 /**
+ * Send password reset email with secure link
+ * Sent when member requests password reset
+ */
+export async function sendPasswordResetEmail(
+  email: string,
+  resetUrl: string
+): Promise<EmailResult> {
+  const { subject, text } = await getTemplate('password_reset', { resetUrl });
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, success: result.success }, 'Password reset email sent');
+  return result;
+}
+
+/**
+ * Send password reset confirmation email
+ * Sent after password has been successfully changed
+ */
+export async function sendPasswordResetConfirmationEmail(
+  email: string
+): Promise<EmailResult> {
+  const { subject, text } = await getTemplate('password_reset_confirmation', {});
+
+  const result = await emailProvider.send({
+    to: email,
+    subject,
+    text,
+  });
+
+  logger.info({ email, success: result.success }, 'Password reset confirmation email sent');
+  return result;
+}
+
+/**
  * Send reconciliation report email to admin
  * Only sent when issues are found
  */

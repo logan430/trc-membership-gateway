@@ -24,15 +24,15 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 ## Current Position
 
 **Current Phase:** 38 - Containerization (IN PROGRESS)
-**Last Completed:** 38-02 Next.js Dockerfile
+**Last Completed:** 38-01 Express Dockerfile
 **Status:** In progress
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [#...................] 1/14 plans (IN PROGRESS)
-Phase 38: [######..............] 1/3 plans
+v2.2:     [##..................] 2/14 plans (IN PROGRESS)
+Phase 38: [#############.......] 2/3 plans
 ```
 
 ---
@@ -42,14 +42,14 @@ Phase 38: [######..............] 1/3 plans
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 1
+- v2.2 plans completed: 2
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
 
 | Phase | Plans | Status |
 |-------|-------|--------|
-| 38 - Containerization | 3 | 1/3 complete |
+| 38 - Containerization | 3 | 2/3 complete |
 | 39 - Coolify Deployment | 2 | Not started |
 | 40 - Database Setup | 2 | Not started |
 | 41 - Stripe Integration | 2 | Not started |
@@ -72,6 +72,9 @@ Phase 38: [######..............] 1/3 plans
 | Four-stage Dockerfile | base, deps, builder, runner for optimal caching | 38-02 |
 | Non-root nextjs user | uid/gid 1001 for container security | 38-02 |
 | Simple health check | Status + timestamp since Next.js proxies through Express | 38-02 |
+| Three-stage Dockerfile | deps, builder, runner for Express with argon2 support | 38-01 |
+| Degraded health mode | Always 200, JSON with service-by-service status | 38-01 |
+| Non-root expressuser | uid/gid 1001 for container security | 38-01 |
 
 ### Research Insights
 
@@ -108,13 +111,14 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- Completed 38-02 Next.js Dockerfile plan
-- Created dashboard/Dockerfile with multi-stage Alpine build
-- Added /api/health endpoint for container health checks
+- Completed 38-01 Express Dockerfile plan
+- Created Dockerfile with multi-stage Alpine build for Express backend
+- Created .dockerignore for build context optimization
+- Enhanced /health endpoint with degraded mode and service-by-service status
 
 **Resume:** `/gsd:execute-phase` to continue with 38-03
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Completed 38-02 Next.js Dockerfile*
+*Last updated: 2026-01-28 - Completed 38-01 Express Dockerfile*

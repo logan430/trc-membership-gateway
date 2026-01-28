@@ -252,6 +252,55 @@ Plans:
 
 ---
 
+### Phase 36: UI/UX Polish and Legal Compliance
+
+**Goal:** Address critical UI/UX issues and legal requirements identified through comprehensive testing. Fix session persistence, consolidate routing, add legally-required pages, and improve auth form UX.
+
+**Dependencies:** Phase 35 (Auth Pages), Phase 31 (Next.js setup)
+
+**Plans:** 5 plans
+
+Plans:
+- [x] 36-01-PLAN.md — Legal Pages (Terms, Privacy)
+- [x] 36-02-PLAN.md — Forgot Password Flow
+- [x] 36-03-PLAN.md — Password UX Improvements
+- [x] 36-04-PLAN.md — Visual Polish (Favicon, Branding)
+- [x] 36-05-PLAN.md — Session & Routing Fixes
+
+**Success Criteria:**
+1. Login → Dashboard flow works reliably without ERR_ABORTED
+2. Session persists correctly across page navigation
+3. Single, consistent login path (no confusion between multiple pages)
+4. Terms and Privacy pages exist and are linked correctly
+5. Users can recover forgotten passwords via email
+6. Password fields have visibility toggles and strength indicators
+7. No 404 console errors for standard assets (favicon)
+8. Auth forms have consistent, polished appearance
+
+---
+
+### Phase 37: Admin Feature Pages
+
+**Goal:** Implement the 4 missing admin dashboard pages identified during UI/UX testing.
+
+**Dependencies:** Phase 36 (UI/UX Polish)
+
+**Plans:** 4 plans (pending)
+
+Plans:
+- [ ] 37-01-PLAN.md — Points Configuration Page
+- [ ] 37-02-PLAN.md — Benchmarks Moderation Page
+- [ ] 37-03-PLAN.md — Analytics Dashboard Page
+- [ ] 37-04-PLAN.md — Resource Management Page
+
+**Success Criteria:**
+1. `/app/admin/points-config` page exists and allows point value configuration
+2. `/app/admin/benchmarks` page exists with approval/rejection workflow
+3. `/app/admin/analytics` page exists with member and engagement metrics
+4. `/app/admin/resources` page exists with upload and management UI
+
+---
+
 ## Progress
 
 | Phase | Status | Plans | Complete |
@@ -267,11 +316,13 @@ Plans:
 | **v2.1 Frontend Consolidation** | | | |
 | 34 - Admin Pages Migration | Complete | 4 | All admin pages migrated |
 | 35 - Auth Pages Migration | Complete | 1 | Auth pages migrated |
+| 36 - UI/UX Polish & Legal | Complete | 5 | 8/8 success criteria verified |
+| 37 - Admin Feature Pages | Planned | 4 | 4 missing admin pages |
 
 **v2.0 Progress:** 99/101 requirements (98%)
-**v2.1 Progress:** 2/2 phases complete
+**v2.1 Progress:** 3/4 phases complete (Phase 37 remaining)
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-27 (Phase 34 complete - Admin pages migrated to Next.js)*
+*Last updated: 2026-01-28 (Phase 36 complete - UI/UX polish and legal compliance)*

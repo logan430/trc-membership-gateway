@@ -29,7 +29,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 **Current Phase:** 36 - UI/UX Polish and Legal Compliance (IN PROGRESS)
 **Next Phase:** 37 - Admin Feature Pages (PLANNED)
-**Status:** IN PROGRESS - Plan 36-02 complete, Wave 2 complete
+**Status:** IN PROGRESS - Plan 36-03 complete, Wave 3 in progress
 
 **Phase 36 Goal:**
 Fix session persistence, consolidate routing, add legal pages (Terms, Privacy), implement forgot password, and polish auth forms.
@@ -42,9 +42,9 @@ Implement 4 missing admin pages: points-config, benchmarks moderation, analytics
 v2.0:     [####################] 31/31 plans (COMPLETE!)
 Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
 Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
-Phase 36: [############........] 3/5 plans (UI/UX Polish - IN PROGRESS)
+Phase 36: [################....] 4/5 plans (UI/UX Polish - IN PROGRESS)
 Phase 37: [....................] 0/4 plans (Admin Features - PLANNED)
-v2.1:     [################....] 8/14 plans (Wave 2 complete, Wave 3 ready)
+v2.1:     [##################..] 9/14 plans (Wave 3 in progress)
 ```
 
 ---
@@ -193,6 +193,9 @@ v2.1:     [################....] 8/14 plans (Wave 2 complete, Wave 3 ready)
 | Anti-enumeration response | Always return success on forgot-password to prevent email harvesting | 36-02 |
 | Single-use tokens | Prevent token reuse attacks by marking usedAt | 36-02 |
 | Transaction for password reset | Ensure atomicity of password update and token invalidation | 36-02 |
+| Eye/EyeOff icons for toggle | Standard UX pattern, already available in lucide-react | 36-03 |
+| Simple strength heuristic | No external library needed, covers common cases | 36-03 |
+| Requirements visible before typing | Users know expectations upfront | 36-03 |
 
 ### Research Insights
 
@@ -300,7 +303,7 @@ v2.1:     [################....] 8/14 plans (Wave 2 complete, Wave 3 ready)
 - [x] Add Express routes for legal pages (Plan 36-01)
 - [x] Add Terms checkbox to signup form (Plan 36-01)
 - [x] Implement forgot password flow (Plan 36-02)
-- [ ] Add password UX improvements (Plan 36-03)
+- [x] Add password UX improvements (Plan 36-03)
 - [ ] Add favicon and branding (Plan 36-04)
 - [ ] Implement Points Config admin page (Plan 37-01)
 - [ ] Implement Benchmarks Moderation page (Plan 37-02)
@@ -322,18 +325,17 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- Completed Plan 36-02: Forgot Password Flow
-- Added PasswordResetToken model with migration
-- Created POST /auth/forgot-password and POST /auth/reset-password endpoints
-- Added password_reset and password_reset_confirmation email templates
-- Created /forgot-password and /reset-password Next.js pages
-- Added "Forgot thy password?" link to login page
-- Wave 2 complete, Wave 3 (Password UX, Visual Polish) ready
+- Completed Plan 36-03: Password UX Improvements
+- Created PasswordInput component with visibility toggle
+- Created PasswordStrength indicator component
+- Created PasswordRequirements checklist component
+- Updated login, signup, reset password, and admin login pages
+- Wave 3 in progress (36-04 Visual Polish remaining)
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plans 05, 01, and 02 complete (3 plans), remaining planned (6 plans).
+**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plans 05, 01, 02, and 03 complete (4 plans), 36-04 remaining (1 plan), Phase 37 planned (4 plans).
 
-**Phase 36-02 Summary:** Complete forgot password flow with token model, secure API endpoints, email templates, and frontend pages.
+**Phase 36-03 Summary:** Three reusable password components (visibility toggle, strength meter, requirements checklist) integrated across all four auth forms.
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -435,8 +437,9 @@ None currently.
 - Password reset emails at: src/email/send.ts, src/email/template-fetcher.ts
 - Forgot password page at: dashboard/src/app/(auth)/forgot-password/page.tsx
 - Reset password page at: dashboard/src/app/(auth)/reset-password/page.tsx
+- Password UI components at: dashboard/src/components/ui/PasswordInput.tsx, PasswordStrength.tsx, PasswordRequirements.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Plan 36-02 complete, Wave 2 complete*
+*Last updated: 2026-01-28 - Plan 36-03 complete, Wave 3 in progress*

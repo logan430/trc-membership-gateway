@@ -131,6 +131,7 @@ model Member {
   resourceDownloads    ResourceDownload[]
   pointTransactions    PointTransaction[]
   discordActivities    DiscordActivity[]
+  passwordResetTokens  PasswordResetToken[]
 
   @@index([teamId])
   @@index([subscriptionStatus])
@@ -417,4 +418,20 @@ model DiscordActivity {
   @@index([memberId])
   @@index([discordId])
   @@index([syncedAt])
+}
+
+// Password Reset Token (Phase 36-02)
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique // Secure random token (UUID)
+  memberId  String
+  expiresAt DateTime // 1 hour from creation
+  usedAt    DateTime? // Null until used, prevents reuse
+  createdAt DateTime  @default(now())
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([memberId])
+  @@index([expiresAt])
 }

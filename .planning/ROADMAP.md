@@ -324,14 +324,14 @@ Plans:
 2. Next.js frontend builds with standalone output mode for minimal image size
 3. docker-compose.yml defines both services on shared network with health checks
 4. Both services respond to /health endpoint with 200 status
-5. Express can reach Next.js via internal network (http://nextjs:3001) and proxy works
+5. Express can reach Next.js via internal network (http://nextjs:3000) and proxy works
 
-**Plans:** TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 38-01: Create backend Dockerfile and health endpoint
-- [ ] 38-02: Create frontend Dockerfile with standalone output
-- [ ] 38-03: Create docker-compose.yml and verify local stack
+- [ ] 38-01-PLAN.md — Create backend Dockerfile and health endpoint
+- [ ] 38-02-PLAN.md — Create frontend Dockerfile with standalone output
+- [ ] 38-03-PLAN.md — Create docker-compose.yml and verify local stack
 
 ---
 
@@ -469,15 +469,15 @@ Plans:
 | 36 - UI/UX Polish & Legal | v2.1 | Complete | 5 | 8/8 success criteria |
 | 37 - Admin Feature Pages | v2.1 | Complete | 4 | 4/4 success criteria |
 | **v2.1 Total** | | **Complete** | **14** | **100%** |
-| 38 - Containerization | v2.2 | Not started | 3 | 0/6 requirements |
+| 38 - Containerization | v2.2 | Planned | 3 | 0/6 requirements |
 | 39 - Coolify Deployment | v2.2 | Not started | 2 | 0/6 requirements |
 | 40 - Database Production Setup | v2.2 | Not started | 2 | 0/6 requirements |
 | 41 - Stripe Integration | v2.2 | Not started | 2 | 0/8 requirements |
 | 42 - Discord Integration | v2.2 | Not started | 2 | 0/8 requirements |
 | 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements |
-| **v2.2 Total** | | **Not started** | **14** | **0%** |
+| **v2.2 Total** | | **In Progress** | **14** | **0%** |
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-28 (v2.2 Production Deployment phases added)*
+*Last updated: 2026-01-28 (Phase 38 plans created)*

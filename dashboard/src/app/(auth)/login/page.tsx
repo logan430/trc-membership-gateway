@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Card, Input, Button, GoldCoinsLoader } from '@/components/ui';
+import { Card, Input, Button, GoldCoinsLoader, PasswordInput } from '@/components/ui';
 import { useAuth, handleMagicLinkToken } from '@/hooks/useAuth';
 
 /**
@@ -50,9 +50,8 @@ function LoginForm() {
         disabled={isLoading}
       />
 
-      <Input
+      <PasswordInput
         id="password"
-        type="password"
         label="Password"
         placeholder="Your password"
         value={password}

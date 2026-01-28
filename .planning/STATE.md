@@ -201,6 +201,9 @@ v2.1:     [###################.] 13/14 plans (Phase 37 in progress)
 | Table layout for points config | 6 columns: Action, Label, Points, Enabled, Description, Last Updated | 37-01 |
 | Inline editable values | Click to edit, blur/Enter to save, Escape to cancel | 37-01 |
 | Checkmark save indicator | Appears on success, fades after 2 seconds via opacity transition | 37-01 |
+| Inline expand logic in page | Remove FlaggedBenchmarkCard, single source of truth | 37-02 |
+| Set state for checkbox selection | O(1) lookups for isSelected checks in table rows | 37-02 |
+| Promise.allSettled for bulk ops | Parallel mutations with partial failure handling | 37-02 |
 
 ### Research Insights
 
@@ -311,7 +314,7 @@ v2.1:     [###################.] 13/14 plans (Phase 37 in progress)
 - [x] Add password UX improvements (Plan 36-03)
 - [x] Add favicon and branding (Plan 36-04)
 - [x] Implement Points Config admin page (Plan 37-01)
-- [ ] Implement Benchmarks Moderation page (Plan 37-02)
+- [x] Implement Benchmarks Moderation page (Plan 37-02)
 - [x] Simplify Analytics Dashboard page (Plan 37-03)
 - [ ] Implement Resource Management page (Plan 37-04)
 
@@ -330,12 +333,13 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- Executed Plan 37-01: Points Config Table with Inline Editing
-- Task 01: Converted to table layout with inline editing (commit d743448)
-- Plan 37-01 COMPLETE
+- Executed Plan 37-02: Benchmark Moderation Table with Bulk Actions
+- Task 01: Converted to table layout with bulk actions (commit adae5c5)
+- Task 02: Removed FlaggedBenchmarkCard, inlined expand logic (commit e5c37ad)
+- Plan 37-02 COMPLETE
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Phase 37 in progress (2/4 plans complete - 37-01 and 37-03).
+**v2.1 IN PROGRESS:** Phase 37 in progress (3/4 plans complete - 37-01, 37-02, 37-03).
 
 **Phase 36-04 Summary:** Favicon files in multiple sizes, shield logo SVG, and distinct admin branding badge eliminate 404 errors and improve visual identity.
 
@@ -424,7 +428,7 @@ None currently.
 - Admin resources hooks at: dashboard/src/hooks/useAdminResources.ts
 - Admin benchmarks hooks at: dashboard/src/hooks/useAdminBenchmarks.ts
 - Admin points config hooks at: dashboard/src/hooks/useAdminPointsConfig.ts
-- Admin resource components at: dashboard/src/components/admin/ResourceUploader.tsx, FlaggedBenchmarkCard.tsx
+- Admin resource components at: dashboard/src/components/admin/ResourceUploader.tsx
 - Admin resources pages at: dashboard/src/app/admin/resources/page.tsx, [id]/page.tsx
 - Admin benchmarks page at: dashboard/src/app/admin/benchmarks/page.tsx
 - Admin points config page at: dashboard/src/app/admin/points-config/page.tsx
@@ -447,4 +451,4 @@ None currently.
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Phase 37 in progress (2/4 plans complete)*
+*Last updated: 2026-01-28 - Phase 37 in progress (3/4 plans complete)*

@@ -27,12 +27,9 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 36 - UI/UX Polish and Legal Compliance (COMPLETE)
-**Next Phase:** 37 - Admin Feature Pages (READY)
-**Status:** COMPLETE - All 5 plans complete, Phase 36 done
-
-**Phase 36 Goal:**
-Fix session persistence, consolidate routing, add legal pages (Terms, Privacy), implement forgot password, and polish auth forms.
+**Current Phase:** 37 - Admin Feature Pages (IN PROGRESS)
+**Next Plan:** 37-02 (Benchmarks Moderation) or 37-04 (Resource Management)
+**Status:** IN PROGRESS - 2/4 plans complete (37-01 and 37-03)
 
 **Phase 37 Goal:**
 Implement 4 missing admin pages: points-config, benchmarks moderation, analytics, resources.
@@ -43,8 +40,8 @@ v2.0:     [####################] 31/31 plans (COMPLETE!)
 Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
 Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
 Phase 36: [####################] 5/5 plans (UI/UX Polish - COMPLETE!)
-Phase 37: [....................] 0/4 plans (Admin Features - READY)
-v2.1:     [####################] 10/14 plans (Phase 36 complete, Phase 37 ready)
+Phase 37: [##########..........] 2/4 plans (Admin Features - IN PROGRESS)
+v2.1:     [##################..] 12/14 plans (Phase 37 in progress)
 ```
 
 ---
@@ -199,6 +196,11 @@ v2.1:     [####################] 10/14 plans (Phase 36 complete, Phase 37 ready)
 | Shield with R design for favicon | Matches existing CSS SVG, recognizable at small sizes | 36-04 |
 | Auth layout for shield logo | Logo in shared layout applies to all auth pages | 36-04 |
 | Admin Portal badge | Subtle but clear visual distinction from member login | 36-04 |
+| Remove comparison display per CONTEXT.md | Show current period data only, no comparison percentages | 37-03 |
+| Keep useEngagementComparison hook | Preserved in useAnalytics.ts for potential future use | 37-03 |
+| Table layout for points config | 6 columns: Action, Label, Points, Enabled, Description, Last Updated | 37-01 |
+| Inline editable values | Click to edit, blur/Enter to save, Escape to cancel | 37-01 |
+| Checkmark save indicator | Appears on success, fades after 2 seconds via opacity transition | 37-01 |
 
 ### Research Insights
 
@@ -308,9 +310,9 @@ v2.1:     [####################] 10/14 plans (Phase 36 complete, Phase 37 ready)
 - [x] Implement forgot password flow (Plan 36-02)
 - [x] Add password UX improvements (Plan 36-03)
 - [x] Add favicon and branding (Plan 36-04)
-- [ ] Implement Points Config admin page (Plan 37-01)
+- [x] Implement Points Config admin page (Plan 37-01)
 - [ ] Implement Benchmarks Moderation page (Plan 37-02)
-- [ ] Implement Analytics Dashboard page (Plan 37-03)
+- [x] Simplify Analytics Dashboard page (Plan 37-03)
 - [ ] Implement Resource Management page (Plan 37-04)
 
 ### Known Blockers
@@ -328,16 +330,12 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- Re-executed Plan 36-04: Visual Polish (Favicon & Branding)
-- Task 01: Created favicon files (commit 248aeb7)
-- Task 02: Added favicon links to 20 HTML files (commit 18db55c)
-- Task 03: Next.js metadata configured (commit 03fb80d)
-- Task 05: Shield logo added to member auth pages (commit 9f09d00)
-- Task 06: Admin login enhanced with shield + ADMIN badge (commit f777134)
-- Phase 36 COMPLETE - all 5 plans delivered
+- Executed Plan 37-01: Points Config Table with Inline Editing
+- Task 01: Converted to table layout with inline editing (commit d743448)
+- Plan 37-01 COMPLETE
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Phases 34-36 complete (10 plans), Phase 37 ready (4 plans remaining).
+**v2.1 IN PROGRESS:** Phase 37 in progress (2/4 plans complete - 37-01 and 37-03).
 
 **Phase 36-04 Summary:** Favicon files in multiple sizes, shield logo SVG, and distinct admin branding badge eliminate 404 errors and improve visual identity.
 
@@ -449,4 +447,4 @@ None currently.
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Phase 36 COMPLETE, Phase 37 ready*
+*Last updated: 2026-01-28 - Phase 37 in progress (2/4 plans complete)*

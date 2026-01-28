@@ -22,7 +22,6 @@ import {
 import {
   useOverview,
   useEngagement,
-  useEngagementComparison,
   useBenchmarkStats,
   useResourceStats,
   usePopularResources,
@@ -46,7 +45,6 @@ export default function AdminAnalyticsPage() {
   // Data hooks
   const { data: overview, isLoading: loadingOverview } = useOverview();
   const { data: engagement, isLoading: loadingEngagement } = useEngagement(dateRange.start, dateRange.end);
-  const { data: comparison } = useEngagementComparison(dateRange.start, dateRange.end);
   const { data: benchmarks, isLoading: loadingBenchmarks } = useBenchmarkStats();
   const { data: resources, isLoading: loadingResources } = useResourceStats(dateRange.start, dateRange.end);
   const { data: popularResources } = usePopularResources(10);
@@ -135,7 +133,6 @@ export default function AdminAnalyticsPage() {
             <KpiCard
               title="Active Members"
               value={overview?.activeMembers ?? 0}
-              change={comparison?.change.total}
               onClick={() => setActiveTab('members')}
               isLoading={loadingOverview}
             />
@@ -258,32 +255,6 @@ export default function AdminAnalyticsPage() {
               </div>
             )}
           </Card>
-
-          {/* Period Comparison */}
-          {comparison && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <KpiCard
-                title="Total Activity"
-                value={comparison.current.data.reduce((s, d) => s + d.total, 0)}
-                change={comparison.change.total}
-              />
-              <KpiCard
-                title="Benchmarks"
-                value={comparison.current.data.reduce((s, d) => s + d.benchmarks, 0)}
-                change={comparison.change.benchmarks}
-              />
-              <KpiCard
-                title="Downloads"
-                value={comparison.current.data.reduce((s, d) => s + d.downloads, 0)}
-                change={comparison.change.downloads}
-              />
-              <KpiCard
-                title="Discord"
-                value={comparison.current.data.reduce((s, d) => s + d.discordActivity, 0)}
-                change={comparison.change.discordActivity}
-              />
-            </div>
-          )}
         </div>
       )}
 

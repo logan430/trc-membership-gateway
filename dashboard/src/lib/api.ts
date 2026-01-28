@@ -11,6 +11,14 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 /**
+ * Get access token from localStorage (client-side only)
+ */
+function getAccessToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('accessToken');
+}
+
+/**
  * Fetch wrapper with credentials and error handling
  */
 async function apiFetch<T>(
@@ -19,13 +27,22 @@ async function apiFetch<T>(
 ): Promise<T> {
   const url = `${API_BASE}${endpoint}`;
 
+  // Build headers with Authorization if token available
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Add Bearer token if available (from login response stored in localStorage)
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    (headers as Record<string, string>)['Authorization'] = `Bearer ${accessToken}`;
+  }
+
   const response = await fetch(url, {
     ...options,
-    credentials: 'include', // CRITICAL: Include cookies for auth
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    credentials: 'include', // Still include cookies for refresh token
+    headers,
   });
 
   // Handle auth errors
@@ -299,7 +316,7 @@ export interface DashboardData {
 
 export const dashboardApi = {
   /** Get dashboard data */
-  get: () => apiFetch<DashboardData>('/dashboard'),
+  get: () => apiFetch<DashboardData>('/api/dashboard'),
 };
 
 // =============================================================================
@@ -416,11 +433,11 @@ export interface MemberProfile {
 
 export const memberApi = {
   /** Get current member's profile */
-  getProfile: () => apiFetch<MemberProfile>('/dashboard/profile'),
+  getProfile: () => apiFetch<MemberProfile>('/api/dashboard/profile'),
 
   /** Update profile */
   updateProfile: (data: { name?: string }) =>
-    apiFetch<MemberProfile>('/dashboard/profile', {
+    apiFetch<MemberProfile>('/api/dashboard/profile', {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),

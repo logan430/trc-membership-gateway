@@ -58,11 +58,16 @@ export const logger = pino({
 const app = express();
 
 // Security middleware with CSP for inline scripts and Google Fonts
+// Development mode needs 'unsafe-eval' for Next.js hot module reloading
+const scriptSrc = env.NODE_ENV === 'development'
+  ? ["'self'", "'unsafe-inline'", "'unsafe-hashes'", "'unsafe-eval'"]
+  : ["'self'", "'unsafe-inline'", "'unsafe-hashes'"];
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-hashes'"],
+      scriptSrc,
       scriptSrcAttr: ["'unsafe-inline'"], // Allow onclick handlers
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -155,74 +160,37 @@ app.use('/company', companyCheckoutRouter);
 if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
   const nextAppUrl = process.env.NEXT_APP_URL || 'http://localhost:3000';
 
-  // Proxy Next.js static assets (CSS, JS, images)
-  app.use('/_next', createProxyMiddleware({
-    target: nextAppUrl,
-    changeOrigin: true,
-  }));
-
-  // Proxy auth pages to Next.js (/login, /signup)
-  app.use('/login', createProxyMiddleware({
-    target: nextAppUrl,
-    changeOrigin: true,
-    on: {
-      proxyReq: (proxyReq, req) => {
-        const cookies = req.headers.cookie;
-        if (cookies) {
-          proxyReq.setHeader('Cookie', cookies);
-        }
-      },
-    },
-  }));
-
-  app.use('/signup', createProxyMiddleware({
-    target: nextAppUrl,
-    changeOrigin: true,
-    on: {
-      proxyReq: (proxyReq, req) => {
-        const cookies = req.headers.cookie;
-        if (cookies) {
-          proxyReq.setHeader('Cookie', cookies);
-        }
-      },
-    },
-  }));
-
-  // Proxy admin pages to Next.js
-  app.use('/admin', createProxyMiddleware({
-    target: nextAppUrl,
-    changeOrigin: true,
-    ws: true,
-    on: {
-      proxyReq: (proxyReq, req) => {
-        // Forward cookies for any potential cookie-based features
-        const cookies = req.headers.cookie;
-        if (cookies) {
-          proxyReq.setHeader('Cookie', cookies);
-        }
-      },
-    },
-  }));
-
-  // Proxy /dashboard/* to Next.js
-  app.use('/dashboard', createProxyMiddleware({
+  // Single proxy middleware for all Next.js routes
+  // Uses pathFilter instead of app.use('/path') to preserve full URL path
+  // When using app.use('/path'), Express strips the mount path from req.url,
+  // causing the proxy to send '/' instead of the full path to Next.js
+  const nextProxyMiddleware = createProxyMiddleware({
     target: nextAppUrl,
     changeOrigin: true,
     ws: true, // WebSocket support for HMR in dev
-    // Forward cookies for authentication
+    pathFilter: (path) => {
+      // Proxy these paths to Next.js
+      return path.startsWith('/_next') ||
+             path.startsWith('/login') ||
+             path.startsWith('/signup') ||
+             path.startsWith('/forgot-password') ||
+             path.startsWith('/reset-password') ||
+             path.startsWith('/admin') ||
+             path.startsWith('/dashboard');
+    },
     on: {
       proxyReq: (proxyReq, req) => {
-        // Forward all cookies to Next.js
+        // Forward all cookies to Next.js for authentication
         const cookies = req.headers.cookie;
         if (cookies) {
           proxyReq.setHeader('Cookie', cookies);
         }
         // Log proxy requests in development
         if (env.NODE_ENV === 'development') {
-          logger.info({
+          logger.debug({
             path: req.url,
             hasCookie: !!cookies,
-          }, 'Proxying dashboard request');
+          }, 'Proxying to Next.js');
         }
       },
       proxyRes: (proxyRes, req) => {
@@ -231,11 +199,12 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
           logger.debug({
             path: req.url,
             status: proxyRes.statusCode
-          }, 'Dashboard proxy response');
+          }, 'Next.js proxy response');
         }
       },
     },
-  }));
+  });
+  app.use(nextProxyMiddleware);
 
   logger.info({ target: nextAppUrl }, 'Next.js proxy enabled for /_next, /login, /signup, /admin, /dashboard');
 }

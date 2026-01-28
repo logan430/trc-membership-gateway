@@ -36,13 +36,16 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
+          <div className="flex flex-col items-center justify-center mb-4">
             <div className="p-4 bg-gold/10 rounded-[8px] border-2 border-gold/30">
               <Shield size={40} className="text-gold" />
             </div>
+            <span className="mt-2 px-3 py-1 bg-gold/20 border border-gold/40 rounded text-xs font-bold text-gold uppercase tracking-wider">
+              Admin Portal
+            </span>
           </div>
           <h1 className="text-2xl font-bold text-foreground font-cinzel">Council Chamber</h1>
-          <p className="text-muted-foreground mt-2">Admin access to The Revenue Council</p>
+          <p className="text-muted-foreground mt-2">Authorized personnel only</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -27,9 +27,9 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 ## Current Position
 
-**Current Phase:** 36 - UI/UX Polish and Legal Compliance (IN PROGRESS)
-**Next Phase:** 37 - Admin Feature Pages (PLANNED)
-**Status:** IN PROGRESS - Plan 36-03 complete, Wave 3 in progress
+**Current Phase:** 36 - UI/UX Polish and Legal Compliance (COMPLETE)
+**Next Phase:** 37 - Admin Feature Pages (READY)
+**Status:** COMPLETE - All 5 plans complete, Phase 36 done
 
 **Phase 36 Goal:**
 Fix session persistence, consolidate routing, add legal pages (Terms, Privacy), implement forgot password, and polish auth forms.
@@ -42,9 +42,9 @@ Implement 4 missing admin pages: points-config, benchmarks moderation, analytics
 v2.0:     [####################] 31/31 plans (COMPLETE!)
 Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
 Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
-Phase 36: [################....] 4/5 plans (UI/UX Polish - IN PROGRESS)
-Phase 37: [....................] 0/4 plans (Admin Features - PLANNED)
-v2.1:     [##################..] 9/14 plans (Wave 3 in progress)
+Phase 36: [####################] 5/5 plans (UI/UX Polish - COMPLETE!)
+Phase 37: [....................] 0/4 plans (Admin Features - READY)
+v2.1:     [####################] 10/14 plans (Phase 36 complete, Phase 37 ready)
 ```
 
 ---
@@ -196,6 +196,9 @@ v2.1:     [##################..] 9/14 plans (Wave 3 in progress)
 | Eye/EyeOff icons for toggle | Standard UX pattern, already available in lucide-react | 36-03 |
 | Simple strength heuristic | No external library needed, covers common cases | 36-03 |
 | Requirements visible before typing | Users know expectations upfront | 36-03 |
+| Shield with R design for favicon | Matches existing CSS SVG, recognizable at small sizes | 36-04 |
+| Auth layout for shield logo | Logo in shared layout applies to all auth pages | 36-04 |
+| Admin Portal badge | Subtle but clear visual distinction from member login | 36-04 |
 
 ### Research Insights
 
@@ -304,7 +307,7 @@ v2.1:     [##################..] 9/14 plans (Wave 3 in progress)
 - [x] Add Terms checkbox to signup form (Plan 36-01)
 - [x] Implement forgot password flow (Plan 36-02)
 - [x] Add password UX improvements (Plan 36-03)
-- [ ] Add favicon and branding (Plan 36-04)
+- [x] Add favicon and branding (Plan 36-04)
 - [ ] Implement Points Config admin page (Plan 37-01)
 - [ ] Implement Benchmarks Moderation page (Plan 37-02)
 - [ ] Implement Analytics Dashboard page (Plan 37-03)
@@ -325,17 +328,18 @@ None currently.
 ## Session Continuity
 
 **Last session:** 2026-01-28
-- Completed Plan 36-03: Password UX Improvements
-- Created PasswordInput component with visibility toggle
-- Created PasswordStrength indicator component
-- Created PasswordRequirements checklist component
-- Updated login, signup, reset password, and admin login pages
-- Wave 3 in progress (36-04 Visual Polish remaining)
+- Completed Plan 36-04: Visual Polish (Favicon & Branding)
+- Favicon files already existed from prior session (commit 248aeb7)
+- HTML favicon links already added (commit 18db55c)
+- Next.js metadata already configured (commit 03fb80d)
+- Added shield logo to member auth pages via auth layout
+- Added "Admin Portal" badge to admin login for distinct branding
+- Phase 36 COMPLETE - all 5 plans delivered
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plans 05, 01, 02, and 03 complete (4 plans), 36-04 remaining (1 plan), Phase 37 planned (4 plans).
+**v2.1 IN PROGRESS:** Phases 34-36 complete (10 plans), Phase 37 ready (4 plans remaining).
 
-**Phase 36-03 Summary:** Three reusable password components (visibility toggle, strength meter, requirements checklist) integrated across all four auth forms.
+**Phase 36-04 Summary:** Favicon files in multiple sizes, shield logo SVG, and distinct admin branding badge eliminate 404 errors and improve visual identity.
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -438,8 +442,11 @@ None currently.
 - Forgot password page at: dashboard/src/app/(auth)/forgot-password/page.tsx
 - Reset password page at: dashboard/src/app/(auth)/reset-password/page.tsx
 - Password UI components at: dashboard/src/components/ui/PasswordInput.tsx, PasswordStrength.tsx, PasswordRequirements.tsx
+- Favicon assets at: public/favicon.ico, public/favicon-16x16.png, public/favicon-32x32.png, public/apple-touch-icon.png
+- Shield logo at: public/images/shield-logo.svg
+- Favicon generation script at: scripts/generate-favicons.mjs
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-28 - Plan 36-03 complete, Wave 3 in progress*
+*Last updated: 2026-01-28 - Phase 36 COMPLETE, Phase 37 ready*

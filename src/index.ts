@@ -225,12 +225,33 @@ app.use('/team', teamClaimRouter);
 // Claim routes (Discord OAuth claim flow for paid users)
 app.use('/claim', claimRouter);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
+// Health check endpoint with service-by-service status
+app.get('/health', async (req, res) => {
+  const checks: Record<string, boolean> = {
+    database: false,
+    discord: false,
+  };
+
+  // Check database connectivity
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    checks.database = true;
+  } catch {
+    checks.database = false;
+  }
+
+  // Check Discord bot status
+  checks.discord = discordClient.isReady();
+
+  // Degraded mode: Return 200 with status JSON
+  // App stays available even if non-critical dependencies are down
+  const allHealthy = Object.values(checks).every(Boolean);
+
+  res.status(200).json({
+    status: allHealthy ? 'healthy' : 'degraded',
     timestamp: new Date().toISOString(),
     environment: env.NODE_ENV,
+    checks,
   });
 });
 

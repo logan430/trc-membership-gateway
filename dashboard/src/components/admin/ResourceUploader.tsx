@@ -14,6 +14,7 @@ interface ResourceUploaderProps {
 export function ResourceUploader({ onClose, onSuccess }: ResourceUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<ResourceType>('TEMPLATE');
@@ -21,6 +22,36 @@ export function ResourceUploader({ onClose, onSuccess }: ResourceUploaderProps) 
   const [tagsInput, setTagsInput] = useState('');
 
   const { mutate, isPending, error } = useCreateResource();
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set false if leaving the drop zone entirely
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      setFile(files[0]);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,10 +93,18 @@ export function ResourceUploader({ onClose, onSuccess }: ResourceUploaderProps) 
         {/* File Drop Zone */}
         <div
           onClick={() => fileInputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
           className={`
             border-2 border-dashed rounded-[8px] p-8 text-center cursor-pointer
-            transition-colors
-            ${file ? 'border-success bg-success/5' : 'border-border hover:border-gold'}
+            transition-colors duration-200
+            ${isDragging
+              ? 'border-gold bg-gold/10'
+              : file
+                ? 'border-success bg-success/5'
+                : 'border-border hover:border-gold/50'}
           `}
         >
           <input
@@ -74,7 +113,12 @@ export function ResourceUploader({ onClose, onSuccess }: ResourceUploaderProps) 
             onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="hidden"
           />
-          {file ? (
+          {isDragging ? (
+            <div>
+              <Upload size={32} className="mx-auto text-gold mb-2" />
+              <p className="text-gold font-medium">Drop file here</p>
+            </div>
+          ) : file ? (
             <div>
               <p className="text-foreground font-medium">{file.name}</p>
               <p className="text-sm text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
@@ -82,7 +126,7 @@ export function ResourceUploader({ onClose, onSuccess }: ResourceUploaderProps) 
           ) : (
             <div>
               <Upload size={32} className="mx-auto text-muted-foreground mb-2" />
-              <p className="text-muted-foreground">Click to select file</p>
+              <p className="text-muted-foreground">Drag and drop a file here, or click to browse</p>
             </div>
           )}
         </div>

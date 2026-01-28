@@ -1,6 +1,6 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-01-27
+**Updated:** 2026-01-28
 **Milestone:** v2.1 Frontend Consolidation
 **Mode:** YOLO
 
@@ -29,7 +29,7 @@ Transform from access gateway to intelligence platform by adding benchmarking, r
 
 **Current Phase:** 36 - UI/UX Polish and Legal Compliance (IN PROGRESS)
 **Next Phase:** 37 - Admin Feature Pages (PLANNED)
-**Status:** IN PROGRESS - Plan 36-01 complete, continuing Wave 2
+**Status:** IN PROGRESS - Plan 36-02 complete, Wave 2 complete
 
 **Phase 36 Goal:**
 Fix session persistence, consolidate routing, add legal pages (Terms, Privacy), implement forgot password, and polish auth forms.
@@ -42,9 +42,9 @@ Implement 4 missing admin pages: points-config, benchmarks moderation, analytics
 v2.0:     [####################] 31/31 plans (COMPLETE!)
 Phase 34: [####################] 4/4 plans (Admin Migration - COMPLETE!)
 Phase 35: [####################] 1/1 plans (Auth Pages - COMPLETE!)
-Phase 36: [########............] 2/5 plans (UI/UX Polish - IN PROGRESS)
+Phase 36: [############........] 3/5 plans (UI/UX Polish - IN PROGRESS)
 Phase 37: [....................] 0/4 plans (Admin Features - PLANNED)
-v2.1:     [##############......] 7/14 plans (36-01 complete, Wave 2 continues)
+v2.1:     [################....] 8/14 plans (Wave 2 complete, Wave 3 ready)
 ```
 
 ---
@@ -189,6 +189,10 @@ v2.1:     [##############......] 7/14 plans (36-01 complete, Wave 2 continues)
 | Medieval voice in legal pages | Consistency with site branding while maintaining legal clarity | 36-01 |
 | Static HTML for legal pages | SEO friendly, fast loading, simple maintenance | 36-01 |
 | Terms links open in new tab | Users can review terms without losing signup form state | 36-01 |
+| 1-hour token expiry | Balance between security and user convenience | 36-02 |
+| Anti-enumeration response | Always return success on forgot-password to prevent email harvesting | 36-02 |
+| Single-use tokens | Prevent token reuse attacks by marking usedAt | 36-02 |
+| Transaction for password reset | Ensure atomicity of password update and token invalidation | 36-02 |
 
 ### Research Insights
 
@@ -295,7 +299,7 @@ v2.1:     [##############......] 7/14 plans (36-01 complete, Wave 2 continues)
 - [x] Create Privacy Policy page (Plan 36-01)
 - [x] Add Express routes for legal pages (Plan 36-01)
 - [x] Add Terms checkbox to signup form (Plan 36-01)
-- [ ] Implement forgot password flow (Plan 36-02)
+- [x] Implement forgot password flow (Plan 36-02)
 - [ ] Add password UX improvements (Plan 36-03)
 - [ ] Add favicon and branding (Plan 36-04)
 - [ ] Implement Points Config admin page (Plan 37-01)
@@ -317,18 +321,19 @@ None currently.
 
 ## Session Continuity
 
-**Last session:** 2026-01-27
-- Completed Plan 36-01: Legal Pages (Terms & Privacy)
-- Created Terms of Service page with medieval styling and comprehensive content
-- Created Privacy Policy page with third-party disclosures and user rights
-- Added Express routes for /terms and /privacy
-- Added Terms checkbox validation to signup form
-- Wave 2 continues with Plan 36-02 (Forgot Password)
+**Last session:** 2026-01-28
+- Completed Plan 36-02: Forgot Password Flow
+- Added PasswordResetToken model with migration
+- Created POST /auth/forgot-password and POST /auth/reset-password endpoints
+- Added password_reset and password_reset_confirmation email templates
+- Created /forgot-password and /reset-password Next.js pages
+- Added "Forgot thy password?" link to login page
+- Wave 2 complete, Wave 3 (Password UX, Visual Polish) ready
 
 **v2.0 COMPLETE:** All 8 phases (26-33), 31 plans delivered.
-**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plans 05 and 01 complete (2 plans), remaining planned (7 plans).
+**v2.1 IN PROGRESS:** Phases 34-35 complete (5 plans), Phase 36 plans 05, 01, and 02 complete (3 plans), remaining planned (6 plans).
 
-**Phase 36-01 Summary:** Terms/Privacy pages with medieval styling, Express routes, signup checkbox.
+**Phase 36-02 Summary:** Complete forgot password flow with token model, secure API endpoints, email templates, and frontend pages.
 
 **Context preserved:**
 - v1.0 patterns (webhook idempotency, audit logging, fire-and-forget Discord ops)
@@ -425,8 +430,13 @@ None currently.
 - UI/UX testing reports at: .planning/TESTING-*.md, .planning/UI-UX-COMPREHENSIVE-FINDINGS.md
 - Legal pages at: public/terms.html, public/privacy.html
 - Legal routes in: src/routes/public.ts (/terms, /privacy)
+- Password reset migration at: prisma/migrations/20260128050027_add_password_reset_token/
+- Password reset endpoints at: src/routes/auth.ts (forgot-password, reset-password)
+- Password reset emails at: src/email/send.ts, src/email/template-fetcher.ts
+- Forgot password page at: dashboard/src/app/(auth)/forgot-password/page.tsx
+- Reset password page at: dashboard/src/app/(auth)/reset-password/page.tsx
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-27 - Plan 36-01 complete, Wave 2 continues*
+*Last updated: 2026-01-28 - Plan 36-02 complete, Wave 2 complete*

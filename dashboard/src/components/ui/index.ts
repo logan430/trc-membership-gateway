@@ -16,3 +16,5 @@ export { PasswordInput } from './PasswordInput';
 export type { PasswordInputProps } from './PasswordInput';
 
 export { PasswordStrength } from './PasswordStrength';
+
+export { PasswordRequirements } from './PasswordRequirements';

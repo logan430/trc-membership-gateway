@@ -24,34 +24,48 @@ A Stripe-backed membership gateway that controls access to The Revenue Council D
 - ✓ Admin system with member management, audit logs, feature flags — v1.0
 - ✓ Email notifications for all lifecycle events — v1.0
 - ✓ Member self-service portal with account and billing management — v1.0
+- ✓ Anonymous peer benchmarking (4 categories, k-anonymity, outlier detection) — v2.0
+- ✓ Curated resource library with Supabase Storage and download tracking — v2.0
+- ✓ Gamification system (points, leaderboard, streaks) — v2.0
+- ✓ Admin analytics dashboard with engagement metrics and churn prediction — v2.0
+- ✓ React/Next.js member dashboard with Recharts visualizations — v2.0
+- ✓ Unified Next.js frontend (admin pages, auth pages migrated) — v2.1
+- ✓ Legal pages (Terms, Privacy) and password reset flow — v2.1
+- ✓ UI/UX polish (favicon, branding, session fixes) — v2.1
 
 ### Active
 
-**Current Milestone: v2.0 Community Intelligence Platform**
+**Current Milestone: v2.2 Production Deployment & Launch**
 
-**Goal:** Transform from access gateway to intelligence platform by adding benchmarking, resource library, and gamification - giving admins actionable industry data while increasing member engagement and retention.
+**Goal:** Deploy the complete membership gateway to Coolify, configure all external integrations with production URLs, validate end-to-end flows with real services, and prepare for public launch.
 
 **Target features:**
-- Anonymous peer benchmarking across 4 categories (compensation, infrastructure, business, operational)
-- Curated resource library with download tracking (templates, SOPs, playbooks, courses, videos)
-- Gamification system with points and leaderboard (benchmark submissions, resource downloads, Discord activity)
-- Admin analytics dashboard for industry insights and member patterns
-- Enhanced member dashboard with React-based UI (port from Chris's Next.js app)
+- Coolify deployment (Express backend + Next.js frontend containers)
+- Domain configuration with SSL via Coolify
+- Stripe integration with production webhook URLs (test mode → live mode transition)
+- Discord integration with test server (bot, OAuth, role assignment)
+- Supabase connectivity from production environment
+- End-to-end testing with seed data and real payment verification
+- Production reset script (clean slate while preserving admin/config access)
+- Go-live transition to production Discord server
 
 **Success criteria:**
-- 50%+ benchmark participation rate (rich industry data collected)
-- Admin dashboard reveals actionable patterns for community decisions
-- Active resource engagement (members download and use library content)
-- Measurable retention improvement (decreased churn via engagement features)
+- Application accessible via custom domain with SSL
+- Stripe webhooks fire and process correctly in production
+- Discord OAuth completes successfully with role assignment
+- Member can complete full flow: signup → payment → Discord link → intro → access
+- Admin can login and manage members/configs in production
+- Database can be reset while preserving admin/config data
+- Successful transition from test to live Stripe mode
 
 ### Out of Scope
 
-- Full production deployment (VM deployment is post-MVP)
 - Multi-product billing, discounts, annual plans, coupons
-- Advanced admin dashboard UX (basic dashboard only for MVP)
 - Full CRM sync (HubSpot/Clay) — only export-ready data structures
 - Real-time chat features beyond Discord's native capabilities
 - Mobile app
+- Automated CI/CD pipelines (manual deployment for v2.2)
+- Blue-green deployments or zero-downtime updates
 
 ## Context
 
@@ -110,4 +124,4 @@ Members are typically referred or driven via ads/social media. The Discord doesn
 | Seed data for testing | Comprehensive test scenarios | ✓ Good - Fast development iteration |
 
 ---
-*Last updated: 2026-01-22 after v2.0 milestone initialization*
+*Last updated: 2026-01-28 after v2.2 milestone initialization*

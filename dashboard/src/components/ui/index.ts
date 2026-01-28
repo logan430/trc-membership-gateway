@@ -11,3 +11,6 @@ export { Input } from './Input';
 export type { InputProps } from './Input';
 
 export { GoldCoinsLoader, PageLoader, InlineLoader } from './GoldCoinsLoader';
+
+export { PasswordInput } from './PasswordInput';
+export type { PasswordInputProps } from './PasswordInput';

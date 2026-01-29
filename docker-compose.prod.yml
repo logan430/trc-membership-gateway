@@ -1,0 +1,72 @@
+# Production Docker Compose for Coolify deployment
+# This file is optimized for Coolify with Traefik routing
+# Local development uses docker-compose.yml instead
+
+services:
+  express:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "80"
+    environment:
+      - NODE_ENV=production
+      - PORT=80
+      - NEXT_APP_URL=http://nextjs:3000
+      - DATABASE_URL=${DATABASE_URL}
+      - DIRECT_URL=${DIRECT_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - APP_URL=${APP_URL}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - STRIPE_INDIVIDUAL_PRICE_ID=${STRIPE_INDIVIDUAL_PRICE_ID}
+      - STRIPE_OWNER_SEAT_PRICE_ID=${STRIPE_OWNER_SEAT_PRICE_ID}
+      - STRIPE_TEAM_SEAT_PRICE_ID=${STRIPE_TEAM_SEAT_PRICE_ID}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - DISCORD_REDIRECT_URI=${DISCORD_REDIRECT_URI}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
+      - DISCORD_INVITE_URL=${DISCORD_INVITE_URL}
+      - DISCORD_INTRODUCTIONS_CHANNEL_ID=${DISCORD_INTRODUCTIONS_CHANNEL_ID}
+      - DISCORD_ADMIN_CHANNEL_ID=${DISCORD_ADMIN_CHANNEL_ID}
+      - DISCORD_BILLING_SUPPORT_CHANNEL_ID=${DISCORD_BILLING_SUPPORT_CHANNEL_ID}
+      - EMAIL_PROVIDER=${EMAIL_PROVIDER}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS}
+      - EMAIL_REPLY_TO=${EMAIL_REPLY_TO}
+      - RECONCILIATION_AUTO_FIX=${RECONCILIATION_AUTO_FIX}
+      - RECONCILIATION_PAUSED=${RECONCILIATION_PAUSED}
+      - RECONCILIATION_TIMEZONE=${RECONCILIATION_TIMEZONE}
+      - RECONCILIATION_HOUR=${RECONCILIATION_HOUR}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+    labels:
+      - "traefik.enable=true"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:80/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      nextjs:
+        condition: service_healthy
+
+  nextjs:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

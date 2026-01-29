@@ -350,11 +350,11 @@ Plans:
 4. HTTP redirects to HTTPS automatically
 5. Application accessible via https://[domain] with working health checks
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 39-01: Create Coolify project and configure environment
-- [ ] 39-02: Deploy and verify SSL/domain configuration
+- [ ] 39-01-PLAN.md — Create production Docker Compose and Coolify project setup
+- [ ] 39-02-PLAN.md — Configure DNS, domain, and verify SSL
 
 ---
 
@@ -470,7 +470,7 @@ Plans:
 | 37 - Admin Feature Pages | v2.1 | Complete | 4 | 4/4 success criteria |
 | **v2.1 Total** | | **Complete** | **14** | **100%** |
 | 38 - Containerization | v2.2 | Complete | 3 | 6/6 requirements |
-| 39 - Coolify Deployment | v2.2 | Not started | 2 | 0/6 requirements |
+| 39 - Coolify Deployment | v2.2 | Planned | 2 | 0/6 requirements |
 | 40 - Database Production Setup | v2.2 | Not started | 2 | 0/6 requirements |
 | 41 - Stripe Integration | v2.2 | Not started | 2 | 0/8 requirements |
 | 42 - Discord Integration | v2.2 | Not started | 2 | 0/8 requirements |
@@ -480,4 +480,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-28 (Phase 38 complete)*
+*Last updated: 2026-01-29 (Phase 39 planned)*

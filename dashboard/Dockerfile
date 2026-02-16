@@ -28,7 +28,9 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 
 # Copy standalone build output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+# outputFileTracingRoot in next.config.ts points to parent dir, so standalone
+# output nests under /app/.next/standalone/app/ instead of /app/.next/standalone/
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/app ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs

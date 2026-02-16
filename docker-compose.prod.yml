@@ -45,6 +45,11 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.express.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.express.entrypoints=http"
+      - "traefik.http.services.express.loadbalancer.server.port=80"
+    networks:
+      - coolify
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:80/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
       interval: 30s
@@ -64,9 +69,15 @@ services:
     environment:
       - NODE_ENV=production
       - HOSTNAME=0.0.0.0
+    networks:
+      - coolify
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
+
+networks:
+  coolify:
+    external: true

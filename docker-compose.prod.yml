@@ -43,10 +43,13 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - SENTRY_DSN=${SENTRY_DSN}
+    ports:
+      - "8888:80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.express.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.express.entrypoints=http"
+      - "traefik.http.routers.express-http.rule=HostRegexp(`.+`)"
+      - "traefik.http.routers.express-http.entrypoints=http"
+      - "traefik.http.routers.express-http.service=express"
       - "traefik.http.services.express.loadbalancer.server.port=80"
     networks:
       - coolify

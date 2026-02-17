@@ -389,12 +389,15 @@ Plans:
 
 **Requirements:** STRIPE-01, STRIPE-02, STRIPE-03, STRIPE-04, STRIPE-05, STRIPE-06, STRIPE-07, STRIPE-08
 
+**Deferred:** STRIPE-08 (live mode checkout) deferred to Phase 43 go-live checklist. Live mode involves real money and should be the final pre-launch step.
+
 **Success Criteria:**
 1. Webhook endpoint URL configured in Stripe Dashboard with production domain
 2. Webhook signature verification passes with production secret
 3. checkout.session.completed webhook fires and creates member correctly
-4. invoice.payment_succeeded and invoice.payment_failed webhooks update member status
+4. invoice.paid and invoice.payment_failed webhooks update member status (NOTE: Stripe renamed invoice.payment_succeeded to invoice.paid; codebase handles invoice.paid)
 5. Test mode checkout completes full flow (signup -> payment -> active member)
+6. Payment failure handling verified with declining test card
 
 **Plans:** 2 plans
 
@@ -433,21 +436,21 @@ Plans:
 
 **Dependencies:** Phase 41 (Stripe), Phase 42 (Discord)
 
-**Requirements:** E2E-01, E2E-02, E2E-03, E2E-04, E2E-05, E2E-06, E2E-07, E2E-08, E2E-09, E2E-10, E2E-11, GOLIVE-01, GOLIVE-02, GOLIVE-03, GOLIVE-04, GOLIVE-05, GOLIVE-06, GOLIVE-07, GOLIVE-08, GOLIVE-09
+**Requirements:** E2E-01, E2E-02, E2E-03, E2E-04, E2E-05, E2E-06, E2E-07, E2E-08, E2E-09, E2E-10, E2E-11, GOLIVE-01, GOLIVE-02, GOLIVE-03, GOLIVE-04, GOLIVE-05, GOLIVE-06, GOLIVE-07, GOLIVE-08, GOLIVE-09, STRIPE-08
 
 **Success Criteria:**
 1. Complete member journey works: signup -> checkout -> Discord link -> intro -> dashboard access
 2. All dashboard features work: points, resources, benchmarks, leaderboard, billing
 3. Admin dashboard works: login, member management, points adjustment, feature toggles
 4. Database reset script clears test data while preserving admin and configs
-5. Go-live checklist completed: production Discord, live Stripe mode, final verification
+5. Go-live checklist completed: production Discord, live Stripe mode (STRIPE-08), final verification
 
 **Plans:** TBD
 
 Plans:
 - [ ] 43-01: Execute full member lifecycle test
 - [ ] 43-02: Verify admin dashboard functionality
-- [ ] 43-03: Create reset script and execute go-live checklist
+- [ ] 43-03: Create reset script and execute go-live checklist (includes STRIPE-08 live mode switch)
 
 ---
 
@@ -472,12 +475,12 @@ Plans:
 | 38 - Containerization | v2.2 | Complete | 3 | 6/6 requirements |
 | 39 - Coolify Deployment | v2.2 | Complete | 2 | 6/6 requirements |
 | 40 - Database Production Setup | v2.2 | Complete | 2 | 6/6 requirements |
-| 41 - Stripe Integration | v2.2 | Planned | 2 | 0/8 requirements |
+| 41 - Stripe Integration | v2.2 | Planned | 2 | 0/8 requirements (STRIPE-08 deferred to P43) |
 | 42 - Discord Integration | v2.2 | Not started | 2 | 0/8 requirements |
-| 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements |
+| 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements (+STRIPE-08) |
 | **v2.2 Total** | | **In Progress** | **14** | **36%** |
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-02-16 (Phase 41 Stripe Integration planned)*
+*Last updated: 2026-02-16 (Phase 41 plans revised per checker feedback)*

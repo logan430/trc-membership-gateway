@@ -396,11 +396,11 @@ Plans:
 4. invoice.payment_succeeded and invoice.payment_failed webhooks update member status
 5. Test mode checkout completes full flow (signup -> payment -> active member)
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 41-01: Configure Stripe webhooks and verify signature handling
-- [ ] 41-02: Test checkout and billing portal flows
+- [ ] 41-01-PLAN.md — Configure Stripe webhook endpoint, set env vars, verify signature
+- [ ] 41-02-PLAN.md — Test checkout flow, verify webhooks, test billing portal
 
 ---
 
@@ -472,7 +472,7 @@ Plans:
 | 38 - Containerization | v2.2 | Complete | 3 | 6/6 requirements |
 | 39 - Coolify Deployment | v2.2 | Complete | 2 | 6/6 requirements |
 | 40 - Database Production Setup | v2.2 | Complete | 2 | 6/6 requirements |
-| 41 - Stripe Integration | v2.2 | Not started | 2 | 0/8 requirements |
+| 41 - Stripe Integration | v2.2 | Planned | 2 | 0/8 requirements |
 | 42 - Discord Integration | v2.2 | Not started | 2 | 0/8 requirements |
 | 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements |
 | **v2.2 Total** | | **In Progress** | **14** | **36%** |
@@ -480,4 +480,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-02-17 (Phase 40 Database Production Setup complete)*
+*Last updated: 2026-02-16 (Phase 41 Stripe Integration planned)*

@@ -373,11 +373,11 @@ Plans:
 4. Point configs seeded with correct values
 5. Feature flags and email templates seeded and enabled
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 40-01: Configure database connectivity and run migrations
-- [ ] 40-02: Seed admin, configs, flags, and templates
+- [ ] 40-01-PLAN.md — Configure database connectivity and run migrations
+- [ ] 40-02-PLAN.md — Create production seed script and populate operational data
 
 ---
 
@@ -480,4 +480,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-02-17 (Phase 39 Coolify Deployment complete)*
+*Last updated: 2026-02-16 (Phase 40 Database Production Setup planned)*

@@ -15,8 +15,6 @@ services:
       - NODE_ENV=production
       - PORT=80
       - NEXT_APP_URL=http://nextjs:3000
-    ports:
-      - "8888:80"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.express-http.rule=HostRegexp(`.+`)"

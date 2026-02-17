@@ -23,16 +23,16 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 
 ## Current Position
 
-**Current Phase:** 40 - Database Production Setup (COMPLETE)
-**Last Completed:** 40-02 Production Seed Script
-**Status:** Phase 40 complete, ready for Phase 41
+**Current Phase:** 41 - Stripe Integration (COMPLETE)
+**Last Completed:** 41-02 Test Checkout Flow End-to-End
+**Status:** Phase 41 complete, ready for Phase 42
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [#######.............] 7/14 plans (IN PROGRESS)
-Phase 40: [####################] 2/2 plans (COMPLETE)
+v2.2:     [##########..........] 9/14 plans (IN PROGRESS)
+Phase 41: [####################] 2/2 plans (COMPLETE)
 ```
 
 ---
@@ -42,7 +42,7 @@ Phase 40: [####################] 2/2 plans (COMPLETE)
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 7
+- v2.2 plans completed: 9
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
@@ -52,7 +52,7 @@ Phase 40: [####################] 2/2 plans (COMPLETE)
 | 38 - Containerization | 3 | COMPLETE |
 | 39 - Coolify Deployment | 2 | COMPLETE |
 | 40 - Database Setup | 2 | COMPLETE |
-| 41 - Stripe Integration | 2 | Not started |
+| 41 - Stripe Integration | 2 | COMPLETE |
 | 42 - Discord Integration | 2 | Not started |
 | 43 - E2E & Go-Live | 3 | Not started |
 
@@ -91,6 +91,8 @@ Phase 40: [####################] 2/2 plans (COMPLETE)
 | Local seed execution | SSH unavailable from dev env; Supabase publicly accessible | 40 |
 | Pooler port 6543 for runtime | DATABASE_URL uses transaction pooler with pgbouncer=true | 40 |
 | Direct port 5432 for migrations | DIRECT_URL uses session connection for DDL operations | 40 |
+| Production webhook secret | Updated from CLI secret to Dashboard endpoint secret | 41 |
+| Reuse test mode credentials | STRIPE_SECRET_KEY and price IDs same across local/production | 41 |
 
 ### Research Insights
 
@@ -129,15 +131,21 @@ Phase 40: [####################] 2/2 plans (COMPLETE)
 - Coolify API token: set via PATCH /envs endpoint
 - prisma migrate deploy uses DIRECT_URL (port 5432) for DDL operations
 
+**Established patterns (Phase 41):**
+- Stripe env vars already set from earlier phases (no new PATCH needed)
+- Coolify env update: PATCH /envs with {key, value, is_preview: false}
+- Webhook signing secret must match Dashboard endpoint (not CLI)
+- 1,995 lines of billing code across 8 files: webhooks, checkout, billing portal, failure/recovery handlers, scheduler, debtor state, notifications
+
 ### Known Blockers
 
-None currently. Database connected, seeded, and verified.
+None currently. Stripe integration verified end-to-end.
 
 ### Open Questions (from research)
 
 1. ~~What is the production domain?~~ → app.therevenuecouncil.com
 2. ~~Is the Coolify server already provisioned?~~ → Yes, 82.180.160.120:8000
-3. Are there existing production Stripe credentials? (currently using test mode)
+3. ~~Are there existing production Stripe credentials?~~ → Yes, test mode credentials reused from local .env
 4. ~~What is the Supabase production project?~~ → Same as dev: izzrggsqhplgxmvukvft
 
 ---
@@ -145,17 +153,17 @@ None currently. Database connected, seeded, and verified.
 ## Session Continuity
 
 **Last session:** 2026-02-17
-- Completed Phase 40 Database Production Setup
-- DATABASE_URL and DIRECT_URL set in Coolify via API
-- All 25 Prisma migrations confirmed applied
-- Production seed: admin account, 8 flags, 4 point configs, 10 email templates
-- Admin login verified at https://app.therevenuecouncil.com/admin/auth/login
-- Health: database=true, discord=true
-- Phase 40 COMPLETE
+- Completed Phase 41 Stripe Integration
+- Updated STRIPE_WEBHOOK_SECRET in Coolify to production endpoint secret
+- Webhook endpoint created in Stripe Dashboard for https://app.therevenuecouncil.com/webhooks/stripe
+- End-to-end checkout flow verified: signup → Stripe checkout → test card → webhook 200 → active member
+- Verification: 6/6 must-haves passed, 1,995 lines of billing code verified
+- UI navigation issues noted between old/new pages (not Stripe-related)
+- Phase 41 COMPLETE
 
-**Resume:** `/gsd:plan-phase 41` to plan Phase 41 Stripe Integration
+**Resume:** `/gsd:plan-phase 42` to plan Phase 42 Discord Integration
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-02-17 - Completed Phase 40 Database Production Setup*
+*Last updated: 2026-02-17 - Completed Phase 41 Stripe Integration*

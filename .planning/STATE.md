@@ -23,16 +23,16 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 
 ## Current Position
 
-**Current Phase:** 41 - Stripe Integration (COMPLETE)
-**Last Completed:** 41-02 Test Checkout Flow End-to-End
-**Status:** Phase 41 complete, ready for Phase 42
+**Current Phase:** 42 - Discord Integration (IN PROGRESS)
+**Last Completed:** 42-01 OAuth Callback Fix & Discord Env Config
+**Status:** Plan 42-01 complete, 42-02 remaining
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [##########..........] 9/14 plans (IN PROGRESS)
-Phase 41: [####################] 2/2 plans (COMPLETE)
+v2.2:     [###########.........] 10/14 plans (IN PROGRESS)
+Phase 42: [##########..........] 1/2 plans (IN PROGRESS)
 ```
 
 ---
@@ -42,7 +42,7 @@ Phase 41: [####################] 2/2 plans (COMPLETE)
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 9
+- v2.2 plans completed: 10
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
@@ -53,7 +53,7 @@ Phase 41: [####################] 2/2 plans (COMPLETE)
 | 39 - Coolify Deployment | 2 | COMPLETE |
 | 40 - Database Setup | 2 | COMPLETE |
 | 41 - Stripe Integration | 2 | COMPLETE |
-| 42 - Discord Integration | 2 | Not started |
+| 42 - Discord Integration | 2 | IN PROGRESS (1/2) |
 | 43 - E2E & Go-Live | 3 | Not started |
 
 ---
@@ -93,6 +93,9 @@ Phase 41: [####################] 2/2 plans (COMPLETE)
 | Direct port 5432 for migrations | DIRECT_URL uses session connection for DDL operations | 40 |
 | Production webhook secret | Updated from CLI secret to Dashboard endpoint secret | 41 |
 | Reuse test mode credentials | STRIPE_SECRET_KEY and price IDs same across local/production | 41 |
+| Redirect-based OAuth routing | Claim/team-claim flows redirect to their own callback handlers | 42 |
+| Keep DISCORD_REDIRECT_URI | Already set to production URL, no change needed | 42 |
+| Skip DISCORD_INVITE_URL | User does not have invite URL yet; /dashboard fallback works | 42 |
 
 ### Research Insights
 
@@ -137,9 +140,16 @@ Phase 41: [####################] 2/2 plans (COMPLETE)
 - Webhook signing secret must match Dashboard endpoint (not CLI)
 - 1,995 lines of billing code across 8 files: webhooks, checkout, billing portal, failure/recovery handlers, scheduler, debtor state, notifications
 
+**Established patterns (Phase 42):**
+- OAuth callback routing: /auth/callback detects flow via state cookies (oauth_state, claim_state, team_claim_state)
+- Discord env vars all correctly configured in Coolify (no localhost values)
+- DISCORD_REDIRECT_URI: https://app.therevenuecouncil.com/auth/callback
+- DISCORD_INVITE_URL: not set yet (needs permanent invite link from user)
+- Coolify restart: POST /restart triggers rebuild + redeploy
+
 ### Known Blockers
 
-None currently. Stripe integration verified end-to-end.
+DISCORD_INVITE_URL not yet configured -- needs permanent Discord server invite link from user before claim flow can redirect to Discord.
 
 ### Open Questions (from research)
 
@@ -153,17 +163,16 @@ None currently. Stripe integration verified end-to-end.
 ## Session Continuity
 
 **Last session:** 2026-02-17
-- Completed Phase 41 Stripe Integration
-- Updated STRIPE_WEBHOOK_SECRET in Coolify to production endpoint secret
-- Webhook endpoint created in Stripe Dashboard for https://app.therevenuecouncil.com/webhooks/stripe
-- End-to-end checkout flow verified: signup → Stripe checkout → test card → webhook 200 → active member
-- Verification: 6/6 must-haves passed, 1,995 lines of billing code verified
-- UI navigation issues noted between old/new pages (not Stripe-related)
-- Phase 41 COMPLETE
+- Completed Plan 42-01: OAuth Callback Fix & Discord Env Config
+- Fixed /auth/callback to detect claim_state and team_claim_state cookies and route to correct handlers
+- Verified all Discord env vars correctly configured in Coolify (production URLs)
+- Triggered Coolify rebuild to deploy auth.ts fix
+- Health check: healthy with discord=true
+- DISCORD_INVITE_URL skipped (user needs to provide invite link)
 
-**Resume:** `/gsd:plan-phase 42` to plan Phase 42 Discord Integration
+**Resume:** Execute Plan 42-02 (remaining Discord Integration tasks)
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-02-17 - Completed Phase 41 Stripe Integration*
+*Last updated: 2026-02-17 - Completed Plan 42-01 OAuth Callback Fix & Discord Env Config*

@@ -387,6 +387,27 @@ authRouter.get('/callback', async (req: Request, res: Response): Promise<void> =
   // Parse stored state from cookie
   const cookieHeader = req.headers.cookie ?? '';
   const cookies = parseCookie(cookieHeader);
+
+  // Detect which OAuth flow this callback belongs to
+  // All three flows (auth, claim, team-claim) use the same redirect_uri (/auth/callback)
+  // because generateAuthUrl always returns /auth/callback. We detect the flow by checking
+  // which state cookie is present and route to the appropriate callback handler.
+  const claimState = cookies['claim_state'];
+  const teamClaimState = cookies['team_claim_state'];
+
+  // Route claim flow to claim callback
+  if (claimState && state === claimState) {
+    res.redirect(`/claim/callback?code=${encodeURIComponent(code as string)}&state=${encodeURIComponent(state as string)}`);
+    return;
+  }
+
+  // Route team claim flow to team claim callback
+  if (teamClaimState && state === teamClaimState) {
+    res.redirect(`/team/claim/callback?code=${encodeURIComponent(code as string)}&state=${encodeURIComponent(state as string)}`);
+    return;
+  }
+
+  // Continue with standard auth flow
   const storedState = cookies[OAUTH_STATE_COOKIE];
 
   // Validate state parameter (CSRF protection)

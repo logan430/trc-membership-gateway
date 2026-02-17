@@ -376,8 +376,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 40-01-PLAN.md — Configure database connectivity and run migrations
-- [ ] 40-02-PLAN.md — Create production seed script and populate operational data
+- [x] 40-01-PLAN.md — Configure database connectivity and run migrations
+- [x] 40-02-PLAN.md — Create production seed script and populate operational data
 
 ---
 
@@ -471,7 +471,7 @@ Plans:
 | **v2.1 Total** | | **Complete** | **14** | **100%** |
 | 38 - Containerization | v2.2 | Complete | 3 | 6/6 requirements |
 | 39 - Coolify Deployment | v2.2 | Complete | 2 | 6/6 requirements |
-| 40 - Database Production Setup | v2.2 | Not started | 2 | 0/6 requirements |
+| 40 - Database Production Setup | v2.2 | Complete | 2 | 6/6 requirements |
 | 41 - Stripe Integration | v2.2 | Not started | 2 | 0/8 requirements |
 | 42 - Discord Integration | v2.2 | Not started | 2 | 0/8 requirements |
 | 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements |
@@ -480,4 +480,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-02-16 (Phase 40 Database Production Setup planned)*
+*Last updated: 2026-02-17 (Phase 40 Database Production Setup complete)*

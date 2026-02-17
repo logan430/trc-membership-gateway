@@ -23,16 +23,16 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 
 ## Current Position
 
-**Current Phase:** 39 - Coolify Deployment (COMPLETE)
-**Last Completed:** 39-02 DNS, Domain, and SSL
-**Status:** Phase 39 complete, ready for Phase 40
+**Current Phase:** 40 - Database Production Setup (COMPLETE)
+**Last Completed:** 40-02 Production Seed Script
+**Status:** Phase 40 complete, ready for Phase 41
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [#####...............] 5/14 plans (IN PROGRESS)
-Phase 39: [####################] 2/2 plans (COMPLETE)
+v2.2:     [#######.............] 7/14 plans (IN PROGRESS)
+Phase 40: [####################] 2/2 plans (COMPLETE)
 ```
 
 ---
@@ -42,7 +42,7 @@ Phase 39: [####################] 2/2 plans (COMPLETE)
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 5
+- v2.2 plans completed: 7
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
@@ -51,7 +51,7 @@ Phase 39: [####################] 2/2 plans (COMPLETE)
 |-------|-------|--------|
 | 38 - Containerization | 3 | COMPLETE |
 | 39 - Coolify Deployment | 2 | COMPLETE |
-| 40 - Database Setup | 2 | Not started |
+| 40 - Database Setup | 2 | COMPLETE |
 | 41 - Stripe Integration | 2 | Not started |
 | 42 - Discord Integration | 2 | Not started |
 | 43 - E2E & Go-Live | 3 | Not started |
@@ -86,6 +86,11 @@ Phase 39: [####################] 2/2 plans (COMPLETE)
 | Remove outputFileTracingRoot | Caused standalone build path nesting in Docker context | 39 |
 | HostRegexp catch-all | Traefik v3 routing label for Coolify's Docker network | 39 |
 | app.therevenuecouncil.com | Production subdomain for the membership gateway | 39 |
+| Same Supabase project for prod | Dev project reused; already had schema and some seed data | 40 |
+| Inline seed data in script | Avoids triggering Zod env validation chain when running standalone | 40 |
+| Local seed execution | SSH unavailable from dev env; Supabase publicly accessible | 40 |
+| Pooler port 6543 for runtime | DATABASE_URL uses transaction pooler with pgbouncer=true | 40 |
+| Direct port 5432 for migrations | DIRECT_URL uses session connection for DDL operations | 40 |
 
 ### Research Insights
 
@@ -118,31 +123,39 @@ Phase 39: [####################] 2/2 plans (COMPLETE)
 - Zod validation: empty string env vars crash .url().optional() — must delete, not set to ""
 - docker_compose_domains API for compose app domain assignment
 
+**Established patterns (Phase 40):**
+- Seed script at scripts/seed-production.ts (idempotent, safe to re-run)
+- Admin account: logan@callamarketer.ca (SUPER_ADMIN)
+- Coolify API token: set via PATCH /envs endpoint
+- prisma migrate deploy uses DIRECT_URL (port 5432) for DDL operations
+
 ### Known Blockers
 
-None currently. Docker build and Coolify deployment verified.
+None currently. Database connected, seeded, and verified.
 
 ### Open Questions (from research)
 
 1. ~~What is the production domain?~~ → app.therevenuecouncil.com
 2. ~~Is the Coolify server already provisioned?~~ → Yes, 82.180.160.120:8000
 3. Are there existing production Stripe credentials? (currently using test mode)
-4. What is the Supabase production project? (currently using dev project)
+4. ~~What is the Supabase production project?~~ → Same as dev: izzrggsqhplgxmvukvft
 
 ---
 
 ## Session Continuity
 
 **Last session:** 2026-02-17
-- Completed Phase 39 Coolify Deployment
-- App live at https://app.therevenuecouncil.com
-- Both containers healthy: database=true, discord=true
-- HTTPS with Let's Encrypt, HTTP→HTTPS redirect working
-- Phase 39 COMPLETE
+- Completed Phase 40 Database Production Setup
+- DATABASE_URL and DIRECT_URL set in Coolify via API
+- All 25 Prisma migrations confirmed applied
+- Production seed: admin account, 8 flags, 4 point configs, 10 email templates
+- Admin login verified at https://app.therevenuecouncil.com/admin/auth/login
+- Health: database=true, discord=true
+- Phase 40 COMPLETE
 
-**Resume:** `/gsd:plan-phase 40` to plan Phase 40 Database Production Setup
+**Resume:** `/gsd:plan-phase 41` to plan Phase 41 Stripe Integration
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-02-17 - Completed Phase 39 Coolify Deployment*
+*Last updated: 2026-02-17 - Completed Phase 40 Database Production Setup*

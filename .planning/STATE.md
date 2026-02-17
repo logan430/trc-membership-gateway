@@ -1,6 +1,6 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-02-17
+**Updated:** 2026-02-17 (Phase 42 complete)
 **Milestone:** v2.2 Production Deployment & Launch
 **Mode:** YOLO
 
@@ -23,16 +23,16 @@ Deploy the complete membership gateway to Coolify, configure all external integr
 
 ## Current Position
 
-**Current Phase:** 42 - Discord Integration (IN PROGRESS)
-**Last Completed:** 42-01 OAuth Callback Fix & Discord Env Config
-**Status:** Plan 42-01 complete, 42-02 remaining
+**Current Phase:** 42 - Discord Integration (COMPLETE)
+**Last Completed:** 42-02 Discord Developer Portal Config & End-to-End Verification
+**Status:** Phase 42 complete, ready for Phase 43
 
 **Progress:**
 ```
 v2.0:     [####################] 31/31 plans (COMPLETE)
 v2.1:     [####################] 14/14 plans (COMPLETE)
-v2.2:     [###########.........] 10/14 plans (IN PROGRESS)
-Phase 42: [##########..........] 1/2 plans (IN PROGRESS)
+v2.2:     [################....] 12/14 plans (IN PROGRESS)
+Phase 42: [####################] 2/2 plans (COMPLETE)
 ```
 
 ---
@@ -42,7 +42,7 @@ Phase 42: [##########..........] 1/2 plans (IN PROGRESS)
 **Velocity:**
 - v2.0 plans completed: 31
 - v2.1 plans completed: 14
-- v2.2 plans completed: 10
+- v2.2 plans completed: 12
 - Total execution time: ~2.5 hours (v2.0+v2.1)
 
 **v2.2 Phases:**
@@ -53,7 +53,7 @@ Phase 42: [##########..........] 1/2 plans (IN PROGRESS)
 | 39 - Coolify Deployment | 2 | COMPLETE |
 | 40 - Database Setup | 2 | COMPLETE |
 | 41 - Stripe Integration | 2 | COMPLETE |
-| 42 - Discord Integration | 2 | IN PROGRESS (1/2) |
+| 42 - Discord Integration | 2 | COMPLETE |
 | 43 - E2E & Go-Live | 3 | Not started |
 
 ---
@@ -96,6 +96,8 @@ Phase 42: [##########..........] 1/2 plans (IN PROGRESS)
 | Redirect-based OAuth routing | Claim/team-claim flows redirect to their own callback handlers | 42 |
 | Keep DISCORD_REDIRECT_URI | Already set to production URL, no change needed | 42 |
 | Skip DISCORD_INVITE_URL | User does not have invite URL yet; /dashboard fallback works | 42 |
+| Push before Coolify rebuild | Coolify pulls from GitHub remote; local-only commits not deployed | 42 |
+| Defer browser OAuth tests to Phase 43 | Cannot automate browser OAuth; endpoint verification confirms routing | 42 |
 
 ### Research Insights
 
@@ -146,10 +148,16 @@ Phase 42: [##########..........] 1/2 plans (IN PROGRESS)
 - DISCORD_REDIRECT_URI: https://app.therevenuecouncil.com/auth/callback
 - DISCORD_INVITE_URL: not set yet (needs permanent invite link from user)
 - Coolify restart: POST /restart triggers rebuild + redeploy
+- CRITICAL: Must push to GitHub before Coolify rebuild -- Coolify pulls from remote, not local
+- Bot logs confirm: logged in, role sync, introduction handlers registered
+- Non-blocking: bot lacks "Manage Channels" permission (billing-support channel fails)
+- Non-blocking: test seed members have fake Discord IDs causing billing poll errors
 
 ### Known Blockers
 
-DISCORD_INVITE_URL not yet configured -- needs permanent Discord server invite link from user before claim flow can redirect to Discord.
+- DISCORD_INVITE_URL not yet configured -- needs permanent Discord server invite link from user before claim flow can redirect to Discord server (currently redirects to /dashboard as fallback).
+- Bot lacks "Manage Channels" permission -- cannot auto-create billing-support channel. Not blocking for claim flow.
+- Test seed members have fake discordId values (test_discord_*) -- causes repeated billing poll errors. Cleanup recommended.
 
 ### Open Questions (from research)
 
@@ -163,16 +171,17 @@ DISCORD_INVITE_URL not yet configured -- needs permanent Discord server invite l
 ## Session Continuity
 
 **Last session:** 2026-02-17
-- Completed Plan 42-01: OAuth Callback Fix & Discord Env Config
-- Fixed /auth/callback to detect claim_state and team_claim_state cookies and route to correct handlers
-- Verified all Discord env vars correctly configured in Coolify (production URLs)
-- Triggered Coolify rebuild to deploy auth.ts fix
+- Completed Plan 42-02: Discord Developer Portal Config & End-to-End Verification
+- User configured Discord Developer Portal (redirect URI, intents, bot role hierarchy)
+- Discovered auth.ts fix was not pushed to GitHub -- pushed and redeployed
+- Verified deployment with image tag ac3bded (includes auth.ts fix)
 - Health check: healthy with discord=true
-- DISCORD_INVITE_URL skipped (user needs to provide invite link)
+- Bot online: logged in, role sync complete, introduction handlers registered
+- Phase 42 Discord Integration COMPLETE
 
-**Resume:** Execute Plan 42-02 (remaining Discord Integration tasks)
+**Resume:** Begin Phase 43 - E2E & Go-Live
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-02-17 - Completed Plan 42-01 OAuth Callback Fix & Discord Env Config*
+*Last updated: 2026-02-17 - Completed Phase 42 Discord Integration*

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sidebar, Header } from '@/components/layout';
 import { usePointsSummary } from '@/hooks/usePoints';
 import { useProfile } from '@/hooks/useProfile';
@@ -16,6 +17,7 @@ interface DashboardLayoutProps {
  * - Sidebar navigation (collapsible)
  * - Header with user info
  * - Main content area
+ * - Subscription guard (redirects unpaid users to /checkout)
  *
  * Per CONTEXT.md:
  * - Light mode only
@@ -27,13 +29,33 @@ interface DashboardLayoutProps {
  * - Real member name from profile API
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { data: points } = usePointsSummary();
-  const { data: profile } = useProfile();
+  const { data: profile, isLoading: profileLoading } = useProfile();
 
   const goldCount = points?.totalPoints ?? 0;
   const memberName = profile?.member?.discordUsername || profile?.member?.email?.split('@')[0] || 'Member';
+
+  // Subscription guard: redirect unpaid users to checkout
+  useEffect(() => {
+    if (!profileLoading && profile?.member?.subscriptionStatus === 'NONE') {
+      router.replace('/checkout');
+    }
+  }, [profileLoading, profile, router]);
+
+  // Show loading state while checking subscription
+  if (profileLoading || profile?.member?.subscriptionStatus === 'NONE') {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-coin-stack inline-block text-4xl mb-4">🪙</div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background">

@@ -176,6 +176,7 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
              path.startsWith('/signup') ||
              path.startsWith('/forgot-password') ||
              path.startsWith('/reset-password') ||
+             path.startsWith('/checkout') ||
              path.startsWith('/admin') ||
              path.startsWith('/dashboard');
     },

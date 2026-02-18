@@ -92,8 +92,8 @@ export function useAuth(): UseAuthReturn {
         localStorage.setItem('accessToken', data.accessToken);
       }
 
-      // Redirect to dashboard
-      router.push('/dashboard');
+      // Redirect to checkout (new users need to subscribe before accessing dashboard)
+      router.push('/checkout');
     } catch (err) {
       console.error('Signup error:', err);
       setError('Failed to connect to server. Please try again.');

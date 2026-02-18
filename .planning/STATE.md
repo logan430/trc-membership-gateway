@@ -1,6 +1,6 @@
 # Project State: The Revenue Council
 
-**Updated:** 2026-02-17 (Phase 42 complete)
+**Updated:** 2026-02-18 (Phase 42 complete)
 **Milestone:** v2.2 Production Deployment & Launch
 **Mode:** YOLO
 
@@ -170,18 +170,22 @@ Phase 42: [####################] 2/2 plans (COMPLETE)
 
 ## Session Continuity
 
-**Last session:** 2026-02-17
-- Completed Plan 42-02: Discord Developer Portal Config & End-to-End Verification
+**Last session:** 2026-02-18
+- Completed Plan 42-01: OAuth callback routing fix + Coolify env vars (commit 05156c7)
+- Completed Plan 42-02: Discord Developer Portal config + E2E verification
 - User configured Discord Developer Portal (redirect URI, intents, bot role hierarchy)
 - Discovered auth.ts fix was not pushed to GitHub -- pushed and redeployed
-- Verified deployment with image tag ac3bded (includes auth.ts fix)
-- Health check: healthy with discord=true
-- Bot online: logged in, role sync complete, introduction handlers registered
+- Health check: healthy with discord=true, bot online
+- Added Discord claim UI to member dashboard (commit 6669d67):
+  - DiscordClaimCard component (hero + compact variants) on overview + account pages
+  - ClaimErrorBanner for failed claim redirects
+  - Members can now discover and initiate Discord linking from the dashboard
+- Pushed to GitHub and triggered Coolify rebuild with Discord UI
 - Phase 42 Discord Integration COMPLETE
 
-**Resume:** Begin Phase 43 - E2E & Go-Live
+**Resume:** `/gsd:plan-phase 43` to plan Phase 43 E2E & Go-Live
 
 ---
 
 *State initialized: 2026-01-22*
-*Last updated: 2026-02-17 - Completed Phase 42 Discord Integration*
+*Last updated: 2026-02-18 - Completed Phase 42 Discord Integration*

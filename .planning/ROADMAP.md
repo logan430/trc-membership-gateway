@@ -425,8 +425,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 42-01-PLAN.md — Fix OAuth callback routing bug and configure Discord env vars
-- [ ] 42-02-PLAN.md — Configure Developer Portal and verify end-to-end Discord flow
+- [x] 42-01-PLAN.md — Fix OAuth callback routing bug and configure Discord env vars
+- [x] 42-02-PLAN.md — Configure Developer Portal and verify end-to-end Discord flow
 
 ---
 
@@ -476,11 +476,11 @@ Plans:
 | 39 - Coolify Deployment | v2.2 | Complete | 2 | 6/6 requirements |
 | 40 - Database Production Setup | v2.2 | Complete | 2 | 6/6 requirements |
 | 41 - Stripe Integration | v2.2 | Complete | 2 | 7/8 requirements (STRIPE-08 deferred to P43) |
-| 42 - Discord Integration | v2.2 | Planned | 2 | 0/8 requirements |
+| 42 - Discord Integration | v2.2 | Complete | 2 | 7/8 requirements (DISCORD-07 deferred to P43) |
 | 43 - E2E Verification & Go-Live | v2.2 | Not started | 3 | 0/20 requirements (+STRIPE-08) |
-| **v2.2 Total** | | **In Progress** | **14** | **50%** |
+| **v2.2 Total** | | **In Progress** | **14** | **64%** |
 
 ---
 
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-02-17 (Phase 42 Discord Integration planned)*
+*Last updated: 2026-02-18 (Phase 42 Discord Integration complete)*

@@ -253,8 +253,8 @@ teamClaimRouter.get('/claim/callback', async (req: Request, res: Response): Prom
       'Team seat claimed successfully'
     );
 
-    // Redirect to Discord server invite
-    res.redirect(env.DISCORD_INVITE_URL ?? '/');
+    // Redirect to claim success page
+    res.redirect('/dashboard/claim-success');
   } catch (error) {
     if (error instanceof Error && error.message === 'NO_SEATS_AVAILABLE') {
       logger.warn({ token }, 'Seat claim failed: no seats available (race condition caught)');

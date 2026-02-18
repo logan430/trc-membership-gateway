@@ -10,6 +10,7 @@ import {
   useUpdateLeaderboardVisibility,
 } from '@/hooks/useProfile';
 import { Check, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { DiscordClaimCard } from '@/components/discord/DiscordClaimCard';
 
 export default function AccountPage() {
   const { data: profile, isLoading: profileLoading } = useProfile();
@@ -167,6 +168,18 @@ export default function AccountPage() {
             </div>
           )}
         </div>
+      </Card>
+
+      {/* Discord Connection */}
+      <Card className="p-4 sm:p-6">
+        <h2 className="font-semibold mb-4">Discord Connection</h2>
+        <DiscordClaimCard
+          canClaim={profile?.claim.canClaim ?? false}
+          hasClaimed={profile?.claim.hasClaimed ?? false}
+          discordInviteUrl={profile?.claim.discordInviteUrl ?? null}
+          discordUsername={profile?.member.discordUsername ?? null}
+          variant="compact"
+        />
       </Card>
 
       {/* Privacy settings - Leaderboard visibility (GAME-11) */}

@@ -1,23 +1,41 @@
 'use client';
 
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, PageLoader } from '@/components/ui';
 import { Coins, Trophy, BarChart3, FolderOpen, Flame } from 'lucide-react';
 import { usePointsSummary, usePointsHistory } from '@/hooks/usePoints';
+import { useProfile } from '@/hooks/useProfile';
+import { DiscordClaimCard } from '@/components/discord/DiscordClaimCard';
+import { ClaimErrorBanner } from '@/components/discord/ClaimErrorBanner';
 
 /**
  * Dashboard Overview Page
  *
  * Landing page for authenticated members showing:
  * - Welcome message
+ * - Discord claim card (if applicable)
  * - Quick stats (gold, rank, streak)
  * - Quick action cards
  * - Recent activity from points history
  */
 export default function DashboardOverview() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <DashboardOverviewContent />
+    </Suspense>
+  );
+}
+
+function DashboardOverviewContent() {
+  const searchParams = useSearchParams();
+  const [showClaimError, setShowClaimError] = useState(true);
+
   const { data: summaryData, isLoading: summaryLoading, error: summaryError } = usePointsSummary();
   const { data: historyData, isLoading: historyLoading, error: historyError } = usePointsHistory(5);
+  const { data: profile, isLoading: profileLoading } = useProfile();
 
-  const isLoading = summaryLoading || historyLoading;
+  const isLoading = summaryLoading || historyLoading || profileLoading;
   const error = summaryError || historyError;
 
   if (isLoading) {
@@ -43,6 +61,25 @@ export default function DashboardOverview() {
           Your guild dashboard awaits. Track your progress, compare benchmarks, and access resources.
         </p>
       </div>
+
+      {/* Discord Claim Error Banner */}
+      {searchParams.get('claim') === 'error' && showClaimError && (
+        <ClaimErrorBanner
+          reason={searchParams.get('reason')}
+          onDismiss={() => setShowClaimError(false)}
+        />
+      )}
+
+      {/* Discord Claim Card */}
+      {profile && (profile.claim.canClaim || profile.claim.hasClaimed) && (
+        <DiscordClaimCard
+          canClaim={profile.claim.canClaim}
+          hasClaimed={profile.claim.hasClaimed}
+          discordInviteUrl={profile.claim.discordInviteUrl}
+          discordUsername={profile.member.discordUsername}
+          variant="hero"
+        />
+      )}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

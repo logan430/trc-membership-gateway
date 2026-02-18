@@ -170,7 +170,8 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
     ws: true, // WebSocket support for HMR in dev
     pathFilter: (path) => {
       // Proxy these paths to Next.js
-      return path.startsWith('/_next') ||
+      return path === '/' ||
+             path.startsWith('/_next') ||
              path.startsWith('/login') ||
              path.startsWith('/signup') ||
              path.startsWith('/forgot-password') ||
@@ -206,7 +207,7 @@ if (env.NODE_ENV === 'development' || process.env.NEXT_APP_URL) {
   });
   app.use(nextProxyMiddleware);
 
-  logger.info({ target: nextAppUrl }, 'Next.js proxy enabled for /_next, /login, /signup, /admin, /dashboard');
+  logger.info({ target: nextAppUrl }, 'Next.js proxy enabled for /, /_next, /login, /signup, /admin, /dashboard');
 }
 
 // Dashboard API routes (subscription status, claim availability)

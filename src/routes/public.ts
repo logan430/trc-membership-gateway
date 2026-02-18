@@ -101,13 +101,7 @@ publicRouter.get('/checkout/success', (_req: Request, res: Response): void => {
   res.sendFile(join(__dirname, '../../public/checkout-success.html'));
 });
 
-/**
- * GET /
- * Serve The Gatekeeper landing page
- */
-publicRouter.get('/', (_req: Request, res: Response): void => {
-  res.sendFile(join(__dirname, '../../public/index.html'));
-});
+// Landing page now served by Next.js at /
 
 /**
  * GET /terms

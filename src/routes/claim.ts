@@ -18,6 +18,7 @@ const CLAIM_STATE_OPTIONS = {
   secure: env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
   maxAge: 10 * 60, // 10 minutes
+  path: '/',
 };
 
 // Store member ID with state for callback

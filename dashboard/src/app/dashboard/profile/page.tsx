@@ -1,16 +1,35 @@
 'use client';
 
 import { useState } from 'react';
-import { GoldCoinsLoader, Card } from '@/components/ui';
+import { useRouter } from 'next/navigation';
+import { GoldCoinsLoader, Card, Button } from '@/components/ui';
 import { useProfile } from '@/hooks/useProfile';
 import { usePointsHistory } from '@/hooks/usePoints';
-import { Coins, User } from 'lucide-react';
+import { Coins, User, LogOut } from 'lucide-react';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'points' | 'activity'>('points');
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: history, isLoading: historyLoading } = usePointsHistory(20);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch {
+      // Continue with client-side cleanup even if server call fails
+    }
+    localStorage.removeItem('accessToken');
+    router.push('/login');
+  };
 
   const isLoading = profileLoading || historyLoading;
 
@@ -88,6 +107,18 @@ export default function ProfilePage() {
               <p className="font-medium">{profile.team.name}</p>
             </div>
           )}
+        </div>
+        <div className="mt-4 pt-4 border-t border-border flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            loading={loggingOut}
+            className="text-destructive border-destructive/30 hover:bg-destructive/10"
+          >
+            <LogOut size={16} className="mr-2" />
+            Sign Out
+          </Button>
         </div>
       </Card>
 

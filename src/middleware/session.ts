@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../auth/session.js';
+import { parse as parseCookie } from 'cookie';
+import { verifyToken, REFRESH_COOKIE_NAME } from '../auth/session.js';
 
 /**
  * Extended Request type with authenticated member ID
@@ -9,8 +10,11 @@ export interface AuthenticatedRequest extends Request {
 }
 
 /**
- * Middleware to require authentication via Bearer token
- * Extracts and verifies JWT from Authorization header
+ * Middleware to require authentication via Bearer token or refresh cookie.
+ *
+ * API calls send access tokens as Authorization: Bearer headers.
+ * Full-page navigations (like /claim/discord) only send cookies,
+ * so we fall back to the refresh token cookie when no header is present.
  */
 export async function requireAuth(
   req: AuthenticatedRequest,
@@ -19,30 +23,40 @@ export async function requireAuth(
 ): Promise<void> {
   const authHeader = req.headers.authorization;
 
-  // Check for Authorization header with Bearer scheme
-  if (!authHeader?.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'Missing authorization header' });
+  // Primary: Authorization header with Bearer scheme (API calls)
+  if (authHeader?.startsWith('Bearer ')) {
+    const token = authHeader.slice(7);
+    const payload = await verifyToken(token);
+
+    if (!payload) {
+      res.status(401).json({ error: 'Invalid or expired token' });
+      return;
+    }
+
+    // Reject refresh tokens sent as Bearer (must use access tokens for API)
+    if (payload.type === 'refresh') {
+      res.status(401).json({ error: 'Invalid or expired token' });
+      return;
+    }
+
+    req.memberId = payload.sub;
+    next();
     return;
   }
 
-  // Extract token (everything after "Bearer ")
-  const token = authHeader.slice(7);
+  // Fallback: refresh token cookie (full-page navigations)
+  const cookies = parseCookie(req.headers.cookie ?? '');
+  const refreshToken = cookies[REFRESH_COOKIE_NAME];
 
-  // Verify token
-  const payload = await verifyToken(token);
+  if (refreshToken) {
+    const payload = await verifyToken(refreshToken);
 
-  if (!payload) {
-    res.status(401).json({ error: 'Invalid or expired token' });
-    return;
+    if (payload && payload.type === 'refresh') {
+      req.memberId = payload.sub;
+      next();
+      return;
+    }
   }
 
-  // Reject refresh tokens used as access tokens
-  if (payload.type === 'refresh') {
-    res.status(401).json({ error: 'Invalid or expired token' });
-    return;
-  }
-
-  // Attach member ID to request for downstream handlers
-  req.memberId = payload.sub;
-  next();
+  res.status(401).json({ error: 'Missing authorization header' });
 }

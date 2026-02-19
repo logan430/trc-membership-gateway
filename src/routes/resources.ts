@@ -13,6 +13,7 @@ import {
   getAllTags,
 } from '../resources/service.js';
 import { ResourceType } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
 
 export const resourcesRouter = Router();
 
@@ -132,6 +133,17 @@ resourcesRouter.get('/:id', requireAuth, async (req: AuthenticatedRequest, res) 
 resourcesRouter.post('/:id/download', requireAuth, async (req: AuthenticatedRequest, res) => {
   const { id } = z.object({ id: z.string() }).parse(req.params);
   const memberId = req.memberId!;
+
+  // Verify member has an active subscription before allowing download
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+    select: { subscriptionStatus: true },
+  });
+
+  if (!member || member.subscriptionStatus !== 'ACTIVE') {
+    res.status(403).json({ error: 'Active subscription required to download resources' });
+    return;
+  }
 
   try {
     const result = await downloadResource(id, memberId);

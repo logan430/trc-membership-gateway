@@ -15,7 +15,7 @@ const envSchema = z.object({
   DIRECT_URL: z.string().url().optional(),
 
   // Session / JWT
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters').optional(),
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
 
   // App URL (for magic links, OAuth callbacks)
   APP_URL: z.string().url().default('http://localhost:3000'),

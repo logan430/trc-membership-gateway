@@ -41,7 +41,7 @@ import { seedDefaultPointConfigs } from './points/config.js';
 import { startBillingScheduler } from './billing/scheduler.js';
 import { startReconciliationScheduler } from './reconciliation/index.js';
 import { startJobScheduler, stopJobScheduler } from './jobs/index.js';
-import { authLimiter, signupLimiter, magicLinkLimiter, adminAuthLimiter } from './middleware/rate-limit.js';
+import { authLimiter, signupLimiter, magicLinkLimiter, adminAuthLimiter, passwordResetLimiter } from './middleware/rate-limit.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -98,6 +98,8 @@ app.use('/auth/login', authLimiter);
 app.use('/auth/signup', signupLimiter);
 app.use('/auth/magic-link/request', magicLinkLimiter);
 app.use('/admin/auth/login', adminAuthLimiter);
+app.use('/auth/forgot-password', passwordResetLimiter);
+app.use('/auth/reset-password', passwordResetLimiter);
 
 // =============================================================================
 // ADMIN ROUTES

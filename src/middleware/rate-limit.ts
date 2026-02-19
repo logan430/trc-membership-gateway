@@ -49,6 +49,18 @@ export const adminAuthLimiter = rateLimit({
 });
 
 /**
+ * Rate limiter for /auth/forgot-password and /auth/reset-password
+ * Prevents email bombing and reset token brute force
+ */
+export const passwordResetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3, // 3 attempts per window
+  message: { error: 'Too many password reset attempts. Please try again in 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+/**
  * Rate limiter for file uploads
  * SEC-07: 5 files per hour per admin
  *

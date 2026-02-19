@@ -83,7 +83,7 @@ authRouter.post('/signup', async (req: Request, res: Response): Promise<void> =>
 
   if (existingMember) {
     logger.debug({ email }, 'Signup attempt for existing email');
-    res.status(409).json({ error: 'An account with this email already exists. Please log in instead.' });
+    res.status(409).json({ error: 'Unable to create account. An account may already exist with this email.' });
     return;
   }
 

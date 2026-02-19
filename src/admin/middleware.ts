@@ -35,13 +35,19 @@ export async function requireAdmin(
     return;
   }
 
-  // Fetch admin from database (may have been deleted since token was issued)
+  // Fetch admin from database (may have been deleted or role changed since token was issued)
   const admin = await prisma.admin.findUnique({
     where: { id: payload.sub },
   });
 
   if (!admin) {
     res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  // Reject if role in JWT doesn't match current DB role (prevents stale elevated access)
+  if (payload.role && payload.role !== admin.role) {
+    res.status(401).json({ error: 'Session expired. Please log in again.' });
     return;
   }
 

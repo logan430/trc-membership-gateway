@@ -82,23 +82,8 @@ authRouter.post('/signup', async (req: Request, res: Response): Promise<void> =>
   });
 
   if (existingMember) {
-    // Anti-enumeration: return success but don't create duplicate
-    // In production, you might want to send "account exists" email instead
     logger.debug({ email }, 'Signup attempt for existing email');
-
-    // Create tokens for existing user (acts like login)
-    const accessToken = await createAccessToken(existingMember.id);
-    const refreshToken = await createRefreshToken(existingMember.id, true);
-
-    res.setHeader(
-      'Set-Cookie',
-      serializeCookie(REFRESH_COOKIE_NAME, refreshToken, REFRESH_COOKIE_OPTIONS)
-    );
-
-    res.json({
-      accessToken,
-      expiresIn: 900,
-    });
+    res.status(409).json({ error: 'An account with this email already exists. Please log in instead.' });
     return;
   }
 

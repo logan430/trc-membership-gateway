@@ -57,6 +57,10 @@ export const logger = pino({
 // Initialize Express
 const app = express();
 
+// Trust first proxy (Nginx/Coolify) so req.ip uses X-Forwarded-For
+// Without this, all clients share the same rate limit behind a reverse proxy
+app.set('trust proxy', 1);
+
 // Security middleware with CSP for inline scripts and Google Fonts
 // Development mode needs 'unsafe-eval' for Next.js hot module reloading
 const scriptSrc = env.NODE_ENV === 'development'

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { AdminAuthGuard, AdminSidebar } from '@/components/admin';
 import { Header } from '@/components/layout';
 
@@ -10,8 +11,16 @@ interface AdminLayoutProps {
 /**
  * Admin dashboard layout
  * Wraps all /admin/* pages with auth guard, sidebar, and header
+ * Exception: /admin/login bypasses auth guard
  */
 export default function AdminLayout({ children }: AdminLayoutProps) {
+  const pathname = usePathname();
+
+  // Auth pages (login) should render without the auth guard and layout
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
   return (
     <AdminAuthGuard>
       <div className="flex h-screen bg-background">

@@ -25,7 +25,7 @@ export default function LandingPage() {
               priority
             />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-foreground tracking-wide font-heading mb-3">
+          <h1 className="text-3xl sm:text-5xl font-bold text-foreground tracking-wide font-heading mb-3">
             The Gatekeeper
           </h1>
           <p className="text-lg text-muted-foreground italic">

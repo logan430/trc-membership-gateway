@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation';
 
 /**
  * /admin redirect
- * Sends users to /admin/dashboard (or /admin/login if not authenticated)
+ * Sends to /admin/login — auth guard on dashboard pages handles the rest
  */
 export default function AdminPage() {
-  redirect('/admin/dashboard');
+  redirect('/admin/login');
 }

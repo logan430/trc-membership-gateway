@@ -36,7 +36,7 @@ export default function AdminMembersPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground font-cinzel">Members</h1>
           <p className="text-muted-foreground">
-            {data?.pagination.total ?? 0} total members
+            {data?.pagination?.total ?? 0} total members
           </p>
         </div>
       </div>

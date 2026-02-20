@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { Card, Input, Button } from '@/components/ui';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+
 /**
  * Forgot Password Page
  *
@@ -26,7 +28,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/auth/forgot-password', {
+      const response = await fetch(`${API_BASE}/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim() }),

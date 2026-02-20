@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { Card, Button, GoldCoinsLoader, PasswordInput, PasswordStrength, PasswordRequirements } from '@/components/ui';
 import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+
 /**
  * Reset Password Form component
  * Handles token from URL and password reset submission
@@ -94,7 +96,7 @@ function ResetPasswordForm() {
     }
 
     try {
-      const response = await fetch('/auth/reset-password', {
+      const response = await fetch(`${API_BASE}/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, newPassword: password }),

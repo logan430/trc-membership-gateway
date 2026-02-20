@@ -5,6 +5,7 @@
  * Different from member API which uses httpOnly cookies
  */
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 const TOKEN_KEY = 'adminAccessToken';
 
 class AdminApiError extends Error {
@@ -26,12 +27,12 @@ async function adminFetch<T>(endpoint: string, options: RequestInit = {}): Promi
 
   if (!token) {
     if (typeof window !== 'undefined') {
-      window.location.href = '/app/admin/login';
+      window.location.href = '/admin/login';
     }
     throw new AdminApiError('Not authenticated', 401);
   }
 
-  const response = await fetch(endpoint, {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +44,7 @@ async function adminFetch<T>(endpoint: string, options: RequestInit = {}): Promi
   if (response.status === 401) {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(TOKEN_KEY);
-      window.location.href = '/app/admin/login';
+      window.location.href = '/admin/login';
     }
     throw new AdminApiError('Session expired', 401);
   }
@@ -246,7 +247,7 @@ export const adminAnalyticsApi = {
 export const adminAuthApi = {
   /** Login and get token */
   login: async (email: string, password: string) => {
-    const response = await fetch('/admin/auth/login', {
+    const response = await fetch(`${API_BASE}/admin/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -268,7 +269,7 @@ export const adminAuthApi = {
   /** Logout */
   logout: async () => {
     localStorage.removeItem(TOKEN_KEY);
-    await fetch('/admin/auth/logout', {
+    await fetch(`${API_BASE}/admin/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     }).catch(() => {
@@ -667,7 +668,7 @@ export const adminResourcesApi = {
     formData.append('file', file);
     formData.append('metadata', JSON.stringify(metadata));
 
-    const response = await fetch('/api/admin/resources', {
+    const response = await fetch(`${API_BASE}/api/admin/resources`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
@@ -695,7 +696,7 @@ export const adminResourcesApi = {
     formData.append('file', file);
     if (changelog) formData.append('changelog', changelog);
 
-    const response = await fetch(`/api/admin/resources/${id}/version`, {
+    const response = await fetch(`${API_BASE}/api/admin/resources/${id}/version`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

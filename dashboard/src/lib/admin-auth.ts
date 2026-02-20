@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 export const TOKEN_KEY = 'adminAccessToken';
@@ -67,16 +67,20 @@ export function useAdminAuth() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [admin, setAdmin] = useState<AdminTokenPayload | null>(null);
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
     const payload = validateAdminToken();
     setAdmin(payload);
     setIsLoading(false);
 
-    if (!payload) {
+    // Only redirect once to prevent infinite loop
+    if (!payload && !hasRedirected.current) {
+      hasRedirected.current = true;
       router.replace('/admin/login');
     }
-  }, [router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount - router is stable
 
   return {
     isLoading,

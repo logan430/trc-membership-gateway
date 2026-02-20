@@ -63,6 +63,7 @@
 
   /* Fonts */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-cinzel), "Cinzel", serif;
 }
 
 /* Base styles */
@@ -130,4 +131,9 @@ body {
 
 .animate-coin-stack {
   animation: coin-stack 1s ease-in-out infinite;
+}
+
+/* Medieval heading font */
+.font-heading {
+  font-family: var(--font-cinzel), "Cinzel", serif;
 }

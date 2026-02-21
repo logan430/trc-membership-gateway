@@ -51,23 +51,29 @@ export function PointsAdjuster({ memberId, currentPoints }: PointsAdjusterProps)
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-2">
-          <Button
+        <div className="flex rounded-[8px] border border-border overflow-hidden">
+          <button
             type="button"
-            variant={isAdding ? 'primary' : 'outline'}
-            size="sm"
             onClick={() => setIsAdding(true)}
+            className={`flex-1 flex items-center justify-center gap-1 py-2 text-sm font-medium transition-colors ${
+              isAdding
+                ? 'bg-foreground text-background'
+                : 'bg-background text-muted-foreground hover:text-foreground'
+            }`}
           >
-            <Plus size={16} className="mr-1" /> Add
-          </Button>
-          <Button
+            <Plus size={14} /> Add
+          </button>
+          <button
             type="button"
-            variant={!isAdding ? 'primary' : 'outline'}
-            size="sm"
             onClick={() => setIsAdding(false)}
+            className={`flex-1 flex items-center justify-center gap-1 py-2 text-sm font-medium transition-colors border-l border-border ${
+              !isAdding
+                ? 'bg-foreground text-background'
+                : 'bg-background text-muted-foreground hover:text-foreground'
+            }`}
           >
-            <Minus size={16} className="mr-1" /> Deduct
-          </Button>
+            <Minus size={14} /> Deduct
+          </button>
         </div>
 
         <div>
